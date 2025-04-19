@@ -1,0 +1,18 @@
+# IDE
+.idea/
+*.iml
+# Maven build
+target/
+
+# IDE
+.idea/
+*.iml
+
+# Maven build
+target/
+# IDE
+.idea/
+*.iml
+
+# Maven build
+target/
