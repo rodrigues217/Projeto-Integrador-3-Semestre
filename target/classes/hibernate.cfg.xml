@@ -1,0 +1,35 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Conexão com o banco -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/estoquedados</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">kristhiann066</property>
+
+        <!-- Dialeto do banco -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Mostrar SQL no console -->
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- Atualiza as tabelas conforme entidades -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Suas classes anotadas -->
+        <mapping class="org.example.entities.Produtos"/>
+        <mapping class="org.example.entities.Usuario"/>
+        <mapping class="org.example.entities.AuditoriaVenda"/>
+        <mapping class="org.example.entities.Setor"/>
+        <mapping class="org.example.entities.Funcionario"/>
+        <mapping class="org.example.entities.CategoriaProduto"/>
+
+
+
+    </session-factory>
+</hibernate-configuration>
