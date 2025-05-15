@@ -8,6 +8,7 @@ import org.example.entities.CategoriaProduto;
 import org.example.entities.Produtos;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class CategoriaProdutoRepository {
 
@@ -25,6 +26,22 @@ public class CategoriaProdutoRepository {
             em.persist(categoriaProduto);
         } else {
             em.merge(categoriaProduto);
+        }
+    }
+    public void listarCategoriasComProdutos(Scanner scanner) {
+        List<CategoriaProduto> categorias = em.createQuery(
+                        "SELECT DISTINCT c FROM CategoriaProduto c LEFT JOIN FETCH c.produtos", CategoriaProduto.class)
+                .getResultList();
+
+        for (CategoriaProduto categoria : categorias) {
+            System.out.println("Categoria: " + categoria.getNome());
+            if (categoria.getProdutos().isEmpty()) {
+                System.out.println("  Nenhum produto nesta categoria.");
+            } else {
+                for (Produtos produto : categoria.getProdutos()) {
+                    System.out.println("  - Produto: " + produto.getNome());
+                }
+            }
         }
     }
 

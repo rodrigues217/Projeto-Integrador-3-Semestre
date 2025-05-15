@@ -5,6 +5,7 @@ import org.example.entities.Setor;
 import org.example.entities.Funcionario;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class SetorRepository {
 
@@ -63,8 +64,31 @@ public class SetorRepository {
             e.printStackTrace();
         }
     }
+    public void cadastrarSetor(Scanner scanner) {
+        scanner.nextLine();
+        System.out.print("Digite o nome do setor: ");
+        String nome = scanner.nextLine();
 
-    // Método para listar setores com os funcionários associados
+        Setor setor = new Setor();
+        setor.setNome(nome);
+
+        em.getTransaction().begin();
+        em.persist(setor);
+        em.getTransaction().commit();
+
+        System.out.println("Setor cadastrado com sucesso!");
+    }
+
+    public void listarSetores() {
+        List<Setor> setores = em.createQuery("FROM Setor", Setor.class).getResultList();
+
+        System.out.println("\n*** LISTA DE SETORES ***");
+        for (Setor setor : setores) {
+            System.out.println("ID: " + setor.getId() + " - Nome: " + setor.getNome());
+        }
+    }
+
+
     public List<Setor> listarSetoresComFuncionarios() {
         return em.createQuery("SELECT s FROM Setor s LEFT JOIN FETCH s.funcionarios", Setor.class).getResultList();
     }
