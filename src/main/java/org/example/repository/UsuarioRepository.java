@@ -6,7 +6,7 @@ import org.example.entities.Usuario;
 
 public class UsuarioRepository {
 
-    private EntityManager em;
+    private static EntityManager em;
 
     public UsuarioRepository(EntityManager em) {
         this.em = em;
@@ -28,7 +28,7 @@ public class UsuarioRepository {
         }
     }
 
-    public Usuario autenticar(String login, String senha) {
+    public static Usuario autenticar(String login, String senha) {
         try {
             return em.createQuery("SELECT u FROM Usuario u WHERE u.login = :login AND u.senha = :senha", Usuario.class)
                     .setParameter("login", login)
@@ -38,5 +38,6 @@ public class UsuarioRepository {
             return null;
         }
     }
+
 
 }
