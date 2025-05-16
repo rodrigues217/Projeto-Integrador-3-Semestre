@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class CategoriaProdutoRepository {
 
     @PersistenceContext
-    private EntityManager em; // O Jakarta/EE cuida da injeção do EntityManager
+    private EntityManager em;
 
 
    public CategoriaProdutoRepository(EntityManager em) {
