@@ -26,7 +26,7 @@ public class Produtos {
     private int quantidade_vendida;
 
     @Column(name = "valor_consumo")
-    private double valorConsumo;
+    private Double valorConsumo;
 
     @Column(name = "categoria")
     private String categoria;
@@ -80,11 +80,11 @@ public class Produtos {
         this.quantidade_vendida = quantidade_vendida;
     }
 
-    public double getValorConsumo() {
+    public Double getValorConsumo() {
         return valorConsumo;
     }
 
-    public void setValorConsumo(double valorConsumo) {
+    public void setValorConsumo(Double valorConsumo) {
         this.valorConsumo = valorConsumo;
     }
 
