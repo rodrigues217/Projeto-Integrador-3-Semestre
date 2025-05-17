@@ -3,8 +3,6 @@ package org.example.Service;
 import jakarta.persistence.EntityManager;
 import org.example.entities.*;
 import org.example.repository.*;
-import org.example.Service.AuthService;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class SistemaService {
@@ -13,17 +11,16 @@ public class SistemaService {
     private final ProdutosRepository produtosRepository;
     private final SetorRepository setorRepository;
     private final FuncionarioRepository funcionarioRepository;
-    private final AuthService authService; // Adicionado
+    private final AuthService authService;
 
     public SistemaService(EntityManager em) {
         this.em = em;
         this.produtosRepository = new ProdutosRepository(em);
         this.setorRepository = new SetorRepository(em);
         this.funcionarioRepository = new FuncionarioRepository(em);
-        this.authService = new AuthService(em); // Inicializa o AuthService
+        this.authService = new AuthService(em);
     }
 
-    // Novo método delegador para login
     public Usuario login(Scanner scanner) {
         return authService.fazerLogin(scanner);
     }
@@ -31,62 +28,20 @@ public class SistemaService {
     public void menuPrincipal(Scanner scanner, Usuario adminLogado) {
         while (true) {
             System.out.println("\n*** MENU INTERATIVO ***");
-            System.out.println("1 - Cadastrar Produto");
+            System.out.println("1 - Produtos e Categorias");
             System.out.println("2 - Registrar Venda");
-            System.out.println("3 - Listar Produtos");
-            System.out.println("4 - Adicionar Estoque");
-            System.out.println("5 - Mostrar Lucro do Dia");
-            System.out.println("6 - Colaboradores");
-            System.out.println("7 - Criar Categoria de Produto");
-            System.out.println("8 - Associar Produtos a Categoria");
-            System.out.println("9 - Listar e deletar Categorias e Produtos");
-            System.out.println("10 - Desassociar Produtos de uma Categoria");
-            System.out.println("11 - Sair");
+            System.out.println("3 - Mostrar Lucro do Dia");
+            System.out.println("4 - Colaboradores");
+            System.out.println("5 - Sair");
             System.out.print("Escolha uma opção: ");
             int opcao = scanner.nextInt();
 
             switch (opcao) {
-                case 1 -> cadastrarProduto(scanner);
+                case 1 -> menuProdutosECategorias(scanner, adminLogado);
                 case 2 -> registrarVenda(scanner, adminLogado);
-                case 3 -> listarProdutos();
-                case 4 -> adicionarEstoque(scanner);
-                case 5 -> System.out.println("Lucro total do dia: R$ " + org.example.Service.LucroService.getLucroTotalDoDia());
-                case 6 -> menuColaboradores(scanner);
-                case 7 -> {
-                    try {
-                        em.getTransaction().begin();
-                        criarCategoria(scanner);
-                        em.getTransaction().commit();
-                    } catch (Exception e) {
-                        em.getTransaction().rollback();
-                        System.out.println("Erro ao criar categoria: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-                case 8 -> {
-                    try {
-                        em.getTransaction().begin();
-                        associarProdutosACategoria(scanner);
-                        em.getTransaction().commit();
-                    } catch (Exception e) {
-                        em.getTransaction().rollback();
-                        System.out.println("Erro ao associar produtos: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-                case 9 -> listarCategoriasComProdutos(scanner);
-                case 10 -> {
-                    try {
-                        em.getTransaction().begin();
-                        desassociarProdutosDaCategoria(scanner);
-                        em.getTransaction().commit();
-                    } catch (Exception e) {
-                        em.getTransaction().rollback();
-                        System.out.println("Erro ao desassociar produtos da categoria: " + e.getMessage());
-                        e.printStackTrace();
-                    }
-                }
-                case 11 -> {
+                case 3 -> System.out.println("Lucro total do dia: R$ " + LucroService.getLucroTotalDoDia());
+                case 4 -> menuColaboradores(scanner);
+                case 5 -> {
                     System.out.println("Saindo...");
                     em.close();
                     return;
@@ -96,8 +51,65 @@ public class SistemaService {
         }
     }
 
+    private void menuProdutosECategorias(Scanner scanner, Usuario adminLogado) {
+        while (true) {
+            System.out.println("\n*** MENU DE PRODUTOS E CATEGORIAS ***");
+            System.out.println("1 - Cadastrar Produto");
+            System.out.println("2 - Listar Produtos");
+            System.out.println("3 - Adicionar Estoque");
+            System.out.println("4 - Criar Categoria");
+            System.out.println("5 - Associar Produtos a Categoria");
+            System.out.println("6 - Listar Categorias com Produtos");
+            System.out.println("7 - Desassociar Produtos de Categoria");
+            System.out.println("8 - Voltar");
+            System.out.print("Escolha uma opção: ");
+            int opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1 -> cadastrarProduto(scanner);
+                case 2 -> listarProdutos();
+                case 3 -> adicionarEstoque(scanner);
+                case 4 -> {
+                    try {
+                        em.getTransaction().begin();
+                        criarCategoria(scanner);
+                        em.getTransaction().commit();
+                    } catch (Exception e) {
+                        em.getTransaction().rollback();
+                        System.out.println("Erro ao criar categoria: " + e.getMessage());
+                    }
+                }
+                case 5 -> {
+                    try {
+                        em.getTransaction().begin();
+                        associarProdutosACategoria(scanner);
+                        em.getTransaction().commit();
+                    } catch (Exception e) {
+                        em.getTransaction().rollback();
+                        System.out.println("Erro ao associar produtos: " + e.getMessage());
+                    }
+                }
+                case 6 -> listarCategoriasComProdutos(scanner);
+                case 7 -> {
+                    try {
+                        em.getTransaction().begin();
+                        desassociarProdutosDaCategoria(scanner);
+                        em.getTransaction().commit();
+                    } catch (Exception e) {
+                        em.getTransaction().rollback();
+                        System.out.println("Erro ao desassociar produtos: " + e.getMessage());
+                    }
+                }
+                case 8 -> {
+                    return;
+                }
+                default -> System.out.println("Opção inválida! Tente novamente.");
+            }
+        }
+    }
+
     private void cadastrarProduto(Scanner scanner) {
-        scanner.nextLine(); // Limpar buffer
+        scanner.nextLine();
         System.out.print("Digite o nome do produto: ");
         String nome = scanner.nextLine();
         System.out.print("Digite o valor do produto: ");
@@ -125,7 +137,7 @@ public class SistemaService {
         produtosRepository.registrarVenda(idProduto, quantidade, vendedor);
 
         List<Produtos> produtos = produtosRepository.buscarTodos();
-        List<Produtos> produtosClassificados = org.example.Service.CurvaABC.classificar(produtos);
+        List<Produtos> produtosClassificados = CurvaABC.classificar(produtos);
         produtosRepository.atualizarProdutos(produtosClassificados);
 
         System.out.println("Venda registrada com sucesso!");
@@ -133,7 +145,7 @@ public class SistemaService {
 
     private void listarProdutos() {
         List<Produtos> produtos = produtosRepository.buscarTodos();
-        List<Produtos> produtosClassificados = org.example.Service.CurvaABC.classificar(produtos);
+        List<Produtos> produtosClassificados = CurvaABC.classificar(produtos);
 
         System.out.println("\n*** LISTA DE PRODUTOS ***");
         for (Produtos produto : produtosClassificados) {
@@ -167,7 +179,7 @@ public class SistemaService {
         CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
         categoriaProdutoRepo.setEm(em);
 
-        scanner.nextLine(); // Limpar buffer
+        scanner.nextLine();
         System.out.println("*** CRIAÇÃO DE CATEGORIA ***");
         System.out.print("Digite o nome da nova categoria: ");
         String nomeCategoria = scanner.nextLine();
@@ -281,6 +293,11 @@ public class SistemaService {
         System.out.println("Produtos desassociados da categoria '" + nomeCategoria + "' com sucesso!");
     }
 
+    private void listarCategoriasComProdutos(Scanner scanner) {
+        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
+        categoriaProdutoRepo.listarCategoriasComProdutos(scanner);
+    }
+
     private void menuColaboradores(Scanner scanner) {
         while (true) {
             System.out.println("\n*** MENU DE COLABORADORES ***");
@@ -302,10 +319,5 @@ public class SistemaService {
                 default -> System.out.println("Opção inválida! Tente novamente.");
             }
         }
-    }
-
-    private void listarCategoriasComProdutos(Scanner scanner) {
-        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
-        categoriaProdutoRepo.listarCategoriasComProdutos(scanner);
     }
 }
