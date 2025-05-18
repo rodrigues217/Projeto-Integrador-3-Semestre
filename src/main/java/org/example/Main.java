@@ -3,7 +3,7 @@ package org.example;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.example.Service.SistemaService;
+import org.example.Controller.SistemaService;
 
 import java.util.Scanner;
 
@@ -14,7 +14,7 @@ public class Main {
         Session session = sessionFactory.openSession();
         Scanner scanner = new Scanner(System.in);
         SistemaService sistemaService = new SistemaService(session);
-        sistemaService.menuPrincipal(scanner, sistemaService.fazerLoginAdmin(scanner));
+        sistemaService.menuPrincipal(scanner, sistemaService.login(scanner));
         scanner.close();
         session.close();
         sessionFactory.close();
