@@ -1,12 +1,11 @@
-package org.example.entities;
+package org.example.Model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "AuditoriaVenda") // Nome usado nas queries
 @Table(name = "auditoria_vendas")
-public class AuditoriaVenda {
+public class AuditoriaVendaMODEL {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,11 +13,11 @@ public class AuditoriaVenda {
 
     @ManyToOne
     @JoinColumn(name = "produto_id")
-    private Produtos produto;
+    private ProdutosMODEL produto;
 
     @ManyToOne
     @JoinColumn(name = "vendedor_id")
-    private Usuario vendedor;
+    private UsuarioMODEL vendedor;
 
     private Integer quantidade;
 
@@ -36,19 +35,19 @@ public class AuditoriaVenda {
         return id;
     }
 
-    public Produtos getProduto() {
+    public ProdutosMODEL getProduto() {
         return produto;
     }
 
-    public void setProduto(Produtos produto) {
+    public void setProduto(ProdutosMODEL produto) {
         this.produto = produto;
     }
 
-    public Usuario getVendedor() {
+    public UsuarioMODEL getVendedor() {
         return vendedor;
     }
 
-    public void setVendedor(Usuario vendedor) {
+    public void setVendedor(UsuarioMODEL vendedor) {
         this.vendedor = vendedor;
     }
 

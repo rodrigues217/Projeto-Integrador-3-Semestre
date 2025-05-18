@@ -1,29 +1,29 @@
-package org.example.Service;
+package org.example.Controller;
 
-import org.example.entities.Produtos;
+import org.example.Model.ProdutosMODEL;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class CurvaABC {
-    public static List<Produtos> classificar(List<Produtos> produtos) {
+    public static List<ProdutosMODEL> classificar(List<ProdutosMODEL> produtos) {
         // 1. Calcular o valor de consumo de cada produto (preço * quantidade vendida)
-        for (Produtos p : produtos) {
+        for (ProdutosMODEL p : produtos) {
             double valorConsumo = p.getValor() * p.getQuantidade_vendida();
             p.setValorConsumo(valorConsumo);
         }
 
         // 2. Criar uma cópia mutável e ordenar
-        List<Produtos> listaMutavel = new ArrayList<>(produtos);
-        listaMutavel.sort(Comparator.comparingDouble(Produtos::getValorConsumo).reversed());
+        List<ProdutosMODEL> listaMutavel = new ArrayList<>(produtos);
+        listaMutavel.sort(Comparator.comparingDouble(ProdutosMODEL::getValorConsumo).reversed());
 
         // 3. Calcular o total do consumo
-        double total = listaMutavel.stream().mapToDouble(Produtos::getValorConsumo).sum();
+        double total = listaMutavel.stream().mapToDouble(ProdutosMODEL::getValorConsumo).sum();
 
         // 4. Se não houve consumo, todos são categoria C
         if (total == 0) {
-            for (Produtos p : listaMutavel) {
+            for (ProdutosMODEL p : listaMutavel) {
                 p.setCategoria("C");
             }
             return listaMutavel;
@@ -32,7 +32,7 @@ public class CurvaABC {
         // 5. Calcular o percentual acumulado e classificar
         double acumulado = 0.0;
 
-        for (Produtos p : listaMutavel) {
+        for (ProdutosMODEL p : listaMutavel) {
             double percentualAcumulado = (acumulado / total) * 100;
 
             if (percentualAcumulado <= 70) {

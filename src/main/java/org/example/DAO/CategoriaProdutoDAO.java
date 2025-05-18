@@ -1,66 +1,66 @@
-package org.example.repository;
+package org.example.DAO;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.example.entities.CategoriaProduto;
-import org.example.entities.Produtos;
+import org.example.Model.CategoriaProdutoMODEL;
+import org.example.Model.ProdutosMODEL;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class CategoriaProdutoRepository {
+public class CategoriaProdutoDAO {
 
     @PersistenceContext
-    private EntityManager em; // O Jakarta/EE cuida da injeção do EntityManager
+    private EntityManager em;
 
 
-   public CategoriaProdutoRepository(EntityManager em) {
+   public CategoriaProdutoDAO(EntityManager em) {
      this.em = em;
    }
 
     @Transactional
-    public void salvar(CategoriaProduto categoriaProduto) {
-        if (categoriaProduto.getId() == null) {
-            em.persist(categoriaProduto);
+    public void salvar(CategoriaProdutoMODEL categoriaProdutoMODEL) {
+        if (categoriaProdutoMODEL.getId() == null) {
+            em.persist(categoriaProdutoMODEL);
         } else {
-            em.merge(categoriaProduto);
+            em.merge(categoriaProdutoMODEL);
         }
     }
     public void listarCategoriasComProdutos(Scanner scanner) {
-        List<CategoriaProduto> categorias = em.createQuery(
-                        "SELECT DISTINCT c FROM CategoriaProduto c LEFT JOIN FETCH c.produtos", CategoriaProduto.class)
+        List<CategoriaProdutoMODEL> categorias = em.createQuery(
+                        "SELECT DISTINCT c FROM CategoriaProduto c LEFT JOIN FETCH c.produtos", CategoriaProdutoMODEL.class)
                 .getResultList();
 
-        for (CategoriaProduto categoria : categorias) {
+        for (CategoriaProdutoMODEL categoria : categorias) {
             System.out.println("Categoria: " + categoria.getNome());
             if (categoria.getProdutos().isEmpty()) {
                 System.out.println("  Nenhum produto nesta categoria.");
             } else {
-                for (Produtos produto : categoria.getProdutos()) {
+                for (ProdutosMODEL produto : categoria.getProdutos()) {
                     System.out.println("  - Produto: " + produto.getNome());
                 }
             }
         }
     }
 
-    public CategoriaProduto buscarPorId(Long id) {
-        return em.find(CategoriaProduto.class, id);
+    public CategoriaProdutoMODEL buscarPorId(Long id) {
+        return em.find(CategoriaProdutoMODEL.class, id);
     }
 
-    public List<CategoriaProduto> buscarTodos() {
-        return em.createQuery("SELECT c FROM CategoriaProduto c", CategoriaProduto.class).getResultList();
+    public List<CategoriaProdutoMODEL> buscarTodos() {
+        return em.createQuery("SELECT c FROM CategoriaProduto c", CategoriaProdutoMODEL.class).getResultList();
     }
 
     @Transactional
     public void deletarCategoriaPorNomeProduto(String nomeProduto) {
         // Encontra todas as categorias
-        List<CategoriaProduto> categorias = em.createQuery("SELECT c FROM CategoriaProduto c", CategoriaProduto.class)
+        List<CategoriaProdutoMODEL> categorias = em.createQuery("SELECT c FROM CategoriaProduto c", CategoriaProdutoMODEL.class)
                 .getResultList();
-        for (CategoriaProduto categoria : categorias) {
+        for (CategoriaProdutoMODEL categoria : categorias) {
             // Itera sobre os produtos da categoria
-            for (Produtos produto : categoria.getProdutos()) {
+            for (ProdutosMODEL produto : categoria.getProdutos()) {
                 // Se o nome do produto corresponder ao nome fornecido, o remove da categoria
                 if (produto.getNome().equalsIgnoreCase(nomeProduto)) {
                     categoria.getProdutos().remove(produto);
@@ -73,7 +73,7 @@ public class CategoriaProdutoRepository {
     }
     @Transactional
     public void deletarCategoriaPorNome(String nomeCategoria) {
-        CategoriaProduto categoria = em.createQuery("SELECT c FROM CategoriaProduto c WHERE c.nome = :nome", CategoriaProduto.class)
+        CategoriaProdutoMODEL categoria = em.createQuery("SELECT c FROM CategoriaProduto c WHERE c.nome = :nome", CategoriaProdutoMODEL.class)
                 .setParameter("nome", nomeCategoria)
                 .getResultList()
                 .stream()
@@ -82,7 +82,7 @@ public class CategoriaProdutoRepository {
 
         if (categoria != null) {
             // Excluir todos os produtos dessa categoria
-            for (Produtos produto : categoria.getProdutos()) {
+            for (ProdutosMODEL produto : categoria.getProdutos()) {
                 produto.getCategoriasProduto().remove(categoria);  // Remove a associação com a categoria
                 em.merge(produto);  // Atualiza o produto
             }
@@ -96,10 +96,10 @@ public class CategoriaProdutoRepository {
 
 
     @Transactional
-    public void associarProdutos(Long categoriaId, List<Produtos> produtos) {
-        CategoriaProduto categoria = em.find(CategoriaProduto.class, categoriaId);
+    public void associarProdutos(Long categoriaId, List<ProdutosMODEL> produtos) {
+        CategoriaProdutoMODEL categoria = em.find(CategoriaProdutoMODEL.class, categoriaId);
         if (categoria != null) {
-            for (Produtos produto : produtos) {
+            for (ProdutosMODEL produto : produtos) {
                 categoria.getProdutos().add(produto);
                 produto.getCategoriasProduto().add(categoria);
                 em.merge(produto); // Atualiza o produto também
@@ -109,10 +109,10 @@ public class CategoriaProdutoRepository {
     }
 
     @Transactional
-    public void desvincularProdutos(Long categoriaId, List<Produtos> produtos) {
-        CategoriaProduto categoria = em.find(CategoriaProduto.class, categoriaId);
+    public void desvincularProdutos(Long categoriaId, List<ProdutosMODEL> produtos) {
+        CategoriaProdutoMODEL categoria = em.find(CategoriaProdutoMODEL.class, categoriaId);
         if (categoria != null) {
-            for (Produtos produto : produtos) {
+            for (ProdutosMODEL produto : produtos) {
                 categoria.getProdutos().remove(produto);
                 produto.getCategoriasProduto().remove(categoria);
                 em.merge(produto); // Atualiza o produto também
@@ -129,9 +129,9 @@ public class CategoriaProdutoRepository {
     public void deletarCategoria(long idCategoriaExcluir) {
     }
 
-    public CategoriaProduto buscarPorNome(String nome) {
+    public CategoriaProdutoMODEL buscarPorNome(String nome) {
         try {
-            return em.createQuery("SELECT c FROM CategoriaProduto c WHERE c.nome = :nome", CategoriaProduto.class)
+            return em.createQuery("SELECT c FROM CategoriaProduto c WHERE c.nome = :nome", CategoriaProdutoMODEL.class)
                     .setParameter("nome", nome)
                     .getSingleResult();
         } catch (NoResultException e) {

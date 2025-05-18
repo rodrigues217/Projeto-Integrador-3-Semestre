@@ -1,17 +1,16 @@
-package org.example.repository;
+package org.example.DAO;
 
 import jakarta.persistence.*;
-import org.example.entities.Funcionario;
-import org.example.entities.Setor;
+import org.example.Model.FuncionarioMODEL;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class FuncionarioRepository {
+public class FuncionarioDAO {
 
     private EntityManager em;
 
-    public FuncionarioRepository(EntityManager em) {
+    public FuncionarioDAO(EntityManager em) {
         this.em = em;
     }
 
@@ -20,22 +19,22 @@ public class FuncionarioRepository {
         System.out.print("Digite o nome do funcionário: ");
         String nome = scanner.nextLine();
 
-        Funcionario funcionario = new Funcionario();
-        funcionario.setNome(nome);
+        FuncionarioMODEL funcionarioMODEL = new FuncionarioMODEL();
+        funcionarioMODEL.setNome(nome);
 
         em.getTransaction().begin();
-        em.persist(funcionario);
+        em.persist(funcionarioMODEL);
         em.getTransaction().commit();
 
         System.out.println("Funcionário cadastrado com sucesso!");
     }
 
     public void listarFuncionarios() {
-        List<Funcionario> funcionarios = em.createQuery("FROM Funcionario", Funcionario.class).getResultList();
+        List<FuncionarioMODEL> funcionarioMODELS = em.createQuery("FROM Funcionario", FuncionarioMODEL.class).getResultList();
 
         System.out.println("\n*** LISTA DE FUNCIONÁRIOS ***");
-        for (Funcionario funcionario : funcionarios) {
-            System.out.println("ID: " + funcionario.getId() + " - Nome: " + funcionario.getNome());
+        for (FuncionarioMODEL funcionarioMODEL : funcionarioMODELS) {
+            System.out.println("ID: " + funcionarioMODEL.getId() + " - Nome: " + funcionarioMODEL.getNome());
         }
     }
 }

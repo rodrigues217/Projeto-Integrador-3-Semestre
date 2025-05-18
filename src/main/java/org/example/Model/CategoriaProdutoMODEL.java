@@ -1,12 +1,12 @@
-package org.example.entities;
+package org.example.Model;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
+@Entity(name = "CategoriaProduto") // Nome usado nas queries
 @Table(name = "categoria_produto") // Nome da tabela no banco
-public class CategoriaProduto {
+public class CategoriaProdutoMODEL {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +15,7 @@ public class CategoriaProduto {
     private String nome;
 
     @ManyToMany(mappedBy = "categoriasProduto")
-    private Set<Produtos> produtos = new HashSet<>();
+    private Set<ProdutosMODEL> produtos = new HashSet<>();
 
     // Getters e Setters
     public Long getId() {
@@ -34,11 +34,11 @@ public class CategoriaProduto {
         this.nome = nome;
     }
 
-    public Set<Produtos> getProdutos() {
+    public Set<ProdutosMODEL> getProdutos() {
         return produtos;
     }
 
-    public void setProdutos(Set<Produtos> produtos) {
+    public void setProdutos(Set<ProdutosMODEL> produtos) {
         this.produtos = produtos;
     }
 }

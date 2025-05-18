@@ -1,9 +1,10 @@
-package org.example.entities;
+package org.example.Model;
 
 import jakarta.persistence.*;
 
-@Entity
-public class Funcionario {
+@Entity(name = "Funcionario")  // Define o nome da entidade para JPQL
+@Table(name = "funcionarios")  // Recomendo sempre colocar @Table para o nome da tabela
+public class FuncionarioMODEL {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +18,7 @@ public class Funcionario {
 
     @ManyToOne
     @JoinColumn(name = "setor_id")
-    private Setor setor;
+    private SetorMODEL setor; // alterado de 'setorMODEL' para 'setor'
 
     // Getters e Setters
 
@@ -53,11 +54,11 @@ public class Funcionario {
         this.documento = documento;
     }
 
-    public Setor getSetor() {
+    public SetorMODEL getSetor() {
         return setor;
     }
 
-    public void setSetor(Setor setor) {
+    public void setSetor(SetorMODEL setor) {
         this.setor = setor;
     }
 

@@ -1,12 +1,11 @@
-package org.example.entities;
+package org.example.Model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-@Entity
+@Entity(name = "Usuario") // <-- nome da entidade usado nas queries
 @Table(name = "usuarios")
-public class Usuario {
+public class UsuarioMODEL {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,10 +21,9 @@ public class Usuario {
     private String descricao;
 
     @Column(name = "ultimo_login")
-    private java.time.LocalDateTime ultimoLogin;
+    private LocalDateTime ultimoLogin;
 
-
-    // Getters e Setters corretos
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -66,4 +64,3 @@ public class Usuario {
         this.ultimoLogin = ultimoLogin;
     }
 }
-

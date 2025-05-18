@@ -1,13 +1,12 @@
-package org.example.entities;
+package org.example.Model;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "produtos")
-public class Produtos {
+@Entity(name = "Produtos") // <- Nome da entidade usado nas queries
+@Table(name = "produtos")  // <- Nome da tabela no banco de dados
+public class ProdutosMODEL {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,18 +25,18 @@ public class Produtos {
     private int quantidade_vendida;
 
     @Column(name = "valor_consumo")
-    private double valorConsumo;
+    private Double valorConsumo;
 
     @Column(name = "categoria")
     private String categoria;
 
-    @ManyToMany(cascade = CascadeType.PERSIST) // serve para inserir os dados em outra tabela, serve para armazenar dados apos ser encerrada a aplicacao
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "produto_categoriaproduto",
             joinColumns = @JoinColumn(name = "produtos_id"),
             inverseJoinColumns = @JoinColumn(name = "categoria_produto_id")
     )
-    private Set<CategoriaProduto> categoriasProduto = new HashSet<>();
+    private Set<CategoriaProdutoMODEL> categoriasProduto = new HashSet<>();
 
     // Getters e Setters
     public Long getId() {
@@ -80,11 +79,11 @@ public class Produtos {
         this.quantidade_vendida = quantidade_vendida;
     }
 
-    public double getValorConsumo() {
+    public Double getValorConsumo() {
         return valorConsumo;
     }
 
-    public void setValorConsumo(double valorConsumo) {
+    public void setValorConsumo(Double valorConsumo) {
         this.valorConsumo = valorConsumo;
     }
 
@@ -96,18 +95,19 @@ public class Produtos {
         this.categoria = categoria;
     }
 
-    public Set<CategoriaProduto> getCategoriasProduto() {
+    public Set<CategoriaProdutoMODEL> getCategoriasProduto() {
         return categoriasProduto;
     }
 
-    public void setCategoriasProduto(Set<CategoriaProduto> categoriasProduto) {
+    public void setCategoriasProduto(Set<CategoriaProdutoMODEL> categoriasProduto) {
         this.categoriasProduto = categoriasProduto;
     }
-    public void adicionarCategoria(CategoriaProduto categoriaProduto) {
-        this.categoriasProduto.add(categoriaProduto);
+
+    public void adicionarCategoria(CategoriaProdutoMODEL categoriaProdutoMODEL) {
+        this.categoriasProduto.add(categoriaProdutoMODEL);
     }
 
-    public void removerCategoria(CategoriaProduto categoriaProduto) {
-        this.categoriasProduto.remove(categoriaProduto);
+    public void removerCategoria(CategoriaProdutoMODEL categoriaProdutoMODEL) {
+        this.categoriasProduto.remove(categoriaProdutoMODEL);
     }
 }

@@ -1,23 +1,23 @@
-package org.example.repository;
+package org.example.DAO;
 
 import jakarta.persistence.*;
-import org.example.Service.CurvaABC;
-import org.example.Service.LucroService;
-import org.example.entities.AuditoriaVenda;
-import org.example.entities.Produtos;
-import org.example.entities.Usuario;
+import org.example.Controller.CurvaABC;
+import org.example.Controller.LucroService;
+import org.example.Model.AuditoriaVendaMODEL;
+import org.example.Model.ProdutosMODEL;
+import org.example.Model.UsuarioMODEL;
 
 import java.util.List;
 
-public class ProdutosRepository {
+public class ProdutosDAO {
 
     private EntityManager em;
 
-    public ProdutosRepository(EntityManager em) {
+    public ProdutosDAO(EntityManager em) {
         this.em = em;
     }
 
-    public void salvar(Produtos produto) {
+    public void salvar(ProdutosMODEL produto) {
         try {
             em.getTransaction().begin();
             em.persist(produto);
@@ -31,8 +31,8 @@ public class ProdutosRepository {
     }
 
     // Atualizado: método com lucro e auditoria
-    public void registrarVenda(long idProduto, int quantidade, Usuario vendedor) {
-        Produtos produto = em.find(Produtos.class, idProduto);
+    public void registrarVenda(long idProduto, int quantidade, UsuarioMODEL vendedor) {
+        ProdutosMODEL produto = em.find(ProdutosMODEL.class, idProduto);
         if (produto != null) {
             if (produto.getEstoque() >= quantidade) {
                 produto.setQuantidade_vendida(produto.getQuantidade_vendida() + quantidade);
@@ -48,7 +48,7 @@ public class ProdutosRepository {
                     em.merge(produto);
 
                     // 🟢 Salva a venda na auditoria
-                    AuditoriaVenda auditoria = new AuditoriaVenda();
+                    AuditoriaVendaMODEL auditoria = new AuditoriaVendaMODEL();
                     auditoria.setProduto(produto);
                     auditoria.setVendedor(vendedor);
                     auditoria.setQuantidade(quantidade);
@@ -70,37 +70,37 @@ public class ProdutosRepository {
     }
 
     private void aplicarCurvaABC() {
-        List<Produtos> produtos = em.createQuery("SELECT p FROM Produtos p", Produtos.class).getResultList();
+        List<ProdutosMODEL> produtos = em.createQuery("SELECT p FROM Produtos p", ProdutosMODEL.class).getResultList();
         CurvaABC.classificar(produtos);
     }
 
-    public List<Produtos> buscarTodos() {
-        List<Produtos> produtos = em.createQuery("SELECT p FROM Produtos p", Produtos.class).getResultList();
+    public List<ProdutosMODEL> buscarTodos() {
+        List<ProdutosMODEL> produtos = em.createQuery("SELECT p FROM Produtos p", ProdutosMODEL.class).getResultList();
         aplicarCurvaABCEmLista(produtos);
         return produtos;
     }
 
-    public Produtos buscarPorId(long id) {
-        Produtos produto = em.find(Produtos.class, id);
+    public ProdutosMODEL buscarPorId(long id) {
+        ProdutosMODEL produto = em.find(ProdutosMODEL.class, id);
         aplicarCurvaABCEmProduto(produto);
         return produto;
     }
 
-    private void aplicarCurvaABCEmLista(List<Produtos> produtos) {
+    private void aplicarCurvaABCEmLista(List<ProdutosMODEL> produtos) {
         CurvaABC.classificar(produtos);
     }
 
-    private void aplicarCurvaABCEmProduto(Produtos produto) {
+    private void aplicarCurvaABCEmProduto(ProdutosMODEL produto) {
         if (produto != null) {
             CurvaABC.classificar(List.of(produto));
         }
     }
 
-    public void atualizarProdutos(List<Produtos> produtos) {
+    public void atualizarProdutos(List<ProdutosMODEL> produtos) {
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
-            for (Produtos produto : produtos) {
+            for (ProdutosMODEL produto : produtos) {
                 em.merge(produto);
             }
             tx.commit();
@@ -113,7 +113,7 @@ public class ProdutosRepository {
     }
 
     public void adicionarEstoque(long idProduto, int quantidade) {
-        Produtos produto = em.find(Produtos.class, idProduto);
+        ProdutosMODEL produto = em.find(ProdutosMODEL.class, idProduto);
         if (produto != null) {
             em.getTransaction().begin();
             produto.setEstoque(produto.getEstoque() + quantidade);

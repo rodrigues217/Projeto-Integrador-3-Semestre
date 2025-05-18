@@ -1,4 +1,4 @@
-package org.example.Service;
+package org.example.Controller;
 
 public class LucroService {
     private static double lucroTotalDoDia = 0.0;

@@ -1,24 +1,23 @@
-package org.example.repository;
+package org.example.DAO;
 
 import jakarta.persistence.*;
-import org.example.entities.Setor;
-import org.example.entities.Funcionario;
+import org.example.Model.SetorMODEL;
 
 import java.util.List;
 import java.util.Scanner;
 
-public class SetorRepository {
+public class SetorDAO {
 
     private EntityManager em;
 
-    public SetorRepository(EntityManager em) {
+    public SetorDAO(EntityManager em) {
         this.em = em;
     }
 
-    public void salvar(Setor setor) {
+    public void salvar(SetorMODEL setorMODEL) {
         try {
             em.getTransaction().begin();
-            em.persist(setor);
+            em.persist(setorMODEL);
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
@@ -28,18 +27,18 @@ public class SetorRepository {
         }
     }
 
-    public List<Setor> buscarTodos() {
-        return em.createQuery("SELECT s FROM Setor s", Setor.class).getResultList();
+    public List<SetorMODEL> buscarTodos() {
+        return em.createQuery("SELECT s FROM Setor s", SetorMODEL.class).getResultList();
     }
 
-    public Setor buscarPorId(long id) {
-        return em.find(Setor.class, id);
+    public SetorMODEL buscarPorId(long id) {
+        return em.find(SetorMODEL.class, id);
     }
 
-    public void atualizar(Setor setor) {
+    public void atualizar(SetorMODEL setorMODEL) {
         try {
             em.getTransaction().begin();
-            em.merge(setor);
+            em.merge(setorMODEL);
             em.getTransaction().commit();
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
@@ -49,12 +48,12 @@ public class SetorRepository {
         }
     }
 
-    public void remover(Setor setor) {
+    public void remover(SetorMODEL setorMODEL) {
         try {
             em.getTransaction().begin();
-            setor = em.find(Setor.class, setor.getId());
-            if (setor != null) {
-                em.remove(setor);
+            setorMODEL = em.find(SetorMODEL.class, setorMODEL.getId());
+            if (setorMODEL != null) {
+                em.remove(setorMODEL);
             }
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -69,27 +68,27 @@ public class SetorRepository {
         System.out.print("Digite o nome do setor: ");
         String nome = scanner.nextLine();
 
-        Setor setor = new Setor();
-        setor.setNome(nome);
+        SetorMODEL setorMODEL = new SetorMODEL();
+        setorMODEL.setNome(nome);
 
         em.getTransaction().begin();
-        em.persist(setor);
+        em.persist(setorMODEL);
         em.getTransaction().commit();
 
         System.out.println("Setor cadastrado com sucesso!");
     }
 
     public void listarSetores() {
-        List<Setor> setores = em.createQuery("FROM Setor", Setor.class).getResultList();
+        List<SetorMODEL> setores = em.createQuery("FROM Setor", SetorMODEL.class).getResultList();
 
         System.out.println("\n*** LISTA DE SETORES ***");
-        for (Setor setor : setores) {
-            System.out.println("ID: " + setor.getId() + " - Nome: " + setor.getNome());
+        for (SetorMODEL setorMODEL : setores) {
+            System.out.println("ID: " + setorMODEL.getId() + " - Nome: " + setorMODEL.getNome());
         }
     }
 
 
-    public List<Setor> listarSetoresComFuncionarios() {
-        return em.createQuery("SELECT s FROM Setor s LEFT JOIN FETCH s.funcionarios", Setor.class).getResultList();
+    public List<SetorMODEL> listarSetoresComFuncionarios() {
+        return em.createQuery("SELECT s FROM Setor s LEFT JOIN FETCH s.funcionarios", SetorMODEL.class).getResultList();
     }
 }
