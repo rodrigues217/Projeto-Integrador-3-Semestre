@@ -23,6 +23,8 @@ public class UsuarioMODEL {
     @Column(name = "ultimo_login")
     private LocalDateTime ultimoLogin;
 
+
+
     // Getters e Setters
     public Long getId() {
         return id;

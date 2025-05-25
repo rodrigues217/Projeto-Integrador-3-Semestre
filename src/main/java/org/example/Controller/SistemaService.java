@@ -2,22 +2,22 @@ package org.example.Controller;
 
 import jakarta.persistence.EntityManager;
 import org.example.Model.*;
-import org.example.DAO.*;
+import org.example.Model.Repository.*;
 import java.util.*;
 
 public class SistemaService {
 
     private final EntityManager em;
-    private final ProdutosDAO produtosRepository;
-    private final SetorDAO setorDAO;
-    private final FuncionarioDAO funcionarioDAO;
+    private final ProdutosRepository produtosRepository;
+    private final SetorRepository setorRepository;
+    private final FuncionarioRepository funcionarioRepository;
     private final AuthService authService;
 
     public SistemaService(EntityManager em) {
         this.em = em;
-        this.produtosRepository = new ProdutosDAO(em);
-        this.setorDAO = new SetorDAO(em);
-        this.funcionarioDAO = new FuncionarioDAO(em);
+        this.produtosRepository = new ProdutosRepository(em);
+        this.setorRepository = new SetorRepository(em);
+        this.funcionarioRepository = new FuncionarioRepository(em);
         this.authService = new AuthService(em);
     }
 
@@ -123,7 +123,7 @@ public class SistemaService {
         produto.setEstoque(estoque);
         produto.setQuantidade_vendida(0);
 
-        produtosRepository.salvar(produto);
+        produtosRepository.CriarProduto(produto);
         System.out.println("Produto cadastrado com sucesso!");
         System.out.println("ID do produto cadastrado: " + produto.getId());
     }
@@ -136,7 +136,7 @@ public class SistemaService {
 
         produtosRepository.registrarVenda(idProduto, quantidade, vendedor);
 
-        List<ProdutosMODEL> produtos = produtosRepository.buscarTodos();
+        List<ProdutosMODEL> produtos = produtosRepository.buscarTodosProdutos();
         List<ProdutosMODEL> produtosMODELClassificados = CurvaABC.classificar(produtos);
         produtosRepository.atualizarProdutos(produtosMODELClassificados);
 
@@ -144,7 +144,7 @@ public class SistemaService {
     }
 
     private void listarProdutos() {
-        List<ProdutosMODEL> produtos = produtosRepository.buscarTodos();
+        List<ProdutosMODEL> produtos = produtosRepository.buscarTodosProdutos();
         List<ProdutosMODEL> produtosMODELClassificados = CurvaABC.classificar(produtos);
 
         System.out.println("\n*** LISTA DE PRODUTOS ***");
@@ -153,10 +153,10 @@ public class SistemaService {
                     ", Nome: " + produto.getNome() +
                     ", Estoque: " + produto.getEstoque() +
                     ", Quantidade Vendida: " + produto.getQuantidade_vendida() +
-                    ", Categoria: " + produto.getCategoria() +
+                    ", Categoria: " + produto.getCategoriaProdutos() +
                     ", Valor Consumo: " + produto.getValorConsumo());
 
-            Set<CategoriaProdutoMODEL> categorias = produto.getCategoriasProduto();
+            Set<CategoriaProdutoMODEL> categorias = produto.getCategoriaProdutos();
             System.out.print(", Categorias: ");
             if (categorias != null && !categorias.isEmpty()) {
                 categorias.forEach(c -> System.out.print(c.getNome() + " "));
@@ -172,11 +172,11 @@ public class SistemaService {
         long idProduto = scanner.nextLong();
         System.out.print("Informe a quantidade a ser adicionada ao estoque: ");
         int quantidade = scanner.nextInt();
-        produtosRepository.adicionarEstoque(idProduto, quantidade);
+        produtosRepository.adicionarEstoqueProduto(idProduto, quantidade);
     }
 
     private void criarCategoria(Scanner scanner) {
-        CategoriaProdutoDAO categoriaProdutoRepo = new CategoriaProdutoDAO(em);
+        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
         categoriaProdutoRepo.setEm(em);
 
         scanner.nextLine();
@@ -187,26 +187,26 @@ public class SistemaService {
         CategoriaProdutoMODEL categoria = new CategoriaProdutoMODEL();
         categoria.setNome(nomeCategoria);
 
-        categoriaProdutoRepo.salvar(categoria);
+        categoriaProdutoRepo.CriarCategoria(categoria);
         System.out.println("Categoria '" + nomeCategoria + "' criada com sucesso!");
     }
 
     private void associarProdutosACategoria(Scanner scanner) {
-        ProdutosDAO produtosRepo = new ProdutosDAO(em);
-        CategoriaProdutoDAO categoriaProdutoRepo = new CategoriaProdutoDAO(em);
+        ProdutosRepository produtosRepo = new ProdutosRepository(em);
+        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
         categoriaProdutoRepo.setEm(em);
 
         scanner.nextLine();
         System.out.print("Digite o nome da categoria para associar produtos: ");
         String nomeCategoria = scanner.nextLine();
 
-        CategoriaProdutoMODEL categoria = categoriaProdutoRepo.buscarPorNome(nomeCategoria);
+        CategoriaProdutoMODEL categoria = categoriaProdutoRepo.buscarCategoriaPorNome(nomeCategoria);
         if (categoria == null) {
             System.out.println("Categoria '" + nomeCategoria + "' não encontrada.");
             return;
         }
 
-        List<ProdutosMODEL> todosProdutos = produtosRepo.buscarTodos();
+        List<ProdutosMODEL> todosProdutos = produtosRepo.buscarTodosProdutos();
         if (todosProdutos.isEmpty()) {
             System.out.println("Nenhum produto cadastrado. Cadastre produtos antes.");
             return;
@@ -230,29 +230,29 @@ public class SistemaService {
         }
 
         for (Long id : idsProdutos) {
-            ProdutosMODEL produto = produtosRepo.buscarPorId(id);
+            ProdutosMODEL produto = produtosRepo.buscarProdutoPorId(id);
             if (produto != null) {
                 categoria.getProdutos().add(produto);
-                produto.getCategoriasProduto().add(categoria);
+                produto.getCategoriaProdutos().add(categoria);
             } else {
                 System.out.println("Produto com ID " + id + " não encontrado.");
             }
         }
 
-        categoriaProdutoRepo.salvar(categoria);
+        categoriaProdutoRepo.CriarCategoria(categoria);
         System.out.println("Produtos associados à categoria '" + nomeCategoria + "' com sucesso!");
     }
 
     private void desassociarProdutosDaCategoria(Scanner scanner) {
-        ProdutosDAO produtosRepo = new ProdutosDAO(em);
-        CategoriaProdutoDAO categoriaProdutoRepo = new CategoriaProdutoDAO(em);
+        ProdutosRepository produtosRepo = new ProdutosRepository(em);
+        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
         categoriaProdutoRepo.setEm(em);
 
         scanner.nextLine();
         System.out.print("Digite o nome da categoria para desassociar produtos: ");
         String nomeCategoria = scanner.nextLine();
 
-        CategoriaProdutoMODEL categoria = categoriaProdutoRepo.buscarPorNome(nomeCategoria);
+        CategoriaProdutoMODEL categoria = categoriaProdutoRepo.buscarCategoriaPorNome(nomeCategoria);
         if (categoria == null) {
             System.out.println("Categoria '" + nomeCategoria + "' não encontrada.");
             return;
@@ -285,39 +285,18 @@ public class SistemaService {
             ProdutosMODEL produto = iterator.next();
             if (idsParaRemover.contains(produto.getId())) {
                 iterator.remove();
-                produto.getCategoriasProduto().remove(categoria);
+                produto.getCategoriaProdutos().remove(categoria);
             }
         }
 
-        categoriaProdutoRepo.salvar(categoria);
+        categoriaProdutoRepo.CriarCategoria(categoria);
         System.out.println("Produtos desassociados da categoria '" + nomeCategoria + "' com sucesso!");
     }
 
     private void listarCategoriasComProdutos(Scanner scanner) {
-        CategoriaProdutoDAO categoriaProdutoRepo = new CategoriaProdutoDAO(em);
+        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
         categoriaProdutoRepo.listarCategoriasComProdutos(scanner);
     }
 
-    private void menuColaboradores(Scanner scanner) {
-        while (true) {
-            System.out.println("\n*** MENU DE COLABORADORES ***");
-            System.out.println("1 - Cadastrar Setor");
-            System.out.println("2 - Cadastrar Funcionário");
-            System.out.println("3 - Listar Setores");
-            System.out.println("4 - Listar Funcionários");
-            System.out.println("5 - Voltar");
-            System.out.print("Escolha uma opção: ");
-            int opcao = scanner.nextInt();
-            switch (opcao) {
-                case 1 -> setorDAO.cadastrarSetor(scanner);
-                case 2 -> funcionarioDAO.cadastrarFuncionario(scanner);
-                case 3 -> setorDAO.listarSetores();
-                case 4 -> funcionarioDAO.listarFuncionarios();
-                case 5 -> {
-                    return;
-                }
-                default -> System.out.println("Opção inválida! Tente novamente.");
-            }
-        }
-    }
+
 }

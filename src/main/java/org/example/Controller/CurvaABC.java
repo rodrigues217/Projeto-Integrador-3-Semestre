@@ -1,5 +1,6 @@
 package org.example.Controller;
 
+import jakarta.persistence.EntityManager;
 import org.example.Model.ProdutosMODEL;
 
 import java.util.ArrayList;
@@ -48,4 +49,21 @@ public class CurvaABC {
 
         return listaMutavel;
     }
+
+    public void aplicarCurvaABC() {
+        List<ProdutosMODEL> produtos = em.createQuery("SELECT p FROM Produtos p", ProdutosMODEL.class).getResultList();
+        CurvaABC.classificar(produtos);
+    }
+
+    public void aplicarCurvaABCEmLista(List<ProdutosMODEL> produtos) {
+        CurvaABC.classificar(produtos);
+    }
+
+    public void aplicarCurvaABCEmProduto(ProdutosMODEL produto) {
+        if (produto != null) {
+            CurvaABC.classificar(List.of(produto));
+        }
+    }
+
+
 }

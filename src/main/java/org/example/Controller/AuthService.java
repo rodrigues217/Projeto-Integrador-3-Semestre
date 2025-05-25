@@ -2,7 +2,7 @@ package org.example.Controller;
 
 import jakarta.persistence.EntityManager;
 import org.example.Model.UsuarioMODEL;
-import org.example.DAO.UsuarioDAO;
+import org.example.Model.Repository.UsuarioRepository;
 
 import java.time.LocalDateTime;
 import java.util.Scanner;
@@ -10,11 +10,11 @@ import java.util.Scanner;
 public class AuthService {
 
     private static EntityManager em = null;
-    private final UsuarioDAO usuarioDAO;
+    private final UsuarioRepository usuarioRepository;
 
     public AuthService(EntityManager em) {
         this.em = em;
-        this.usuarioDAO = new UsuarioDAO(em);
+        this.usuarioRepository = new UsuarioRepository(em);
     }
 
     public static UsuarioMODEL fazerLogin(Scanner scanner) {
@@ -27,7 +27,7 @@ public class AuthService {
             System.out.print("Senha: ");
             String senha = scanner.next();
 
-            usuarioLogado = UsuarioDAO.autenticar(login, senha);
+            usuarioLogado = UsuarioRepository.autenticarUsuario(login, senha);
 
             if (usuarioLogado == null) {
                 System.out.println("Credenciais inválidas. Tente novamente.");

@@ -3,8 +3,8 @@ package org.example.Controller;
 import jakarta.persistence.EntityManager;
 import org.example.Model.CategoriaProdutoMODEL;
 import org.example.Model.ProdutosMODEL;
-import org.example.DAO.CategoriaProdutoDAO;
-import org.example.DAO.ProdutosDAO;
+import org.example.Model.Repository.CategoriaProdutoRepository;
+import org.example.Model.Repository.ProdutosRepository;
 
 import java.util.List;
 import java.util.Scanner;
@@ -12,12 +12,12 @@ import java.util.Set;
 
 public class ProdutosService {
 
-    private final ProdutosDAO produtosRepository;
-    private final CategoriaProdutoDAO categoriaProdutoDAO;
+    private final ProdutosRepository produtosRepository;
+    private final CategoriaProdutoRepository categoriaProdutoRepository;
 
     public ProdutosService(EntityManager em) {
-        this.produtosRepository = new ProdutosDAO(em);
-        this.categoriaProdutoDAO = new CategoriaProdutoDAO(em);
+        this.produtosRepository = new ProdutosRepository(em);
+        this.categoriaProdutoRepository = new CategoriaProdutoRepository(em);
     }
 
     public void cadastrarProduto(Scanner scanner) {
@@ -35,13 +35,13 @@ public class ProdutosService {
         produto.setEstoque(estoque);
         produto.setQuantidade_vendida(0);
 
-        produtosRepository.salvar(produto);
+        produtosRepository.CriarProduto(produto);
         System.out.println("Produto cadastrado com sucesso!");
         System.out.println("ID do produto cadastrado: " + produto.getId());
     }
 
     public void listarProdutos() {
-        List<ProdutosMODEL> produtos = produtosRepository.buscarTodos();
+        List<ProdutosMODEL> produtos = produtosRepository.buscarTodosProdutos();
         List<ProdutosMODEL> produtosMODELClassificados = CurvaABC.classificar(produtos);
 
         System.out.println("\n*** LISTA DE PRODUTOS ***");
@@ -50,10 +50,10 @@ public class ProdutosService {
                     ", Nome: " + produto.getNome() +
                     ", Estoque: " + produto.getEstoque() +
                     ", Quantidade Vendida: " + produto.getQuantidade_vendida() +
-                    ", Categoria: " + produto.getCategoria() +
+                    ", Categoria: " + produto.getCategoriaProdutos() +
                     ", Valor Consumo: " + produto.getValorConsumo());
 
-            Set<CategoriaProdutoMODEL> categorias = produto.getCategoriasProduto();
+            Set<CategoriaProdutoMODEL> categorias = produto.getCategoriaProdutos();
             System.out.print(", Categorias: ");
             if (categorias != null && !categorias.isEmpty()) {
                 categorias.forEach(c -> System.out.print(c.getNome() + " "));
@@ -69,6 +69,6 @@ public class ProdutosService {
         long idProduto = scanner.nextLong();
         System.out.print("Informe a quantidade a ser adicionada ao estoque: ");
         int quantidade = scanner.nextInt();
-        produtosRepository.adicionarEstoque(idProduto, quantidade);
+        produtosRepository.adicionarEstoqueProduto(idProduto, quantidade);
     }
 }

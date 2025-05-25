@@ -1,11 +1,12 @@
 package org.example.Model;
 
 import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "Produtos") // <- Nome da entidade usado nas queries
-@Table(name = "produtos")  // <- Nome da tabela no banco de dados
+@Entity(name = "Produtos") // Nome da entidade para as queries HQL
+@Table(name = "produtos")  // Nome da tabela real no banco
 public class ProdutosMODEL {
 
     @Id
@@ -27,18 +28,12 @@ public class ProdutosMODEL {
     @Column(name = "valor_consumo")
     private Double valorConsumo;
 
-    @Column(name = "categoria")
-    private String categoria;
-
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "produto_categoriaproduto",
-            joinColumns = @JoinColumn(name = "produtos_id"),
-            inverseJoinColumns = @JoinColumn(name = "categoria_produto_id")
-    )
-    private Set<CategoriaProdutoMODEL> categoriasProduto = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false) // FK para categoria
+    private CategoriaProdutoMODEL categoria;
 
     // Getters e Setters
+
     public Long getId() {
         return id;
     }
@@ -87,27 +82,14 @@ public class ProdutosMODEL {
         this.valorConsumo = valorConsumo;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
+    private Set<CategoriaProdutoMODEL> categoriasProduto = new HashSet<>();
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public Set<CategoriaProdutoMODEL> getCategoriasProduto() {
+    public Set<CategoriaProdutoMODEL> getCategoriaProdutos() {
         return categoriasProduto;
     }
 
-    public void setCategoriasProduto(Set<CategoriaProdutoMODEL> categoriasProduto) {
+    public void setCategoriaProdutos(Set<CategoriaProdutoMODEL> categoriasProduto) {
         this.categoriasProduto = categoriasProduto;
     }
 
-    public void adicionarCategoria(CategoriaProdutoMODEL categoriaProdutoMODEL) {
-        this.categoriasProduto.add(categoriaProdutoMODEL);
-    }
-
-    public void removerCategoria(CategoriaProdutoMODEL categoriaProdutoMODEL) {
-        this.categoriasProduto.remove(categoriaProdutoMODEL);
-    }
 }

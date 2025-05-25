@@ -1,4 +1,4 @@
-package org.example.view.Main;
+package org.example.View;
 
 import org.example.Controller.AuthService;
 import org.example.Controller.SistemaService;
