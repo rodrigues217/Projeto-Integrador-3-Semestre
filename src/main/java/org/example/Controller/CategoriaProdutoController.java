@@ -16,22 +16,7 @@ public class CategoriaProdutoController {
         this.em = em;
     }
 
-    private void criarCategoria(Scanner scanner) {
-        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
-
-        scanner.nextLine();
-        System.out.println("*** CRIAÇÃO DE CATEGORIA ***");
-        System.out.print("Digite o nome da nova categoria: ");
-        String nomeCategoria = scanner.nextLine();
-
-        CategoriaProdutoMODEL categoria = new CategoriaProdutoMODEL();
-        categoria.setNome(nomeCategoria);
-
-        categoriaProdutoRepo.CriarCategoria(categoria);
-        System.out.println("Categoria '" + nomeCategoria + "' criada com sucesso!");
-    }
-
-    private void associarProdutosACategoria(Scanner scanner) {
+        private void associarProdutosACategoria(Scanner scanner) {
         ProdutosRepository produtosRepo = new ProdutosRepository(em);
         CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
 
@@ -130,9 +115,21 @@ public class CategoriaProdutoController {
         categoriaProdutoRepo.CriarCategoria(categoria);
         System.out.println("Produtos desassociados da categoria '" + nomeCategoria + "' com sucesso!");
     }
+    public void listarCategoriasComProdutos() {
+        List<CategoriaProdutoMODEL> categorias = em.createQuery(
+                        "SELECT DISTINCT c FROM CategoriaProduto c LEFT JOIN FETCH c.produtos", CategoriaProdutoMODEL.class)
+                .getResultList();
 
-    private void listarCategoriasComProdutos(Scanner scanner) {
-        CategoriaProdutoRepository categoriaProdutoRepo = new CategoriaProdutoRepository(em);
-        categoriaProdutoRepo.listarCategoriasComProdutos(scanner);
+        for (CategoriaProdutoMODEL categoria : categorias) {
+            System.out.println("Categoria: " + categoria.getNome());
+            if (categoria.getProdutos().isEmpty()) {
+                System.out.println("  Nenhum produto nesta categoria.");
+            } else {
+                for (ProdutosMODEL produto : categoria.getProdutos()) {
+                    System.out.println("  - Produto: " + produto.getNome());
+                }
+            }
+        }
     }
+
 }

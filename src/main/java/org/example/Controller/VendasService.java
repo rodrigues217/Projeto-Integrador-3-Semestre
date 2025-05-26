@@ -17,7 +17,20 @@ public class VendasService {
         this.ProdutosRepository = new ProdutosRepository(em);
     }
 
+    private void registrarVenda(Scanner scanner, UsuarioMODEL vendedor) {
+        System.out.print("Informe o ID do produto: ");
+        long idProduto = scanner.nextLong();
+        System.out.print("Informe a quantidade de venda: ");
+        int quantidade = scanner.nextInt();
 
+        produtosRepository.registrarVenda(idProduto, quantidade, vendedor);
+
+        List<ProdutosMODEL> produtos = produtosRepository.buscarTodosProdutos();
+        List<ProdutosMODEL> produtosMODELClassificados = CurvaABC.classificar(produtos);
+        produtosRepository.atualizarProdutos(produtosMODELClassificados);
+
+        System.out.println("Venda registrada com sucesso!");
+    }
     public void registrarVenda(Scanner scanner, UsuarioMODEL vendedor) {
         System.out.print("Informe o ID do produto: ");
         long idProduto = scanner.nextLong();

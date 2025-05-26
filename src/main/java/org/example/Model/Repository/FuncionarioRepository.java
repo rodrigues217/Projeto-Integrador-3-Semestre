@@ -2,6 +2,7 @@ package org.example.Model.Repository;
 
 import jakarta.persistence.*;
 import org.example.Model.FuncionarioMODEL;
+import org.example.Model.ProdutosMODEL;
 
 import java.util.List;
 import java.util.Scanner;
@@ -32,6 +33,13 @@ public class FuncionarioRepository {
 
         System.out.println("Funcionário cadastrado com sucesso!");
     }
+
+    public FuncionarioMODEL BuscarFuncionarioPorID(long id){
+
+       FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, id);
+      return funcionario;
+    }
+
 
     public void listarFuncionarios() {
         List<FuncionarioMODEL> funcionarioMODELS = em.createQuery("FROM Funcionario", FuncionarioMODEL.class).getResultList();

@@ -23,9 +23,10 @@ public class FuncionarioView {
         System.out.print("Escolha uma opção: ");
     }
 
-    public String pedirNomeFuncionario() {
+    public String pedirDadosFuncionario() {
         System.out.print("Digite o nome do funcionário: ");
         return scanner.nextLine();
+
     }
 
     public Long pedirIdFuncionario() {

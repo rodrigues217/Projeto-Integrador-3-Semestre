@@ -3,7 +3,7 @@ package org.example.Model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity(name = "AuditoriaVenda") // Nome usado nas queries
+@Entity(name = "AuditoriaVenda")
 @Table(name = "auditoria_vendas")
 public class AuditoriaVendaMODEL {
 
@@ -11,18 +11,19 @@ public class AuditoriaVendaMODEL {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "data_venda")
+    private LocalDateTime dataVenda;
+
+    @Column(nullable = false)
+    private Integer quantidade;
+
     @ManyToOne
-    @JoinColumn(name = "produto_id")
+    @JoinColumn(name = "produto_id", nullable = false)
     private ProdutosMODEL produto;
 
     @ManyToOne
-    @JoinColumn(name = "vendedor_id")
-    private UsuarioMODEL vendedor;
-
-    private Integer quantidade;
-
-    @Column(name = "data_venda")
-    private LocalDateTime dataVenda;
+    @JoinColumn(name = "funcionarios_id", nullable = false)
+    private FuncionarioMODEL funcionario;
 
     @PrePersist
     protected void onCreate() {
@@ -35,20 +36,12 @@ public class AuditoriaVendaMODEL {
         return id;
     }
 
-    public ProdutosMODEL getProduto() {
-        return produto;
+    public LocalDateTime getDataVenda() {
+        return dataVenda;
     }
 
-    public void setProduto(ProdutosMODEL produto) {
-        this.produto = produto;
-    }
-
-    public UsuarioMODEL getVendedor() {
-        return vendedor;
-    }
-
-    public void setVendedor(UsuarioMODEL vendedor) {
-        this.vendedor = vendedor;
+    public void setDataVenda(LocalDateTime dataVenda) {
+        this.dataVenda = dataVenda;
     }
 
     public Integer getQuantidade() {
@@ -59,11 +52,19 @@ public class AuditoriaVendaMODEL {
         this.quantidade = quantidade;
     }
 
-    public LocalDateTime getDataVenda() {
-        return dataVenda;
+    public ProdutosMODEL getProduto() {
+        return produto;
     }
 
-    public void setDataVenda(LocalDateTime dataVenda) {
-        this.dataVenda = dataVenda;
+    public void setProduto(ProdutosMODEL produto) {
+        this.produto = produto;
+    }
+
+    public FuncionarioMODEL getFuncionario() {
+        return funcionario;
+    }
+
+    public void setFuncionario(FuncionarioMODEL funcionario) {
+        this.funcionario = funcionario;
     }
 }

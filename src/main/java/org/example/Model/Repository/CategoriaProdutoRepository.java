@@ -47,23 +47,6 @@ public class CategoriaProdutoRepository {
     }
 
 
-    public void listarCategoriasComProdutos() {
-        List<CategoriaProdutoMODEL> categorias = em.createQuery(
-                        "SELECT DISTINCT c FROM CategoriaProduto c LEFT JOIN FETCH c.produtos", CategoriaProdutoMODEL.class)
-                .getResultList();
-
-        for (CategoriaProdutoMODEL categoria : categorias) {
-            System.out.println("Categoria: " + categoria.getNome());
-            if (categoria.getProdutos().isEmpty()) {
-                System.out.println("  Nenhum produto nesta categoria.");
-            } else {
-                for (ProdutosMODEL produto : categoria.getProdutos()) {
-                    System.out.println("  - Produto: " + produto.getNome());
-                }
-            }
-        }
-    }
-
 
     @Transactional
     public void deletarCategoria(Long id) {

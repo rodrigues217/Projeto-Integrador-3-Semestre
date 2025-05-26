@@ -2,8 +2,8 @@ package org.example.Model;
 
 import jakarta.persistence.*;
 
-@Entity(name = "Funcionario")  // Define o nome da entidade para JPQL
-@Table(name = "funcionarios")  // Recomendo sempre colocar @Table para o nome da tabela
+@Entity(name = "Funcionario")
+@Table(name = "funcionarios")
 public class FuncionarioMODEL {
 
     @Id
@@ -14,11 +14,16 @@ public class FuncionarioMODEL {
     private String endereco;
     private String documento;
 
+    @Column(name = "totalvendas")
     private double totalVendas;
 
     @ManyToOne
     @JoinColumn(name = "setor_id")
-    private SetorMODEL setor; // alterado de 'setorMODEL' para 'setor'
+    private SetorMODEL setor;
+
+    @OneToOne(optional = false)
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id", unique = true)
+    private UsuarioMODEL usuario;
 
     // Getters e Setters
 
@@ -54,6 +59,14 @@ public class FuncionarioMODEL {
         this.documento = documento;
     }
 
+    public double getTotalVendas() {
+        return totalVendas;
+    }
+
+    public void setTotalVendas(double totalVendas) {
+        this.totalVendas = totalVendas;
+    }
+
     public SetorMODEL getSetor() {
         return setor;
     }
@@ -62,11 +75,11 @@ public class FuncionarioMODEL {
         this.setor = setor;
     }
 
-    public double getTotalVendas() {
-        return totalVendas;
+    public UsuarioMODEL getUsuario() {
+        return usuario;
     }
 
-    public void setTotalVendas(double totalVendas) {
-        this.totalVendas = totalVendas;
+    public void setUsuario(UsuarioMODEL usuario) {
+        this.usuario = usuario;
     }
 }
