@@ -1,81 +1,60 @@
 package org.example.Controller;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.example.Model.UsuarioMODEL;
 import org.example.Model.Repository.UsuarioRepository;
-import org.example.View.UsuarioView;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class UsuarioController {
 
-    private final UsuarioRepository repository;
-    private final UsuarioView view;
+    private static EntityManager em = null;
+    private final UsuarioRepository usuarioRepository;
 
-    public UsuarioController(UsuarioRepository repository, UsuarioView view) {
-        this.repository = repository;
-        this.view = view;
+    public UsuarioController(EntityManager em) {
+        this.em = em;
+        this.usuarioRepository = new UsuarioRepository(em);
     }
 
-    public void criarUsuario() {
-        String login = view.pedirLogin();
-        String senha = view.pedirSenha();
+    public static UsuarioMODEL fazerLogin(Scanner scanner) {
+        UsuarioMODEL usuarioLogado = null;
 
-        UsuarioMODEL usuario = new UsuarioMODEL();
-        usuario.setLogin(login);
-        usuario.setSenha(senha);
+        while (usuarioLogado == null) {
+            System.out.println("*** LOGIN ***");
+            System.out.print("Login: ");
+            String login = scanner.next();
+            System.out.print("Senha: ");
+            String senha = scanner.next();
 
-        repository.criarUsuario(usuario);
-        view.mostrarMensagem("Usuário criado com sucesso!");
-    }
+            usuarioLogado = UsuarioController.autenticarUsuario(login, senha);
 
-    public void atualizarUsuario() {
-        Long id = view.pedirId();
-        if (id == null) return;
+            if (usuarioLogado == null) {
+                System.out.println("Credenciais inválidas. Tente novamente.");
+            } else {
+                System.out.println("Último login: " +
+                        (usuarioLogado.getUltimoLogin() != null ? usuarioLogado.getUltimoLogin() : "Nunca"));
 
-        UsuarioMODEL usuario = repository.buscarPorId(id);
-        if (usuario == null) {
-            view.mostrarMensagem("Usuário não encontrado.");
-            return;
+                usuarioLogado.setUltimoLogin(LocalDateTime.now());
+                em.getTransaction().begin();
+                em.merge(usuarioLogado);
+                em.getTransaction().commit();
+
+                System.out.println("Login bem-sucedido!\n");
+            }
         }
 
-        String novoLogin = view.pedirLogin();
-        String novaSenha = view.pedirSenha();
-
-        usuario.setLogin(novoLogin);
-        usuario.setSenha(novaSenha);
-
-        repository.atualizarUsuario(usuario);
-        view.mostrarMensagem("Usuário atualizado com sucesso!");
+        return usuarioLogado;
     }
-
-    public void deletarUsuario() {
-        Long id = view.pedirId();
-        if (id == null) return;
-
-        UsuarioMODEL usuario = repository.buscarPorId(id);
-        if (usuario == null) {
-            view.mostrarMensagem("Usuário não encontrado.");
-            return;
-        }
-
-        String confirmacao = view.pedirConfirmacao("Confirma exclusão do usuário " + usuario.getLogin() + "?");
-        repository.deletarUsuario(usuario, confirmacao);
-    }
-
-    public void listarUsuarios() {
-        List<UsuarioMODEL> usuarios = repository.listarUsuarios(); // vamos ajustar isso abaixo
-        view.mostrarUsuarios(usuarios);
-    }
-
-    public void autenticarUsuario() {
-        String login = view.pedirLogin();
-        String senha = view.pedirSenha();
-
-        UsuarioMODEL usuario = repository.autenticarUsuario(login, senha);
-        if (usuario != null) {
-            view.mostrarMensagem("Autenticação realizada com sucesso! Bem-vindo, " + usuario.getLogin());
-        } else {
-            view.mostrarMensagem("Login ou senha incorretos.");
+    public static UsuarioMODEL autenticarUsuario(String login, String senha) {
+        try {
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.login = :login AND u.senha = :senha", UsuarioMODEL.class)
+                    .setParameter("login", login)
+                    .setParameter("senha", senha)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         }
     }
 }

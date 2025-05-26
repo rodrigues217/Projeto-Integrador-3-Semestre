@@ -74,19 +74,7 @@ public class UsuarioRepository {
     }
 
 
-
-      public static UsuarioMODEL autenticarUsuario(String login, String senha) {
-        try {
-            return em.createQuery("SELECT u FROM Usuario u WHERE u.login = :login AND u.senha = :senha", UsuarioMODEL.class)
-                    .setParameter("login", login)
-                    .setParameter("senha", senha)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    public UsuarioMODEL buscarPorId(Long id) {
+     public UsuarioMODEL buscarPorId(Long id) {
         return em.find(UsuarioMODEL.class, id);
     }
 }

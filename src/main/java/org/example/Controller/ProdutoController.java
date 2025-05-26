@@ -59,7 +59,26 @@ public class ProdutoController {
 
     public void listarProdutos() {
         List<ProdutosMODEL> produtos = produtoRepo.buscarTodosProdutos();
-        produtoView.mostrarListaProdutos(produtos);
+        List<ProdutosMODEL> produtosMODELClassificados = CurvaABC.classificar(produtos);
+
+        System.out.println("\n*** LISTA DE PRODUTOS ***");
+        for (ProdutosMODEL produto : produtosMODELClassificados) {
+            System.out.print("ID: " + produto.getId() +
+                    ", Nome: " + produto.getNome() +
+                    ", Estoque: " + produto.getEstoque() +
+                    ", Quantidade Vendida: " + produto.getQuantidade_vendida() +
+                    ", Categoria: " + produto.getCategoriaProdutos() +
+                    ", Valor Consumo: " + produto.getValorConsumo());
+
+            Set<CategoriaProdutoMODEL> categorias = produto.getCategoriaProdutos();
+            System.out.print(", Categorias: ");
+            if (categorias != null && !categorias.isEmpty()) {
+                categorias.forEach(c -> System.out.print(c.getNome() + " "));
+            } else {
+                System.out.print("Nenhuma");
+            }
+            System.out.println();
+        }
     }
 
     public void atualizarEstoque() {
