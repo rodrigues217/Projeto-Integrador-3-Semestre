@@ -28,7 +28,7 @@
         <mapping class="org.example.Model.SetorMODEL"/>
         <mapping class="org.example.Model.FuncionarioMODEL"/>
         <mapping class="org.example.Model.CategoriaProdutoMODEL"/>
-
+        <mapping class="org.example.Model.CompradorMODEL"/>
 
 
     </session-factory>

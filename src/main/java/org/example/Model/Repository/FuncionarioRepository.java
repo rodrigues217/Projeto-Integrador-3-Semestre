@@ -1,14 +1,15 @@
 package org.example.Model.Repository;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
 import org.example.Model.FuncionarioMODEL;
+import org.example.Util.HibernateUtil;
+
 import java.util.List;
 
 public class FuncionarioRepository {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
     public void salvar(FuncionarioMODEL funcionario) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.persist(funcionario);
         em.getTransaction().commit();
@@ -16,21 +17,21 @@ public class FuncionarioRepository {
     }
 
     public FuncionarioMODEL buscarPorId(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, id);
         em.close();
         return funcionario;
     }
 
     public List<FuncionarioMODEL> listarTodos() {
-        EntityManager em = emf.createEntityManager();
-        List<FuncionarioMODEL> funcionarios = em.createQuery("FROM Funcionario", FuncionarioMODEL.class).getResultList();
+        EntityManager em = HibernateUtil.getEntityManager();
+        List<FuncionarioMODEL> funcionarios = em.createQuery("FROM FuncionarioMODEL", FuncionarioMODEL.class).getResultList();
         em.close();
         return funcionarios;
     }
 
     public void atualizar(FuncionarioMODEL funcionario) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.merge(funcionario);
         em.getTransaction().commit();
@@ -38,7 +39,7 @@ public class FuncionarioRepository {
     }
 
     public void deletar(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, id);
         if (funcionario != null) {

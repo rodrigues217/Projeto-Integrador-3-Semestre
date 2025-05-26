@@ -1,10 +1,9 @@
-package org.example.Controller;
+/*package org.example.Controller;
 
 import org.example.Model.FuncionarioMODEL;
 import org.example.Model.UsuarioMODEL;
 import org.example.Model.Repository.FuncionarioRepository;
 import org.example.Model.Repository.UsuarioRepository;
-import org.example.View.FuncionarioView;
 
 public class FuncionarioController {
 
@@ -56,4 +55,4 @@ public class FuncionarioController {
             funcionarioView.mostrarMensagem("Operação cancelada.");
         }
     }
-}
+}*/

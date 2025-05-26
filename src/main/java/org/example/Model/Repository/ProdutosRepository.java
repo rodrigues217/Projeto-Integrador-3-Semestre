@@ -1,14 +1,15 @@
 package org.example.Model.Repository;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
 import org.example.Model.ProdutosMODEL;
+import org.example.Util.HibernateUtil;
+
 import java.util.List;
 
 public class ProdutosRepository {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
     public void salvar(ProdutosMODEL produto) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.persist(produto);
         em.getTransaction().commit();
@@ -16,21 +17,21 @@ public class ProdutosRepository {
     }
 
     public ProdutosMODEL buscarPorId(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         ProdutosMODEL produto = em.find(ProdutosMODEL.class, id);
         em.close();
         return produto;
     }
 
     public List<ProdutosMODEL> listarTodos() {
-        EntityManager em = emf.createEntityManager();
-        List<ProdutosMODEL> produtos = em.createQuery("FROM Produto", ProdutosMODEL.class).getResultList();
+        EntityManager em = HibernateUtil.getEntityManager();
+        List<ProdutosMODEL> produtos = em.createQuery("FROM ProdutosMODEL", ProdutosMODEL.class).getResultList();
         em.close();
         return produtos;
     }
 
     public void atualizar(ProdutosMODEL produto) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.merge(produto);
         em.getTransaction().commit();
@@ -38,7 +39,7 @@ public class ProdutosRepository {
     }
 
     public void deletar(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         ProdutosMODEL produto = em.find(ProdutosMODEL.class, id);
         if (produto != null) {

@@ -26,7 +26,7 @@ public class AuditoriaVendaMODEL {
     private FuncionarioMODEL funcionario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comprador_id", nullable = false)
+    @JoinColumn(name = "comprador_id")
     private CompradorMODEL comprador;
 
     // Construtores

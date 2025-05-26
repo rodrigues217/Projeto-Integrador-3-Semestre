@@ -1,10 +1,9 @@
-package org.example.Controller;
+/*package org.example.Controller;
 
 import org.example.Model.CategoriaProdutoMODEL;
 import org.example.Model.ProdutosMODEL;
 import org.example.Model.Repository.ProdutosRepository;
 import org.example.Model.Repository.CategoriaProdutoRepository;
-import org.example.View.ProdutoView;
 
 import java.util.HashSet;
 import java.util.List;
@@ -109,3 +108,4 @@ public class ProdutoController {
         }
     }
 }
+*/

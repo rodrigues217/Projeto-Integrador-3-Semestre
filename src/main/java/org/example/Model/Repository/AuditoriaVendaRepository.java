@@ -1,14 +1,15 @@
 package org.example.Model.Repository;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
 import org.example.Model.AuditoriaVendaMODEL;
+import org.example.Util.HibernateUtil;
+
 import java.util.List;
 
 public class AuditoriaVendaRepository {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
     public void salvar(AuditoriaVendaMODEL auditoria) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.persist(auditoria);
         em.getTransaction().commit();
@@ -16,21 +17,21 @@ public class AuditoriaVendaRepository {
     }
 
     public AuditoriaVendaMODEL buscarPorId(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         AuditoriaVendaMODEL auditoria = em.find(AuditoriaVendaMODEL.class, id);
         em.close();
         return auditoria;
     }
 
     public List<AuditoriaVendaMODEL> listarTodos() {
-        EntityManager em = emf.createEntityManager();
-        List<AuditoriaVendaMODEL> auditorias = em.createQuery("FROM AuditoriaVenda", AuditoriaVendaMODEL.class).getResultList();
+        EntityManager em = HibernateUtil.getEntityManager();
+        List<AuditoriaVendaMODEL> auditorias = em.createQuery("FROM AuditoriaVendaMODEL", AuditoriaVendaMODEL.class).getResultList();
         em.close();
         return auditorias;
     }
 
     public void atualizar(AuditoriaVendaMODEL auditoria) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.merge(auditoria);
         em.getTransaction().commit();
@@ -38,7 +39,7 @@ public class AuditoriaVendaRepository {
     }
 
     public void deletar(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         AuditoriaVendaMODEL auditoria = em.find(AuditoriaVendaMODEL.class, id);
         if (auditoria != null) {

@@ -1,10 +1,9 @@
-package org.example.Controller;
+/*package org.example.Controller;
 
 import org.example.Model.FuncionarioMODEL;
 import org.example.Model.Repository.FuncionarioRepository;
 import org.example.Model.Repository.SetorRepository;
 import org.example.Model.SetorMODEL;
-import org.example.View.SetorView;
 
 import java.util.Scanner;
 
@@ -92,3 +91,4 @@ public class SetorController {
         }
     }
 }
+*/

@@ -1,4 +1,4 @@
-package org.example.Controller;
+/*package org.example.Controller;
 
 import jakarta.persistence.EntityManager;
 import org.example.Model.CategoriaProdutoMODEL;
@@ -133,3 +133,4 @@ public class CategoriaProdutoController {
     }
 
 }
+*/

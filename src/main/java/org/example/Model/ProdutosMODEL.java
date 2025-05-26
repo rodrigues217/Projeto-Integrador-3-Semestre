@@ -13,7 +13,7 @@ public class ProdutosMODEL {
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
 
-    @Column(name = "valor", nullable = false, precision = 10, scale = 2)
+    @Column(name = "valor", nullable = false)
     private Double valor;
 
     @Column(name = "estoque", nullable = false)

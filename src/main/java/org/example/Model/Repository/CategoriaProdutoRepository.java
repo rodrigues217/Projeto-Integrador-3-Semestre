@@ -1,14 +1,15 @@
 package org.example.Model.Repository;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
 import org.example.Model.CategoriaProdutoMODEL;
+import org.example.Util.HibernateUtil;
+
 import java.util.List;
 
 public class CategoriaProdutoRepository {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
     public void salvar(CategoriaProdutoMODEL categoria) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.persist(categoria);
         em.getTransaction().commit();
@@ -16,21 +17,21 @@ public class CategoriaProdutoRepository {
     }
 
     public CategoriaProdutoMODEL buscarPorId(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         CategoriaProdutoMODEL categoria = em.find(CategoriaProdutoMODEL.class, id);
         em.close();
         return categoria;
     }
 
     public List<CategoriaProdutoMODEL> listarTodos() {
-        EntityManager em = emf.createEntityManager();
-        List<CategoriaProdutoMODEL> categorias = em.createQuery("FROM CategoriaProduto", CategoriaProdutoMODEL.class).getResultList();
+        EntityManager em = HibernateUtil.getEntityManager();
+        List<CategoriaProdutoMODEL> categorias = em.createQuery("FROM CategoriaProdutoMODEL", CategoriaProdutoMODEL.class).getResultList();
         em.close();
         return categorias;
     }
 
     public void atualizar(CategoriaProdutoMODEL categoria) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.merge(categoria);
         em.getTransaction().commit();
@@ -38,7 +39,7 @@ public class CategoriaProdutoRepository {
     }
 
     public void deletar(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         CategoriaProdutoMODEL categoria = em.find(CategoriaProdutoMODEL.class, id);
         if (categoria != null) {

@@ -1,14 +1,15 @@
 package org.example.Model.Repository;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
 import org.example.Model.CompradorMODEL;
+import org.example.Util.HibernateUtil;
+
 import java.util.List;
 
 public class CompradorRepository {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
     public void salvar(CompradorMODEL comprador) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.persist(comprador);
         em.getTransaction().commit();
@@ -16,21 +17,21 @@ public class CompradorRepository {
     }
 
     public CompradorMODEL buscarPorId(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
         em.close();
         return comprador;
     }
 
     public List<CompradorMODEL> listarTodos() {
-        EntityManager em = emf.createEntityManager();
-        List<CompradorMODEL> compradores = em.createQuery("FROM Comprador", CompradorMODEL.class).getResultList();
+        EntityManager em = HibernateUtil.getEntityManager();
+        List<CompradorMODEL> compradores = em.createQuery("FROM CompradorMODEL", CompradorMODEL.class).getResultList();
         em.close();
         return compradores;
     }
 
     public void atualizar(CompradorMODEL comprador) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         em.merge(comprador);
         em.getTransaction().commit();
@@ -38,7 +39,7 @@ public class CompradorRepository {
     }
 
     public void deletar(Long id) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = HibernateUtil.getEntityManager();
         em.getTransaction().begin();
         CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
         if (comprador != null) {
