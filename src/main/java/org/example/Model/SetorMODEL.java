@@ -1,10 +1,8 @@
 package org.example.Model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity(name = "Setor")  // Nome da entidade para JPQL
+@Entity(name = "Setor")
 @Table(name = "setores")
 public class SetorMODEL {
 
@@ -12,10 +10,15 @@ public class SetorMODEL {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nome", length = 100, nullable = false)
     private String nome;
 
-    @OneToMany(mappedBy = "setor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<FuncionarioMODEL> funcionarioMODELS = new ArrayList<>();
+    public SetorMODEL() {
+    }
+
+    public SetorMODEL(String nome) {
+        this.nome = nome;
+    }
 
     // Getters e Setters
 
@@ -35,11 +38,4 @@ public class SetorMODEL {
         this.nome = nome;
     }
 
-    public List<FuncionarioMODEL> getFuncionarioMODELS() {
-        return funcionarioMODELS;
-    }
-
-    public void setFuncionarioMODELS(List<FuncionarioMODEL> funcionarioMODELS) {
-        this.funcionarioMODELS = funcionarioMODELS;
-    }
 }

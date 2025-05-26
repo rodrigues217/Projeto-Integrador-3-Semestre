@@ -11,29 +11,43 @@ public class AuditoriaVendaMODEL {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "data_venda")
-    private LocalDateTime dataVenda;
+    @Column(name = "data_venda", nullable = false)
+    private LocalDateTime dataVenda = LocalDateTime.now();
 
-    @Column(nullable = false)
+    @Column(name = "quantidade", nullable = false)
     private Integer quantidade;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produto_id", nullable = false)
     private ProdutosMODEL produto;
 
-    @ManyToOne
-    @JoinColumn(name = "funcionarios_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "funcionario_id", nullable = false)
     private FuncionarioMODEL funcionario;
 
-    @PrePersist
-    protected void onCreate() {
-        this.dataVenda = LocalDateTime.now();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comprador_id", nullable = false)
+    private CompradorMODEL comprador;
+
+    // Construtores
+    public AuditoriaVendaMODEL() {
+    }
+
+    public AuditoriaVendaMODEL(Integer quantidade, ProdutosMODEL produto, FuncionarioMODEL funcionario, CompradorMODEL comprador) {
+        this.quantidade = quantidade;
+        this.produto = produto;
+        this.funcionario = funcionario;
+        this.comprador = comprador;
+        this.dataVenda = LocalDateTime.now(); // valor padrão se não for passado
     }
 
     // Getters e Setters
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getDataVenda() {
@@ -66,5 +80,13 @@ public class AuditoriaVendaMODEL {
 
     public void setFuncionario(FuncionarioMODEL funcionario) {
         this.funcionario = funcionario;
+    }
+
+    public CompradorMODEL getComprador() {
+        return comprador;
+    }
+
+    public void setComprador(CompradorMODEL comprador) {
+        this.comprador = comprador;
     }
 }

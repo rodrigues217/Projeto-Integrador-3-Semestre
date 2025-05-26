@@ -2,35 +2,39 @@ package org.example.Model;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
-@Entity(name = "Produtos") // Nome da entidade para as queries HQL
-@Table(name = "produtos")  // Nome da tabela real no banco
+@Entity(name = "Produto")
+@Table(name = "produtos")
 public class ProdutosMODEL {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nome")
+    @Column(name = "nome", length = 100, nullable = false)
     private String nome;
 
-    @Column(name = "valor")
-    private double valor;
+    @Column(name = "valor", nullable = false, precision = 10, scale = 2)
+    private Double valor;
 
-    @Column(name = "estoque")
-    private int estoque;
+    @Column(name = "estoque", nullable = false)
+    private Integer estoque;
 
-    @Column(name = "quantidade_vendida")
-    private int quantidade_vendida;
-
-    @Column(name = "valor_consumo")
-    private Double valorConsumo;
+    @Column(name = "curva_abc", length = 1)
+    private String curvaAbc;
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id", nullable = false) // FK para categoria
+    @JoinColumn(name = "categoria_id", nullable = false)
     private CategoriaProdutoMODEL categoria;
+
+    public ProdutosMODEL() {
+    }
+
+    public ProdutosMODEL(String nome, Double valor, Integer estoque, CategoriaProdutoMODEL categoria) {
+        this.nome = nome;
+        this.valor = valor;
+        this.estoque = estoque;
+        this.categoria = categoria;
+    }
 
     // Getters e Setters
 
@@ -50,46 +54,37 @@ public class ProdutosMODEL {
         this.nome = nome;
     }
 
-    public double getValor() {
+    public Double getValor() {
         return valor;
     }
 
-    public void setValor(double valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 
-    public int getEstoque() {
+    public Integer getEstoque() {
         return estoque;
     }
 
-    public void setEstoque(int estoque) {
+    public void setEstoque(Integer estoque) {
         this.estoque = estoque;
     }
 
-    public int getQuantidade_vendida() {
-        return quantidade_vendida;
+    public String getCurvaAbc() {
+        return curvaAbc;
     }
 
-    public void setQuantidade_vendida(int quantidade_vendida) {
-        this.quantidade_vendida = quantidade_vendida;
+    public void setCurvaAbc(String curvaAbc) {
+        this.curvaAbc = curvaAbc;
     }
 
-    public Double getValorConsumo() {
-        return valorConsumo;
+    public CategoriaProdutoMODEL getCategoria() {
+        return categoria;
     }
 
-    public void setValorConsumo(Double valorConsumo) {
-        this.valorConsumo = valorConsumo;
+    public void setCategoria(CategoriaProdutoMODEL categoria) {
+        this.categoria = categoria;
     }
 
-    private Set<CategoriaProdutoMODEL> categoriasProduto = new HashSet<>();
-
-    public Set<CategoriaProdutoMODEL> getCategoriaProdutos() {
-        return categoriasProduto;
-    }
-
-    public void setCategoriaProdutos(Set<CategoriaProdutoMODEL> categoriasProduto) {
-        this.categoriasProduto = categoriasProduto;
-    }
 
 }

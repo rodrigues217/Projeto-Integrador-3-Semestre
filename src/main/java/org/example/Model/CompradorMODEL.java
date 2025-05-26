@@ -2,7 +2,7 @@ package org.example.Model;
 
 import jakarta.persistence.*;
 
-@Entity(name = "Comprador") // nome usado nas queries HQL/JPQL
+@Entity(name = "Comprador")
 @Table(name = "compradores")
 public class CompradorMODEL {
 
@@ -13,10 +13,19 @@ public class CompradorMODEL {
     @Column(name = "nome", nullable = false, length = 100)
     private String nome;
 
-    @Column(name = "telefone", length = 20)
+    @Column(name = "telefone", nullable = false, length = 20)
     private String telefone;
 
+    public CompradorMODEL() {
+    }
+
+    public CompradorMODEL(String nome, String telefone) {
+        this.nome = nome;
+        this.telefone = telefone;
+    }
+
     // Getters e Setters
+
     public Long getId() {
         return id;
     }
@@ -40,4 +49,6 @@ public class CompradorMODEL {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+
 }

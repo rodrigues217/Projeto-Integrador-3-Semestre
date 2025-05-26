@@ -1,38 +1,38 @@
 package org.example.Model.Repository;
 
 import jakarta.persistence.*;
-import org.example.Model.AuditoriaVendaMODEL;
+import org.example.Model.CompradorMODEL;
 import java.util.List;
 
-public class AuditoriaVendaRepository {
+public class CompradorRepository {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
 
-    public void salvar(AuditoriaVendaMODEL auditoria) {
+    public void salvar(CompradorMODEL comprador) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        em.persist(auditoria);
+        em.persist(comprador);
         em.getTransaction().commit();
         em.close();
     }
 
-    public AuditoriaVendaMODEL buscarPorId(Long id) {
+    public CompradorMODEL buscarPorId(Long id) {
         EntityManager em = emf.createEntityManager();
-        AuditoriaVendaMODEL auditoria = em.find(AuditoriaVendaMODEL.class, id);
+        CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
         em.close();
-        return auditoria;
+        return comprador;
     }
 
-    public List<AuditoriaVendaMODEL> listarTodos() {
+    public List<CompradorMODEL> listarTodos() {
         EntityManager em = emf.createEntityManager();
-        List<AuditoriaVendaMODEL> auditorias = em.createQuery("FROM AuditoriaVenda", AuditoriaVendaMODEL.class).getResultList();
+        List<CompradorMODEL> compradores = em.createQuery("FROM Comprador", CompradorMODEL.class).getResultList();
         em.close();
-        return auditorias;
+        return compradores;
     }
 
-    public void atualizar(AuditoriaVendaMODEL auditoria) {
+    public void atualizar(CompradorMODEL comprador) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        em.merge(auditoria);
+        em.merge(comprador);
         em.getTransaction().commit();
         em.close();
     }
@@ -40,9 +40,9 @@ public class AuditoriaVendaRepository {
     public void deletar(Long id) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        AuditoriaVendaMODEL auditoria = em.find(AuditoriaVendaMODEL.class, id);
-        if (auditoria != null) {
-            em.remove(auditoria);
+        CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
+        if (comprador != null) {
+            em.remove(comprador);
         }
         em.getTransaction().commit();
         em.close();

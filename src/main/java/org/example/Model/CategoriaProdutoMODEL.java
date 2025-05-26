@@ -4,20 +4,29 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity(name = "CategoriaProduto") // Nome usado nas queries
-@Table(name = "categoria_produto") // Nome da tabela no banco
+@Entity(name = "CategoriaProduto")
+@Table(name = "categoria_produto")
 public class CategoriaProdutoMODEL {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nome", nullable = false, length = 100)
     private String nome;
 
-    @ManyToMany(mappedBy = "categoriasProduto")
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<ProdutosMODEL> produtos = new HashSet<>();
 
+    public CategoriaProdutoMODEL() {
+    }
+
+    public CategoriaProdutoMODEL(String nome) {
+        this.nome = nome;
+    }
+
     // Getters e Setters
+
     public Long getId() {
         return id;
     }
@@ -41,4 +50,6 @@ public class CategoriaProdutoMODEL {
     public void setProdutos(Set<ProdutosMODEL> produtos) {
         this.produtos = produtos;
     }
+
+
 }

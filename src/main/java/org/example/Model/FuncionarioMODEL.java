@@ -10,9 +10,17 @@ public class FuncionarioMODEL {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nome", nullable = false, length = 255)
     private String nome;
-    private String endereco;
+
+    @Column(name = "documento", length = 255)
     private String documento;
+
+    @Column(name = "endereco", length = 255)
+    private String endereco;
+
+    @Column(name = "telefone", nullable = false, length = 255)
+    private String telefone;
 
     @Column(name = "totalvendas")
     private double totalVendas;
@@ -21,9 +29,22 @@ public class FuncionarioMODEL {
     @JoinColumn(name = "setor_id")
     private SetorMODEL setor;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "usuario_id", referencedColumnName = "id", unique = true)
+    @OneToOne
+    @JoinColumn(name = "usuario_id", nullable = false, unique = true)
     private UsuarioMODEL usuario;
+
+    public FuncionarioMODEL() {
+    }
+
+    public FuncionarioMODEL(String nome, String documento, String endereco, String telefone, SetorMODEL setor, UsuarioMODEL usuario) {
+        this.nome = nome;
+        this.documento = documento;
+        this.endereco = endereco;
+        this.telefone = telefone;
+        this.setor = setor;
+        this.usuario = usuario;
+        this.totalVendas = 0.0;
+    }
 
     // Getters e Setters
 
@@ -43,6 +64,14 @@ public class FuncionarioMODEL {
         this.nome = nome;
     }
 
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
     public String getEndereco() {
         return endereco;
     }
@@ -51,12 +80,12 @@ public class FuncionarioMODEL {
         this.endereco = endereco;
     }
 
-    public String getDocumento() {
-        return documento;
+    public String getTelefone() {
+        return telefone;
     }
 
-    public void setDocumento(String documento) {
-        this.documento = documento;
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
     public double getTotalVendas() {
@@ -82,4 +111,5 @@ public class FuncionarioMODEL {
     public void setUsuario(UsuarioMODEL usuario) {
         this.usuario = usuario;
     }
+
 }
