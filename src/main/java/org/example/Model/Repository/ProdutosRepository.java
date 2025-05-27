@@ -2,7 +2,7 @@ package org.example.Model.Repository;
 
 import jakarta.persistence.EntityManager;
 import org.example.Model.Entity.ProdutosMODEL;
-import org.example.Util.HibernateUtil;
+import org.example.Model.Util.HibernateUtil;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class ProdutosRepository {
 
     public List<ProdutosMODEL> listarTodos() {
         EntityManager em = HibernateUtil.getEntityManager();
-        List<ProdutosMODEL> produtos = em.createQuery("FROM ProdutosMODEL", ProdutosMODEL.class).getResultList();
+        List<ProdutosMODEL> produtos = em.createQuery("FROM Produtos", ProdutosMODEL.class).getResultList();
         em.close();
         return produtos;
     }

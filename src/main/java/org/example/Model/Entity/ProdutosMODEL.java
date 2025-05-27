@@ -2,7 +2,7 @@ package org.example.Model.Entity;
 
 import jakarta.persistence.*;
 
-@Entity(name = "Produto")
+@Entity(name = "Produtos")
 @Table(name = "produtos")
 public class ProdutosMODEL {
 

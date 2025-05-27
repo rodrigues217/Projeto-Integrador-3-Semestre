@@ -5,32 +5,34 @@ import org.example.Model.Entity.AuditoriaVendaMODEL;
 import org.example.Model.Entity.CompradorMODEL;
 import org.example.Model.Entity.FuncionarioMODEL;
 import org.example.Model.Entity.ProdutosMODEL;
-import org.example.Util.HibernateUtil;
+import org.example.Model.Util.HibernateUtil;
 
 public class VendaService {
 
-    // Não armazenamos EntityManagerFactory, usamos direto EntityManager pelo HibernateUtil
-    public boolean realizarVenda(Long produtoId, Long funcionarioId, int quantidade, Long compradorId) {
-        EntityManager em = HibernateUtil.getEntityManager();  // Usa HibernateUtil para criar EntityManager
+    public String realizarVenda(Long produtoId, Long funcionarioId, int quantidade, Long compradorId) {
+        EntityManager em = HibernateUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
             ProdutosMODEL produto = em.find(ProdutosMODEL.class, produtoId);
-            FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, funcionarioId);
-            CompradorMODEL comprador = compradorId != null ? em.find(CompradorMODEL.class, compradorId) : null;
-
-            if (produto == null || funcionario == null) {
-                System.out.println("Produto ou Funcionário não encontrado.");
+            if (produto == null) {
                 em.getTransaction().rollback();
-                return false;
+                return "Produto não encontrado.";
+            }
+
+            FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, funcionarioId);
+            if (funcionario == null) {
+                em.getTransaction().rollback();
+                return "Funcionário não encontrado.";
             }
 
             if (produto.getEstoque() < quantidade) {
-                System.out.println("Estoque insuficiente.");
                 em.getTransaction().rollback();
-                return false;
+                return "Estoque insuficiente.";
             }
+
+            CompradorMODEL comprador = compradorId != null ? em.find(CompradorMODEL.class, compradorId) : null;
 
             produto.setEstoque(produto.getEstoque() - quantidade);
             em.merge(produto);
@@ -49,15 +51,11 @@ public class VendaService {
             em.persist(auditoria);
 
             em.getTransaction().commit();
-            return true;
+            return "SUCESSO";
 
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            e.printStackTrace();
-            return false;
-
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            return "Erro inesperado: " + e.getMessage();
         } finally {
             em.close();
         }

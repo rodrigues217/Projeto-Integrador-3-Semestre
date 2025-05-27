@@ -3,7 +3,7 @@ package org.example.Model.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.example.Model.Entity.UsuarioMODEL;
-import org.example.Util.HibernateUtil;
+import org.example.Model.Util.HibernateUtil;
 
 import java.time.LocalDateTime;
 import java.util.Scanner;
