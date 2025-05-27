@@ -24,4 +24,9 @@ public class CategoriaProdutoController {
         categoriaService.removerCategoria(scanner);
     }
 
+    public void listarCategorias() {
+        categoriaService.listarCategorias();
+    }
+
+
 }

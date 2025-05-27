@@ -135,4 +135,18 @@ public class CategoriaProdutoService {
         System.out.println("Categoria removida com sucesso.");
     }
 
+    public void listarCategorias() {
+        List<CategoriaProdutoMODEL> categorias = categoriaRepository.listarTodos();
+
+        if (categorias.isEmpty()) {
+            System.out.println("Nenhuma categoria cadastrada.");
+            return;
+        }
+
+        System.out.println("\n=== Categorias Cadastradas ===");
+        for (CategoriaProdutoMODEL c : categorias) {
+            System.out.printf("ID: %d | Nome: %s%n", c.getId(), c.getNome());
+        }
+    }
+
    }
