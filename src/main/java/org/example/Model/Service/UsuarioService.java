@@ -1,14 +1,14 @@
-package org.example.Controller;
+package org.example.Model.Service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import org.example.Model.UsuarioMODEL;
+import org.example.Model.Entity.UsuarioMODEL;
 import org.example.Util.HibernateUtil;
 
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
-public class UsuarioController {
+public class UsuarioService {
 
     public UsuarioMODEL fazerLogin(Scanner scanner) {
         EntityManager em = HibernateUtil.getEntityManager();

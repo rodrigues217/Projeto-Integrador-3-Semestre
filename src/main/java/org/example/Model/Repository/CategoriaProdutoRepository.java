@@ -1,7 +1,7 @@
 package org.example.Model.Repository;
 
 import jakarta.persistence.EntityManager;
-import org.example.Model.CategoriaProdutoMODEL;
+import org.example.Model.Entity.CategoriaProdutoMODEL;
 import org.example.Util.HibernateUtil;
 
 import java.util.List;

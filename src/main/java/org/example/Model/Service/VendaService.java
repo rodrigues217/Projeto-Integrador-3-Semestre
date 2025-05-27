@@ -1,10 +1,13 @@
-package org.example.Controller;
+package org.example.Model.Service;
 
 import jakarta.persistence.EntityManager;
-import org.example.Model.*;
+import org.example.Model.Entity.AuditoriaVendaMODEL;
+import org.example.Model.Entity.CompradorMODEL;
+import org.example.Model.Entity.FuncionarioMODEL;
+import org.example.Model.Entity.ProdutosMODEL;
 import org.example.Util.HibernateUtil;
 
-public class VendaController {
+public class VendaService {
 
     // Não armazenamos EntityManagerFactory, usamos direto EntityManager pelo HibernateUtil
     public boolean realizarVenda(Long produtoId, Long funcionarioId, int quantidade, Long compradorId) {

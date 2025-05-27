@@ -1,7 +1,7 @@
 /*package org.example.Controller;
 
 import jakarta.persistence.EntityManager;
-import org.example.Model.ProdutosMODEL;
+import org.example.Model.Entity.ProdutosMODEL;
 
 import java.util.ArrayList;
 import java.util.Comparator;

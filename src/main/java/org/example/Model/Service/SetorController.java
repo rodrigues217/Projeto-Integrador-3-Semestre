@@ -1,9 +1,9 @@
 /*package org.example.Controller;
 
-import org.example.Model.FuncionarioMODEL;
+import org.example.Model.Entity.FuncionarioMODEL;
 import org.example.Model.Repository.FuncionarioRepository;
 import org.example.Model.Repository.SetorRepository;
-import org.example.Model.SetorMODEL;
+import org.example.Model.Entity.SetorMODEL;
 
 import java.util.Scanner;
 

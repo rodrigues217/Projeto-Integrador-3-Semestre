@@ -22,13 +22,13 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- Suas classes anotadas -->
-        <mapping class="org.example.Model.ProdutosMODEL"/>
-        <mapping class="org.example.Model.UsuarioMODEL"/>
-        <mapping class="org.example.Model.AuditoriaVendaMODEL"/>
-        <mapping class="org.example.Model.SetorMODEL"/>
-        <mapping class="org.example.Model.FuncionarioMODEL"/>
-        <mapping class="org.example.Model.CategoriaProdutoMODEL"/>
-        <mapping class="org.example.Model.CompradorMODEL"/>
+        <mapping class="org.example.Model.Entity.ProdutosMODEL"/>
+        <mapping class="org.example.Model.Entity.UsuarioMODEL"/>
+        <mapping class="org.example.Model.Entity.AuditoriaVendaMODEL"/>
+        <mapping class="org.example.Model.Entity.SetorMODEL"/>
+        <mapping class="org.example.Model.Entity.FuncionarioMODEL"/>
+        <mapping class="org.example.Model.Entity.CategoriaProdutoMODEL"/>
+        <mapping class="org.example.Model.Entity.CompradorMODEL"/>
 
 
     </session-factory>

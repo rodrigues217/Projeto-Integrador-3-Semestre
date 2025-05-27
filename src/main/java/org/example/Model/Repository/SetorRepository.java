@@ -1,7 +1,7 @@
 package org.example.Model.Repository;
 
 import jakarta.persistence.EntityManager;
-import org.example.Model.SetorMODEL;
+import org.example.Model.Entity.SetorMODEL;
 import org.example.Util.HibernateUtil;
 
 import java.util.List;

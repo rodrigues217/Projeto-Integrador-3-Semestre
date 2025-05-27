@@ -1,4 +1,4 @@
-package org.example.Model;
+package org.example.Model.Entity;
 
 public enum PerfilUsuario {
     ADM("Administrador"),

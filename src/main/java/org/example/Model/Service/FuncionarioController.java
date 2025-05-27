@@ -1,7 +1,7 @@
 /*package org.example.Controller;
 
-import org.example.Model.FuncionarioMODEL;
-import org.example.Model.UsuarioMODEL;
+import org.example.Model.Entity.FuncionarioMODEL;
+import org.example.Model.Entity.UsuarioMODEL;
 import org.example.Model.Repository.FuncionarioRepository;
 import org.example.Model.Repository.UsuarioRepository;
 

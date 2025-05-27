@@ -1,7 +1,7 @@
 /*package org.example.Controller;
 
-import org.example.Model.CategoriaProdutoMODEL;
-import org.example.Model.ProdutosMODEL;
+import org.example.Model.Entity.CategoriaProdutoMODEL;
+import org.example.Model.Entity.ProdutosMODEL;
 import org.example.Model.Repository.ProdutosRepository;
 import org.example.Model.Repository.CategoriaProdutoRepository;
 

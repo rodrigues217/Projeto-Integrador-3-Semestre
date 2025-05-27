@@ -1,7 +1,7 @@
 package org.example.View;
 
-import org.example.Controller.VendaController;
-import org.example.Model.UsuarioMODEL;
+import org.example.Model.Service.VendaService;
+import org.example.Model.Entity.UsuarioMODEL;
 
 import java.util.Scanner;
 
@@ -9,7 +9,7 @@ public class VendaView {
 
     public static void mostrarMenuPrincipal(Scanner scanner, UsuarioMODEL usuario) {
         boolean executando = true;
-        VendaController vendaController = new VendaController();
+        VendaService vendaService = new VendaService();
 
         while (executando) {
             System.out.println("\n=== MENU PRINCIPAL ===");
@@ -39,7 +39,7 @@ public class VendaView {
                         compradorId = null;
                     }
 
-                    boolean sucesso = vendaController.realizarVenda(produtoId, funcionarioId, quantidade, compradorId);
+                    boolean sucesso = vendaService.realizarVenda(produtoId, funcionarioId, quantidade, compradorId);
 
                     if (sucesso) {
                         System.out.println("Venda realizada com sucesso!");
