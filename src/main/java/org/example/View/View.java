@@ -6,6 +6,7 @@ import org.example.Model.Entity.CategoriaProdutoMODEL;
 import org.example.Model.Entity.CompradorMODEL;
 import org.example.Model.Entity.FuncionarioMODEL;
 import org.example.Model.Entity.ProdutosMODEL;
+import org.example.Model.Repository.CompradorRepository;
 import org.example.Model.Util.HibernateUtil;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class View {
     private final SetorController setorController = new SetorController();
 
 
+
     public void menuInicial() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
@@ -27,6 +29,7 @@ public class View {
             System.out.println("2. Gerenciar Estoque");
             System.out.println("3. Gerenciar Categorias");
             System.out.println("4. Gerenciar Setores");
+            System.out.println("5. Gerenciar Compradores");
             System.out.println("0. Sair");
             System.out.print("Escolha: ");
             String escolha = scanner.nextLine();
@@ -35,7 +38,8 @@ public class View {
                 case "1" -> mostrarMenuVenda(scanner);
                 case "2" -> mostrarMenuEstoque(scanner);
                 case "3" -> mostrarMenuCategorias(scanner);
-                case "4" -> mostrarMenuSetores(scanner);// <- Novo menu
+                case "4" -> mostrarMenuSetores(scanner);
+                case "5" -> mostrarmenuComprador(scanner);// <- Novo menu
                 case "0" -> {
                     System.out.println("Saindo...");
                     return;
@@ -45,141 +49,20 @@ public class View {
         }
     }
     public void mostrarMenuVenda(Scanner scanner) {
-        EntityManager em = HibernateUtil.getEntityManager();
-
-        ProdutosMODEL produto = null;
-        FuncionarioMODEL funcionario = null;
-        Integer quantidade = null;
-        Long compradorId = null;
-
-        etapa:
         while (true) {
-            System.out.println("\n=== Realizar Venda ===");
+            System.out.println("\n=== Menu de Vendas ===");
+            System.out.println("1. Realizar nova venda");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha: ");
+            String escolha = scanner.nextLine();
 
-            // 1. Produto
-            while (produto == null) {
-                System.out.print("ID do Produto (ou 'cancelar'): ");
-                String input = scanner.nextLine().trim();
-
-                if (input.equalsIgnoreCase("cancelar")) break etapa;
-
-                try {
-                    Long id = Long.parseLong(input);
-                    produto = em.find(ProdutosMODEL.class, id);
-                    if (produto == null) {
-                        System.out.println("Produto não encontrado.");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("ID inválido.");
-                }
+            switch (escolha) {
+                case "1" -> vendaController.iniciarProcessoDeVenda(scanner);
+                case "0" -> { return; }
+                default -> System.out.println("Opção inválida.");
             }
-
-            // 2. Funcionário
-            while (funcionario == null) {
-                System.out.print("ID do Funcionário ('voltar' / 'cancelar'): ");
-                String input = scanner.nextLine().trim();
-
-                if (input.equalsIgnoreCase("voltar")) {
-                    produto = null;
-                    continue etapa;
-                }
-                if (input.equalsIgnoreCase("cancelar")) break etapa;
-
-                try {
-                    Long id = Long.parseLong(input);
-                    funcionario = em.find(FuncionarioMODEL.class, id);
-                    if (funcionario == null) {
-                        System.out.println("Funcionário não encontrado.");
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("ID inválido.");
-                }
-            }
-
-            // 3. Quantidade
-            while (quantidade == null || quantidade <= 0) {
-                System.out.print("Quantidade ('voltar' / 'cancelar'): ");
-                String input = scanner.nextLine().trim();
-
-                if (input.equalsIgnoreCase("voltar")) {
-                    funcionario = null;
-                    continue etapa;
-                }
-                if (input.equalsIgnoreCase("cancelar")) break etapa;
-
-                try {
-                    int qtd = Integer.parseInt(input);
-                    if (qtd <= 0) {
-                        System.out.println("Deve ser maior que zero.");
-                    } else if (qtd > produto.getEstoque()) {
-                        System.out.println("Estoque insuficiente. Estoque atual: " + produto.getEstoque());
-                    } else {
-                        quantidade = qtd;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Quantidade inválida.");
-                }
-            }
-
-            // 4. Comprador
-            while (true) {
-                System.out.println("ID do Comprador:");
-                System.out.println(" - Deixe em branco para venda sem comprador");
-                System.out.println(" - Digite 'novo' para cadastrar um novo");
-                System.out.println(" - Digite 'voltar' para voltar");
-                System.out.println(" - Digite 'cancelar' para cancelar");
-                System.out.print("Entrada: ");
-                String input = scanner.nextLine().trim();
-
-                if (input.equalsIgnoreCase("voltar")) {
-                    quantidade = null;
-                    continue etapa;
-                }
-                if (input.equalsIgnoreCase("cancelar")) break etapa;
-
-                if (input.isBlank()) {
-                    break;
-                }
-
-                if (input.equalsIgnoreCase("novo")) {
-                    System.out.print("Nome do comprador: ");
-                    String nome = scanner.nextLine();
-                    System.out.print("Telefone: ");
-                    String telefone = scanner.nextLine();
-                    CompradorMODEL novoComprador = compradorController.criarComprador(nome, telefone);
-                    compradorId = novoComprador.getId();
-                    System.out.println("Comprador cadastrado com ID: " + compradorId);
-                    break;
-                }
-
-                try {
-                    Long id = Long.parseLong(input);
-                    CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
-                    if (comprador == null) {
-                        System.out.println("Comprador não encontrado.");
-                    } else {
-                        compradorId = comprador.getId();
-                        break;
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("ID inválido.");
-                }
-            }
-
-            // Finalizar venda
-            String resultado = vendaController.processarVenda(produto.getId(), funcionario.getId(), quantidade, compradorId);
-            if (resultado.equals("SUCESSO")) {
-                System.out.println("Venda realizada com sucesso!");
-            } else {
-                System.out.println("Erro: " + resultado);
-            }
-            break;
         }
-
-        em.close();
-        System.out.println("Operação finalizada.");
     }
-
 
     public void mostrarMenuEstoque(Scanner scanner) {
         while (true) {
@@ -249,6 +132,29 @@ public class View {
                 case "2" -> setorController.listarSetores();
                 case "3" -> setorController.atualizarSetor();
                 case "4" -> setorController.deletarSetor();
+                case "0" -> { return; }
+                default  -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    public void mostrarmenuComprador(Scanner scanner) {
+
+      while (true) {
+            System.out.println("\n--- Menu Comprador ---");
+            System.out.println("1. Cadastrar comprador");
+            System.out.println("2. Listar compradores");
+            System.out.println("3. Atualizar comprador");
+            System.out.println("4. Remover comprador");
+            System.out.println("0. Voltar ao menu principal");
+            System.out.print("Escolha: ");
+            String opcao = scanner.nextLine();
+
+            switch (opcao) {
+                case "1" -> compradorController.criarComprador();
+                case "2" -> compradorController.listarCompradores();
+                case "3" -> compradorController.atualizarComprador() ;
+                case "4" -> compradorController.deletarComprador();
                 case "0" -> { return; }
                 default  -> System.out.println("Opção inválida.");
             }
