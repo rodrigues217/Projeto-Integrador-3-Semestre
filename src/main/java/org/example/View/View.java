@@ -1,25 +1,11 @@
 package org.example.View;
 
-import jakarta.persistence.EntityManager;
 import org.example.Controller.*;
-import org.example.Model.Entity.CategoriaProdutoMODEL;
-import org.example.Model.Entity.CompradorMODEL;
-import org.example.Model.Entity.FuncionarioMODEL;
 import org.example.Model.Entity.ProdutosMODEL;
-import org.example.Model.Repository.CompradorRepository;
-import org.example.Model.Util.HibernateUtil;
-
 import java.util.List;
 import java.util.Scanner;
 
 public class View {
-    private final VendaController vendaController = new VendaController();
-    private final CompradorController compradorController = new CompradorController();
-    private final ProdutoController produtoController = new ProdutoController();
-    private final CategoriaProdutoController categoriaController = new CategoriaProdutoController();
-    private final SetorController setorController = new SetorController();
-
-
 
     public void menuInicial() {
         Scanner scanner = new Scanner(System.in);
@@ -30,6 +16,7 @@ public class View {
             System.out.println("3. Gerenciar Categorias");
             System.out.println("4. Gerenciar Setores");
             System.out.println("5. Gerenciar Compradores");
+            System.out.println("6. Gerenciar AuditoriaVendas");
             System.out.println("0. Sair");
             System.out.print("Escolha: ");
             String escolha = scanner.nextLine();
@@ -39,7 +26,8 @@ public class View {
                 case "2" -> mostrarMenuEstoque(scanner);
                 case "3" -> mostrarMenuCategorias(scanner);
                 case "4" -> mostrarMenuSetores(scanner);
-                case "5" -> mostrarmenuComprador(scanner);// <- Novo menu
+                case "5" -> mostrarmenuComprador(scanner);
+                case "6" -> mostrarMenuAuditoria(scanner);// <- Novo menu
                 case "0" -> {
                     System.out.println("Saindo...");
                     return;
@@ -49,6 +37,7 @@ public class View {
         }
     }
     public void mostrarMenuVenda(Scanner scanner) {
+        VendaController vendaController = new VendaController();
         while (true) {
             System.out.println("\n=== Menu de Vendas ===");
             System.out.println("1. Realizar nova venda");
@@ -65,6 +54,7 @@ public class View {
     }
 
     public void mostrarMenuEstoque(Scanner scanner) {
+        ProdutoController produtoController = new ProdutoController();
         while (true) {
             System.out.println("\n=== Gerenciar Estoque ===");
             System.out.println("1. Cadastrar Produto");
@@ -93,6 +83,7 @@ public class View {
         }
     }
     public void mostrarMenuCategorias(Scanner scanner) {
+       CategoriaProdutoController categoriaController = new CategoriaProdutoController();
         while (true) {
             System.out.println("\n=== Gerenciar Categorias ===");
             System.out.println("1. Criar nova categoria");
@@ -117,7 +108,7 @@ public class View {
     }
 
     public void mostrarMenuSetores(Scanner scanner) {
-
+        SetorController setorController = new SetorController();
         while (true) {
             System.out.println("\n==== Gerenciar Setor ====");
             System.out.println("1. Criar setor");
@@ -139,7 +130,7 @@ public class View {
     }
 
     public void mostrarmenuComprador(Scanner scanner) {
-
+        CompradorController compradorController = new CompradorController();
       while (true) {
             System.out.println("\n--- Menu Comprador ---");
             System.out.println("1. Cadastrar comprador");
@@ -160,6 +151,31 @@ public class View {
             }
         }
     }
+
+    public void mostrarMenuAuditoria(Scanner scanner) {
+        AuditoriaVendaController auditoriaController = new AuditoriaVendaController();
+
+        while (true) {
+            System.out.println("\n--- Menu Auditoria de Vendas ---");
+            System.out.println("1. Listar todas as auditorias");
+            System.out.println("2. Buscar auditorias por comprador");
+            System.out.println("3. Buscar auditorias por funcionário");
+            System.out.println("4. Buscar auditorias por produto");
+            System.out.println("0. Voltar ao menu principal");
+            System.out.print("Escolha: ");
+            String opcao = scanner.nextLine();
+
+            switch (opcao) {
+                case "1" -> auditoriaController.listarAuditorias();
+                case "2" -> auditoriaController.buscarPorComprador(scanner);
+                case "3" -> auditoriaController.buscarPorFuncionario(scanner);
+                case "4" -> auditoriaController.buscarPorProduto(scanner);
+                case "0" -> { return; }
+                default  -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
 
 
 }
