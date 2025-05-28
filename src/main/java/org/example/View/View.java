@@ -44,84 +44,98 @@ public class View {
             }
         }
     }
-
-
     public void mostrarMenuVenda(Scanner scanner) {
         EntityManager em = HibernateUtil.getEntityManager();
 
+        ProdutosMODEL produto = null;
+        FuncionarioMODEL funcionario = null;
+        Integer quantidade = null;
+        Long compradorId = null;
+
+        etapa:
         while (true) {
             System.out.println("\n=== Realizar Venda ===");
 
-            // Produto
-            ProdutosMODEL produto = null;
+            // 1. Produto
             while (produto == null) {
-                System.out.print("ID do Produto: ");
-                String produtoInput = scanner.nextLine().trim();
-                if (produtoInput.isBlank()) {
-                    System.out.println("ID do Produto não pode estar em branco.");
-                    continue;
-                }
+                System.out.print("ID do Produto (ou 'cancelar'): ");
+                String input = scanner.nextLine().trim();
+
+                if (input.equalsIgnoreCase("cancelar")) break etapa;
+
                 try {
-                    Long produtoId = Long.parseLong(produtoInput);
-                    produto = em.find(ProdutosMODEL.class, produtoId);
+                    Long id = Long.parseLong(input);
+                    produto = em.find(ProdutosMODEL.class, id);
                     if (produto == null) {
                         System.out.println("Produto não encontrado.");
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("ID do Produto inválido.");
+                    System.out.println("ID inválido.");
                 }
             }
 
-            // Funcionário
-            FuncionarioMODEL funcionario = null;
+            // 2. Funcionário
             while (funcionario == null) {
-                System.out.print("ID do Funcionário: ");
-                String funcionarioInput = scanner.nextLine().trim();
-                if (funcionarioInput.isBlank()) {
-                    System.out.println("ID do Funcionário não pode estar em branco.");
-                    continue;
+                System.out.print("ID do Funcionário ('voltar' / 'cancelar'): ");
+                String input = scanner.nextLine().trim();
+
+                if (input.equalsIgnoreCase("voltar")) {
+                    produto = null;
+                    continue etapa;
                 }
+                if (input.equalsIgnoreCase("cancelar")) break etapa;
+
                 try {
-                    Long funcionarioId = Long.parseLong(funcionarioInput);
-                    funcionario = em.find(FuncionarioMODEL.class, funcionarioId);
+                    Long id = Long.parseLong(input);
+                    funcionario = em.find(FuncionarioMODEL.class, id);
                     if (funcionario == null) {
                         System.out.println("Funcionário não encontrado.");
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("ID do Funcionário inválido.");
+                    System.out.println("ID inválido.");
                 }
             }
 
-            // Quantidade
-            int quantidade = 0;
-            while (quantidade <= 0) {
-                System.out.print("Quantidade: ");
-                String quantidadeInput = scanner.nextLine().trim();
-                if (quantidadeInput.isBlank()) {
-                    System.out.println("Quantidade não pode estar em branco.");
-                    continue;
+            // 3. Quantidade
+            while (quantidade == null || quantidade <= 0) {
+                System.out.print("Quantidade ('voltar' / 'cancelar'): ");
+                String input = scanner.nextLine().trim();
+
+                if (input.equalsIgnoreCase("voltar")) {
+                    funcionario = null;
+                    continue etapa;
                 }
+                if (input.equalsIgnoreCase("cancelar")) break etapa;
+
                 try {
-                    quantidade = Integer.parseInt(quantidadeInput);
-                    if (quantidade <= 0) {
-                        System.out.println("Quantidade deve ser maior que zero.");
-                    } else if (produto.getEstoque() < quantidade) {
+                    int qtd = Integer.parseInt(input);
+                    if (qtd <= 0) {
+                        System.out.println("Deve ser maior que zero.");
+                    } else if (qtd > produto.getEstoque()) {
                         System.out.println("Estoque insuficiente. Estoque atual: " + produto.getEstoque());
-                        quantidade = 0;
+                    } else {
+                        quantidade = qtd;
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("Quantidade inválida.");
                 }
             }
 
-            // Comprador
-            Long compradorId = null;
+            // 4. Comprador
             while (true) {
                 System.out.println("ID do Comprador:");
                 System.out.println(" - Deixe em branco para venda sem comprador");
-                System.out.println(" - Digite 'novo' para cadastrar um comprador agora");
+                System.out.println(" - Digite 'novo' para cadastrar um novo");
+                System.out.println(" - Digite 'voltar' para voltar");
+                System.out.println(" - Digite 'cancelar' para cancelar");
                 System.out.print("Entrada: ");
                 String input = scanner.nextLine().trim();
+
+                if (input.equalsIgnoreCase("voltar")) {
+                    quantidade = null;
+                    continue etapa;
+                }
+                if (input.equalsIgnoreCase("cancelar")) break etapa;
 
                 if (input.isBlank()) {
                     break;
@@ -132,7 +146,6 @@ public class View {
                     String nome = scanner.nextLine();
                     System.out.print("Telefone: ");
                     String telefone = scanner.nextLine();
-
                     CompradorMODEL novoComprador = compradorController.criarComprador(nome, telefone);
                     compradorId = novoComprador.getId();
                     System.out.println("Comprador cadastrado com ID: " + compradorId);
@@ -143,29 +156,30 @@ public class View {
                     Long id = Long.parseLong(input);
                     CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
                     if (comprador == null) {
-                        System.out.println("Comprador não encontrado. Tente novamente.");
+                        System.out.println("Comprador não encontrado.");
                     } else {
                         compradorId = comprador.getId();
                         break;
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("ID do comprador inválido. Tente novamente.");
+                    System.out.println("ID inválido.");
                 }
             }
 
+            // Finalizar venda
             String resultado = vendaController.processarVenda(produto.getId(), funcionario.getId(), quantidade, compradorId);
-
             if (resultado.equals("SUCESSO")) {
                 System.out.println("Venda realizada com sucesso!");
-                break;
             } else {
                 System.out.println("Erro: " + resultado);
-                System.out.println("Tente novamente.\n");
             }
+            break;
         }
 
         em.close();
+        System.out.println("Operação finalizada.");
     }
+
 
     public void mostrarMenuEstoque(Scanner scanner) {
         while (true) {
