@@ -29,8 +29,8 @@ public class FuncionarioMODEL {
     @JoinColumn(name = "setor_id")
     private SetorMODEL setor;
 
-    @OneToOne
-    @JoinColumn(name = "usuario_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
     private UsuarioMODEL usuario;
 
     public FuncionarioMODEL() {

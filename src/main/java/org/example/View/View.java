@@ -1,10 +1,7 @@
 package org.example.View;
 
 import jakarta.persistence.EntityManager;
-import org.example.Controller.CategoriaProdutoController;
-import org.example.Controller.CompradorController;
-import org.example.Controller.ProdutoController;
-import org.example.Controller.VendaController;
+import org.example.Controller.*;
 import org.example.Model.Entity.CategoriaProdutoMODEL;
 import org.example.Model.Entity.CompradorMODEL;
 import org.example.Model.Entity.FuncionarioMODEL;
@@ -19,6 +16,7 @@ public class View {
     private final CompradorController compradorController = new CompradorController();
     private final ProdutoController produtoController = new ProdutoController();
     private final CategoriaProdutoController categoriaController = new CategoriaProdutoController();
+    private final SetorController setorController = new SetorController();
 
 
     public void menuInicial() {
@@ -28,6 +26,7 @@ public class View {
             System.out.println("1. Venda");
             System.out.println("2. Gerenciar Estoque");
             System.out.println("3. Gerenciar Categorias");
+            System.out.println("4. Gerenciar Setores");
             System.out.println("0. Sair");
             System.out.print("Escolha: ");
             String escolha = scanner.nextLine();
@@ -35,7 +34,8 @@ public class View {
             switch (escolha) {
                 case "1" -> mostrarMenuVenda(scanner);
                 case "2" -> mostrarMenuEstoque(scanner);
-                case "3" -> mostrarMenuCategorias(scanner); // <- Novo menu
+                case "3" -> mostrarMenuCategorias(scanner);
+                case "4" -> mostrarMenuSetores(scanner);// <- Novo menu
                 case "0" -> {
                     System.out.println("Saindo...");
                     return;
@@ -232,5 +232,28 @@ public class View {
             }
         }
     }
+
+    public void mostrarMenuSetores(Scanner scanner) {
+
+        while (true) {
+            System.out.println("\n==== Gerenciar Setor ====");
+            System.out.println("1. Criar setor");
+            System.out.println("2. Listar setores");
+            System.out.println("3. Atualizar setor");
+            System.out.println("4. Deletar setor");
+            System.out.println("0. Voltar");
+            String opcao = scanner.nextLine();
+
+            switch (opcao) {
+                case "1" -> setorController.criarSetor();
+                case "2" -> setorController.listarSetores();
+                case "3" -> setorController.atualizarSetor();
+                case "4" -> setorController.deletarSetor();
+                case "0" -> { return; }
+                default  -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
 
 }
