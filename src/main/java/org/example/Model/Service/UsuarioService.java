@@ -3,6 +3,7 @@ package org.example.Model.Service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import org.example.Model.Entity.FuncionarioMODEL;
+import org.example.Model.Entity.PerfilUsuario;
 import org.example.Model.Entity.UsuarioMODEL;
 import org.example.Model.Repository.FuncionarioRepository;
 import org.example.Model.Repository.UsuarioRepository;
@@ -83,15 +84,16 @@ public class UsuarioService {
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
 
-        System.out.print("Perfil (ADM ou FUNCIONARIO): ");
+        System.out.print("Perfil (ADM, GERENTE ou OPERADOR ): ");
+
         String perfilStr = scanner.nextLine().toUpperCase();
 
         try {
-            UsuarioMODEL usuario = new UsuarioMODEL(login, senha, Enum.valueOf(UsuarioMODEL.PerfilUsuario.class, perfilStr));
+            UsuarioMODEL usuario = new UsuarioMODEL(login, senha, Enum.valueOf(PerfilUsuario.class, perfilStr));
             usuarioRepository.salvar(usuario);
             System.out.println("Usuário cadastrado com sucesso!");
         } catch (IllegalArgumentException e) {
-            System.out.println("Perfil inválido. Use 'ADM' ou 'FUNCIONARIO'.");
+            System.out.println("Perfil inválido. Use 'ADM' , 'FUNCIONARIO' ou 'GERENTE' ");
         }
     }
 
@@ -106,7 +108,7 @@ public class UsuarioService {
             System.out.println(usuario);
             FuncionarioMODEL funcionario = funcionarioRepository.buscarPorId(usuario.getId());
             if (funcionario != null) {
-                System.out.println(" -> Funcionario: " + funcionario.getNome());
+                System.out.println("Funcionario: " + funcionario.getNome());
             }
         }
     }
@@ -144,11 +146,11 @@ public class UsuarioService {
         System.out.print("Nova senha: ");
         usuario.setSenha(scanner.nextLine());
 
-        System.out.print("Novo perfil (ADM ou FUNCIONARIO): ");
+        System.out.print("Novo perfil (ADM, GERENTE ou OPERADOR): ");
         String perfilStr = scanner.nextLine().toUpperCase();
 
         try {
-            usuario.setPerfil(Enum.valueOf(UsuarioMODEL.PerfilUsuario.class, perfilStr));
+            usuario.setPerfil(Enum.valueOf(PerfilUsuario.class, perfilStr));
         } catch (IllegalArgumentException e) {
             System.out.println("Perfil inválido. Atualização cancelada.");
             return;

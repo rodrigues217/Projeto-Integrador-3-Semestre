@@ -17,6 +17,7 @@ public class View {
             System.out.println("4. Gerenciar Setores");
             System.out.println("5. Gerenciar Compradores");
             System.out.println("6. Gerenciar AuditoriaVendas");
+            System.out.println("7. Gerenciar Usuarios");
             System.out.println("0. Sair");
             System.out.print("Escolha: ");
             String escolha = scanner.nextLine();
@@ -27,7 +28,8 @@ public class View {
                 case "3" -> mostrarMenuCategorias(scanner);
                 case "4" -> mostrarMenuSetores(scanner);
                 case "5" -> mostrarmenuComprador(scanner);
-                case "6" -> mostrarMenuAuditoria(scanner);// <- Novo menu
+                case "6" -> mostrarMenuAuditoria(scanner);
+                case "7" -> mostrarMenuUsuario(scanner);// <- Novo menu
                 case "0" -> {
                     System.out.println("Saindo...");
                     return;
@@ -175,6 +177,31 @@ public class View {
             }
         }
     }
+
+    public void mostrarMenuUsuario(Scanner scanner) {
+        UsuarioController usuarioController = new UsuarioController();
+
+        while (true) {
+            System.out.println("\n--- Menu Usuário ---");
+            System.out.println("1. Criar usuário");
+            System.out.println("2. Listar usuários");
+            System.out.println("3. Atualizar usuário");
+            System.out.println("4. Deletar usuário");
+            System.out.println("0. Voltar ao menu principal");
+            System.out.print("Escolha: ");
+            String opcao = scanner.nextLine();
+
+            switch (opcao) {
+                case "1" -> usuarioController.criarUsuario();
+                case "2" -> usuarioController.listarUsuarios();
+                case "3" -> usuarioController.atualizarUsuario();
+                case "4" -> usuarioController.deletarUsuario();
+                case "0" -> { return; }
+                default  -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
 
 
 
