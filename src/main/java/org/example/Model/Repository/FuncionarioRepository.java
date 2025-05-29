@@ -1,9 +1,12 @@
 package org.example.Model.Repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.example.Model.Entity.FuncionarioMODEL;
+import org.example.Model.Entity.UsuarioMODEL;
 import org.example.Model.Util.HibernateUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FuncionarioRepository {
@@ -40,12 +43,47 @@ public class FuncionarioRepository {
 
     public void deletar(Long id) {
         EntityManager em = HibernateUtil.getEntityManager();
-        em.getTransaction().begin();
-        FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, id);
-        if (funcionario != null) {
-            em.remove(funcionario);
+        try {
+            em.getTransaction().begin();
+            FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, id);
+            if (funcionario != null) {
+                em.remove(funcionario);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            System.out.println("Erro ao deletar funcionário: " + e.getMessage());
+        } finally {
+            em.close();
         }
-        em.getTransaction().commit();
-        em.close();
     }
+
+    public List<FuncionarioMODEL> buscarPorUsuario(UsuarioMODEL usuario) {
+        List<FuncionarioMODEL> funcionarios = listarTodos();
+        List<FuncionarioMODEL> vinculados = new ArrayList<>();
+
+        for (FuncionarioMODEL funcionario : funcionarios) {
+            if (funcionario.getUsuario() != null && funcionario.getUsuario().getId().equals(usuario.getId())) {
+                vinculados.add(funcionario);
+            }
+        }
+
+        return vinculados;
+    }
+
+    public FuncionarioMODEL buscarFuncionarioPorCPF(String CPF) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        FuncionarioMODEL funcionario = null;
+        try {
+            funcionario = em.createQuery("FROM Funcionario f WHERE f.CPF = :CPF", FuncionarioMODEL.class)
+                    .setParameter("CPF", CPF)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            // Retorna null se não encontrar
+        } finally {
+            em.close();
+        }
+        return funcionario;
+    }
+
 }

@@ -1,7 +1,9 @@
 package org.example.Model.Repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.example.Model.Entity.AuditoriaVendaMODEL;
+import org.example.Model.Entity.FuncionarioMODEL;
 import org.example.Model.Util.HibernateUtil;
 
 import java.util.List;
@@ -70,16 +72,16 @@ public class AuditoriaVendaRepository {
                 .getResultList();
     }
 
-    public List<AuditoriaVendaMODEL> buscarPorFuncionarioId(Long funcionarioId) {
+    public List<AuditoriaVendaMODEL> buscarPorFuncionarioCPF(String CPF) {
         EntityManager em = getEntityManager();
         List<AuditoriaVendaMODEL> auditorias = em.createQuery("""
-            SELECT a FROM AuditoriaVenda a
-            JOIN FETCH a.produto
-            JOIN FETCH a.funcionario
-            LEFT JOIN FETCH a.comprador
-            WHERE a.funcionario.id = :funcionarioId
-        """, AuditoriaVendaMODEL.class)
-                .setParameter("funcionarioId", funcionarioId)
+        SELECT a FROM AuditoriaVenda a
+        JOIN FETCH a.produto
+        JOIN FETCH a.funcionario f
+        LEFT JOIN FETCH a.comprador
+        WHERE f.CPF = :CPF
+    """, AuditoriaVendaMODEL.class)
+                .setParameter("CPF", CPF)
                 .getResultList();
         em.close();
         return auditorias;
@@ -98,5 +100,20 @@ public class AuditoriaVendaRepository {
                 .getResultList();
         em.close();
         return auditorias;
+    }
+
+    public FuncionarioMODEL buscarFuncionarioPorCPF(String CPF) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        FuncionarioMODEL funcionario = null;
+        try {
+            funcionario = em.createQuery("FROM Funcionario f WHERE f.CPF = :CPF", FuncionarioMODEL.class)
+                    .setParameter("CPF", CPF)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            // Retorna null se não encontrar
+        } finally {
+            em.close();
+        }
+        return funcionario;
     }
 }

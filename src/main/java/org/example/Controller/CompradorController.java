@@ -20,4 +20,8 @@ public class CompradorController {
     public void deletarComprador() {
         compradorService.deletarComprador();
     }
+
+    public void buscarCompradorPorCPF(){
+        compradorService.buscarCompradorPorCPF();
+    }
 }

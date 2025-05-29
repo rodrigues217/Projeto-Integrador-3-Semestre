@@ -16,12 +16,16 @@ public class CompradorMODEL {
     @Column(name = "telefone", nullable = false, length = 20)
     private String telefone;
 
+    @Column(name = "CPF", nullable = false, length = 100)
+    private String CPF;
+
     public CompradorMODEL() {
     }
 
-    public CompradorMODEL(String nome, String telefone) {
+    public CompradorMODEL(String nome, String telefone, String CPF) {
         this.nome = nome;
         this.telefone = telefone;
+        this.CPF = CPF;
     }
 
     // Getters e Setters
@@ -48,6 +52,14 @@ public class CompradorMODEL {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getCPF() {
+        return CPF;
+    }
+
+    public void setCPF(String CPF) {
+        this.CPF = CPF;
     }
 
 

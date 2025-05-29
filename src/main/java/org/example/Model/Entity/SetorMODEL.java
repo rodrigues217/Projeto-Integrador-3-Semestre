@@ -38,4 +38,9 @@ public class SetorMODEL {
         this.nome = nome;
     }
 
+    @Override
+    public String toString() {
+        return nome + ", id: " + id ;
+    }
+
 }

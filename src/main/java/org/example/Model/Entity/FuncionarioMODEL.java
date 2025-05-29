@@ -13,8 +13,8 @@ public class FuncionarioMODEL {
     @Column(name = "nome", nullable = false, length = 255)
     private String nome;
 
-    @Column(name = "documento", length = 255)
-    private String documento;
+    @Column(name = "CPF", length = 255)
+    private String CPF;
 
     @Column(name = "endereco", length = 255)
     private String endereco;
@@ -36,9 +36,9 @@ public class FuncionarioMODEL {
     public FuncionarioMODEL() {
     }
 
-    public FuncionarioMODEL(String nome, String documento, String endereco, String telefone, SetorMODEL setor, UsuarioMODEL usuario) {
+    public FuncionarioMODEL(String nome, String CPF, String endereco, String telefone, SetorMODEL setor, UsuarioMODEL usuario) {
         this.nome = nome;
-        this.documento = documento;
+        this.CPF = CPF;
         this.endereco = endereco;
         this.telefone = telefone;
         this.setor = setor;
@@ -64,12 +64,12 @@ public class FuncionarioMODEL {
         this.nome = nome;
     }
 
-    public String getDocumento() {
-        return documento;
+    public String getCPF() {
+        return CPF;
     }
 
-    public void setDocumento(String documento) {
-        this.documento = documento;
+    public void setCPF(String CPF) {
+        this.CPF = CPF;
     }
 
     public String getEndereco() {

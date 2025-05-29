@@ -18,6 +18,7 @@ public class View {
             System.out.println("5. Gerenciar Compradores");
             System.out.println("6. Gerenciar AuditoriaVendas");
             System.out.println("7. Gerenciar Usuarios");
+            System.out.println("8. Gerenciar Funcionários");
             System.out.println("0. Sair");
             System.out.print("Escolha: ");
             String escolha = scanner.nextLine();
@@ -29,7 +30,8 @@ public class View {
                 case "4" -> mostrarMenuSetores(scanner);
                 case "5" -> mostrarmenuComprador(scanner);
                 case "6" -> mostrarMenuAuditoria(scanner);
-                case "7" -> mostrarMenuUsuario(scanner);// <- Novo menu
+                case "7" -> mostrarMenuUsuario(scanner);
+                case "8" -> mostrarMenuFuncionario(scanner);// <- Novo menu
                 case "0" -> {
                     System.out.println("Saindo...");
                     return;
@@ -137,8 +139,9 @@ public class View {
             System.out.println("\n--- Menu Comprador ---");
             System.out.println("1. Cadastrar comprador");
             System.out.println("2. Listar compradores");
-            System.out.println("3. Atualizar comprador");
-            System.out.println("4. Remover comprador");
+            System.out.println("3. Buscar comprador por CPF");
+            System.out.println("4. Atualizar comprador");
+            System.out.println("5. Remover comprador");
             System.out.println("0. Voltar ao menu principal");
             System.out.print("Escolha: ");
             String opcao = scanner.nextLine();
@@ -146,8 +149,9 @@ public class View {
             switch (opcao) {
                 case "1" -> compradorController.criarComprador();
                 case "2" -> compradorController.listarCompradores();
-                case "3" -> compradorController.atualizarComprador() ;
-                case "4" -> compradorController.deletarComprador();
+                case "3" -> compradorController.buscarCompradorPorCPF();
+                case "4" -> compradorController.atualizarComprador() ;
+                case "5" -> compradorController.deletarComprador();
                 case "0" -> { return; }
                 default  -> System.out.println("Opção inválida.");
             }
@@ -196,6 +200,36 @@ public class View {
                 case "2" -> usuarioController.listarUsuarios();
                 case "3" -> usuarioController.atualizarUsuario();
                 case "4" -> usuarioController.deletarUsuario();
+                case "0" -> { return; }
+                default  -> System.out.println("Opção inválida.");
+            }
+        }
+    }
+
+    public void mostrarMenuFuncionario(Scanner scanner) {
+        FuncionarioController funcionarioController = new FuncionarioController();
+
+        while (true) {
+            System.out.println("\n--- Menu Funcionário ---");
+            System.out.println("1. Criar funcionário");
+            System.out.println("2. Listar funcionários");
+            System.out.println("4. Buscar funcionário por CPF");
+            System.out.println("5. Atualizar funcionário");
+            System.out.println("6. Trocar usuário do funcionário");
+            System.out.println("7. Trocar setor do funcionário");
+            System.out.println("7. Deletar funcionário");
+            System.out.println("0. Voltar ao menu principal");
+            System.out.print("Escolha: ");
+            String opcao = scanner.nextLine();
+
+            switch (opcao) {
+                case "1" -> funcionarioController.criarFuncionario();
+                case "2" -> funcionarioController.listarFuncionarios();
+                case "4" -> funcionarioController.buscarFuncionarioPorCPF();
+                case "5" -> funcionarioController.atualizarFuncionario();
+                case "6" -> funcionarioController.trocarUsuarioDeFuncionario();
+                case "7" -> funcionarioController.trocarSetorDeFuncionario();
+                case "8" -> funcionarioController.deletarFuncionario(scanner);
                 case "0" -> { return; }
                 default  -> System.out.println("Opção inválida.");
             }

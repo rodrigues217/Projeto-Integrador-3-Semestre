@@ -84,10 +84,9 @@ public class UsuarioMODEL {
 
     @Override
     public String toString() {
-        return "UsuarioMODEL{" +
-                "id=" + id +
-                ", login='" + login + '\'' +
-                ", perfil=" + perfil +
-                '}';
+        return "id: " + id + ", login: " + login + ", perfil: " + perfil ;
     }
+
+
+
 }

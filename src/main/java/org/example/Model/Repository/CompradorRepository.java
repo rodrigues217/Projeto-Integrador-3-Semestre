@@ -48,4 +48,18 @@ public class CompradorRepository {
         em.getTransaction().commit();
         em.close();
     }
+
+    public CompradorMODEL buscarPorCPF(String cpf) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT c FROM Comprador c WHERE c.CPF = :cpf", CompradorMODEL.class)
+                    .setParameter("cpf", cpf)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null; // Pode ser ajustado para lançar exceção ou tratar de outra forma
+        } finally {
+            em.close();
+        }
+    }
 }

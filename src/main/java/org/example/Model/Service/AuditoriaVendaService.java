@@ -41,16 +41,16 @@ public class AuditoriaVendaService {
             return;
         }
 
-        System.out.print("Digite o ID do comprador: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        CompradorMODEL comprador = compradorRepository.buscarPorId(id);
+        System.out.print("Digite o CPF do comprador: ");
+        String CPF = (scanner.nextLine());
+        CompradorMODEL comprador = compradorRepository.buscarPorCPF(CPF);
 
         if (comprador == null) {
             System.out.println("Comprador não encontrado.");
             return;
         }
 
-        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorCompradorId(id);
+        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorFuncionarioCPF(CPF);
 
         if (auditorias.isEmpty()) {
             System.out.println("Nenhuma auditoria encontrada para esse comprador.");
@@ -71,16 +71,17 @@ public class AuditoriaVendaService {
             return;
         }
 
-        System.out.print("Digite o ID do funcionário: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        FuncionarioMODEL funcionario = funcionarioRepository.buscarPorId(id);
+        System.out.print("Digite o CPF do funcionário: ");
+        String CPF = scanner.nextLine();
+
+        FuncionarioMODEL funcionario = funcionarioRepository.buscarFuncionarioPorCPF(CPF); // você precisa ter esse método
 
         if (funcionario == null) {
-            System.out.println("Funcionário não encontrado.");
+            System.out.println("Funcionário não encontrado com o CPF informado.");
             return;
         }
 
-        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorFuncionarioId(id);
+        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorFuncionarioCPF(CPF);
 
         if (auditorias.isEmpty()) {
             System.out.println("Nenhuma auditoria encontrada para esse funcionário.");

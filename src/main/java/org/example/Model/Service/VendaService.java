@@ -160,6 +160,9 @@ public class VendaService {
                         String nome = scanner.nextLine().trim();
                         System.out.print("Telefone do comprador: ");
                         String telefone = scanner.nextLine().trim();
+                        System.out.print("CPF do comprador: ");
+                        String CPF = scanner.nextLine().trim();
+
 
                         List<CompradorMODEL> compradores = new CompradorRepository().listarTodos();
                         for (CompradorMODEL c : compradores) {
@@ -172,7 +175,7 @@ public class VendaService {
                         }
 
                         if (compradorId == null) {
-                            CompradorMODEL novoComprador = new CompradorMODEL(nome, telefone);
+                            CompradorMODEL novoComprador = new CompradorMODEL(nome, telefone, CPF);
                             new CompradorRepository().salvar(novoComprador);
                             compradorId = novoComprador.getId();
                             System.out.println("Comprador cadastrado com ID: " + compradorId);

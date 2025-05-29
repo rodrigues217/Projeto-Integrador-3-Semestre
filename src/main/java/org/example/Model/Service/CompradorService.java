@@ -17,16 +17,44 @@ public class CompradorService {
         System.out.print("Telefone do comprador: ");
         String telefone = scanner.nextLine();
 
-        // Verificar duplicidade de nome e telefone
+        System.out.print("CPF do comprador: ");
+        String CPF = scanner.nextLine();
+
         List<CompradorMODEL> compradores = compradorRepository.listarTodos();
+
+        boolean nomeDuplicado = false;
+        boolean telefoneDuplicado = false;
+        boolean cpfDuplicado = false;
+
         for (CompradorMODEL c : compradores) {
-            if (c.getNome().equalsIgnoreCase(nome) && c.getTelefone().equals(telefone)) {
-                System.out.println("Já existe um comprador com esse nome e telefone.");
-                return;
+            if (c.getNome().equalsIgnoreCase(nome)) {
+                nomeDuplicado = true;
+            }
+            if (c.getTelefone().equals(telefone)) {
+                telefoneDuplicado = true;
+            }
+            if (c.getCPF().equals(CPF)) {
+                cpfDuplicado = true;
             }
         }
 
-        CompradorMODEL comprador = new CompradorMODEL(nome, telefone);
+        if (nomeDuplicado) {
+            System.out.println("Já existe um comprador com esse nome.");
+        }
+        if (telefoneDuplicado) {
+            System.out.println("Já existe um comprador com esse telefone.");
+        }
+        if (cpfDuplicado) {
+            System.out.println("Já existe um comprador com esse CPF.");
+        }
+
+        // Se houver qualquer duplicidade, aborta o cadastro
+        if (nomeDuplicado || telefoneDuplicado || cpfDuplicado) {
+            System.out.println("Cadastro cancelado devido a dados duplicados.");
+            return;
+        }
+
+        CompradorMODEL comprador = new CompradorMODEL(nome, telefone, CPF);
         compradorRepository.salvar(comprador);
         System.out.println("Comprador cadastrado com sucesso!");
     }
@@ -39,7 +67,7 @@ public class CompradorService {
         }
 
         for (CompradorMODEL c : compradores) {
-            System.out.println("ID: " + c.getId() + " | Nome: " + c.getNome() + " | Telefone: " + c.getTelefone());
+            System.out.println("ID: " + c.getId() + " | Nome: " + c.getNome() + " | Telefone: " + c.getTelefone() +" | CPF: " + c.getCPF() );
         }
     }
 
@@ -93,5 +121,31 @@ public class CompradorService {
 
         compradorRepository.deletar(id);
         System.out.println("Comprador removido com sucesso!");
+    }
+
+    public CompradorMODEL buscarCompradorPorCPF() {
+        while (true) {
+            System.out.print("Digite o CPF do comprador (ou digite 'cancelar' para sair): ");
+            String entrada = scanner.nextLine().trim();
+
+            if (entrada.equalsIgnoreCase("cancelar")) {
+                System.out.print("Tem certeza que quer cancelar a operação? (s/n): ");
+                String confirmacao = scanner.nextLine().trim();
+                if (confirmacao.equalsIgnoreCase("s")) {
+                    System.out.println("Operação cancelada.");
+                    return null;
+                } else {
+                    continue;
+                }
+            }
+
+            CompradorMODEL comprador = compradorRepository.buscarPorCPF(entrada);
+            if (comprador == null) {
+                System.out.println("CPF não encontrado. Tente novamente.");
+            } else {
+                System.out.println("Comprador encontrado: " + comprador.getNome() + " | Telefone: " + comprador.getTelefone());
+                return comprador;
+            }
+        }
     }
 }

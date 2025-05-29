@@ -106,12 +106,21 @@ public class UsuarioService {
 
         for (UsuarioMODEL usuario : usuarios) {
             System.out.println(usuario);
-            FuncionarioMODEL funcionario = funcionarioRepository.buscarPorId(usuario.getId());
-            if (funcionario != null) {
-                System.out.println("Funcionario: " + funcionario.getNome());
+
+            List<FuncionarioMODEL> funcionarios = funcionarioRepository.buscarPorUsuario(usuario);
+            if (!funcionarios.isEmpty()) {
+                System.out.println("Funcionários vinculados:");
+                for (FuncionarioMODEL funcionario : funcionarios) {
+                    System.out.println("- " + funcionario.getNome());
+                }
+            } else {
+                System.out.println("Nenhum funcionário vinculado.");
             }
+
+            System.out.println("-----------------------");
         }
     }
+
 
     public void atualizarUsuario() {
         List<UsuarioMODEL> usuarios = usuarioRepository.listarTodos();
