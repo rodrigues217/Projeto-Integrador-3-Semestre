@@ -213,10 +213,10 @@ public class View {
             System.out.println("\n--- Menu Funcionário ---");
             System.out.println("1. Criar funcionário");
             System.out.println("2. Listar funcionários");
-            System.out.println("4. Buscar funcionário por CPF");
-            System.out.println("5. Atualizar funcionário");
-            System.out.println("6. Trocar usuário do funcionário");
-            System.out.println("7. Trocar setor do funcionário");
+            System.out.println("3. Buscar funcionário por CPF");
+            System.out.println("4. Atualizar funcionário");
+            System.out.println("5. Trocar usuário do funcionário");
+            System.out.println("6. Trocar setor do funcionário");
             System.out.println("7. Deletar funcionário");
             System.out.println("0. Voltar ao menu principal");
             System.out.print("Escolha: ");
@@ -225,11 +225,11 @@ public class View {
             switch (opcao) {
                 case "1" -> funcionarioController.criarFuncionario();
                 case "2" -> funcionarioController.listarFuncionarios();
-                case "4" -> funcionarioController.buscarFuncionarioPorCPF();
-                case "5" -> funcionarioController.atualizarFuncionario();
-                case "6" -> funcionarioController.trocarUsuarioDeFuncionario();
-                case "7" -> funcionarioController.trocarSetorDeFuncionario();
-                case "8" -> funcionarioController.deletarFuncionario(scanner);
+                case "3" -> funcionarioController.buscarFuncionarioPorCPF();
+                case "4" -> funcionarioController.atualizarFuncionario();
+                case "5" -> funcionarioController.trocarUsuarioDeFuncionario();
+                case "6" -> funcionarioController.trocarSetorDeFuncionario();
+                case "7" -> funcionarioController.deletarFuncionario(scanner);
                 case "0" -> { return; }
                 default  -> System.out.println("Opção inválida.");
             }
