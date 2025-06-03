@@ -22,6 +22,9 @@ public class ProdutosMODEL {
     @Column(name = "curva_abc", length = 1)
     private String curvaAbc;
 
+    @Column(name = "cod_prod", length = 25)
+    private String codProd;
+
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
     private CategoriaProdutoMODEL categoria;
@@ -29,10 +32,11 @@ public class ProdutosMODEL {
     public ProdutosMODEL() {
     }
 
-    public ProdutosMODEL(String nome, Double valor, Integer estoque, CategoriaProdutoMODEL categoria) {
+    public ProdutosMODEL(String nome, Double valor, Integer estoque,String codProd, CategoriaProdutoMODEL categoria) {
         this.nome = nome;
         this.valor = valor;
         this.estoque = estoque;
+        this.codProd = codProd;
         this.categoria = categoria;
     }
 
@@ -76,6 +80,14 @@ public class ProdutosMODEL {
 
     public void setCurvaAbc(String curvaAbc) {
         this.curvaAbc = curvaAbc;
+    }
+
+    public String getCodProd() {
+        return codProd;
+    }
+
+    public void setCodProd(String codProd) {
+        this.codProd = codProd;
     }
 
     public CategoriaProdutoMODEL getCategoria() {

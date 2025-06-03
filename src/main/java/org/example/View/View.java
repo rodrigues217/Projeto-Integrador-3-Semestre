@@ -71,12 +71,7 @@ public class View {
 
             switch (opcao) {
                 case "1" -> produtoController.criarProdutoComCategoria(scanner);
-                case "2" -> {
-                    List<ProdutosMODEL> produtos = produtoController.listarProdutosComCategoria();
-                    System.out.println("\n--- Produtos em Estoque ---");
-                    produtos.forEach(p -> System.out.printf("ID: %d | Nome: %s | Estoque: %d | Categoria: %s%n",
-                            p.getId(), p.getNome(), p.getEstoque(), p.getCategoria().getNome()));
-                }
+                case "2" -> produtoController.listarProdutosComCategoria(scanner);
                 case "3" -> produtoController.atualizarEstoque(scanner, true);
                 case "4" -> produtoController.atualizarEstoque(scanner, false);
                 case "0" -> {

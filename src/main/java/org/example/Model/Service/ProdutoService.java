@@ -48,15 +48,36 @@ public class ProdutoService {
         System.out.print("Quantidade em estoque: ");
         Integer estoque = Integer.parseInt(scanner.nextLine());
 
-        ProdutosMODEL produto = new ProdutosMODEL(nomeProduto, valor, estoque, categoria);
+        System.out.print("Código do produto: ");
+        String codProd = (scanner.nextLine());
+
+        ProdutosMODEL produto = new ProdutosMODEL(nomeProduto, valor, estoque,codProd, categoria);
         produtosRepository.salvar(produto);
 
         System.out.println("Produto criado com sucesso.");
     }
 
-    public List<ProdutosMODEL> listarProdutosComCategoria() {
-        return produtosRepository.listarTodos();
+    public void listarProdutosComCategoria(Scanner scanner) {
+        List<ProdutosMODEL> produtos = produtosRepository.listarTodos();
+
+        if (produtos.isEmpty()) {
+            System.out.println("Nenhum produto cadastrado.");
+            System.out.print("Deseja criar um novo produto agora? (s/n): ");
+            String opcao = scanner.nextLine();
+
+            if (opcao.equalsIgnoreCase("s")) {
+                criarProdutoComCategoria(scanner);
+            }
+            return;
+        }
+
+        System.out.println("\n--- Produtos em Estoque ---");
+        for (ProdutosMODEL p : produtos) {
+            System.out.printf("ID: %d | Nome: %s | Estoque: %d | Categoria: %s | CodProd: %s%n",
+                    p.getId(), p.getNome(), p.getEstoque(), p.getCategoria().getNome(), p.getCodProd());
+        }
     }
+
 
     public void atualizarEstoque(Scanner scanner, boolean adicionar) {
         List<ProdutosMODEL> produtos = produtosRepository.listarTodos();
@@ -68,7 +89,7 @@ public class ProdutoService {
 
         System.out.println("\n=== Produtos Disponíveis ===");
         for (ProdutosMODEL p : produtos) {
-            System.out.printf("ID: %d | Nome: %s | Estoque: %d%n", p.getId(), p.getNome(), p.getEstoque());
+            System.out.printf("ID: %d | Nome: %s | Estoque: %d%n | codProd: %s ", p.getId(), p.getNome(), p.getEstoque(), p.getCodProd());
         }
 
         System.out.print("Informe o ID do produto: ");

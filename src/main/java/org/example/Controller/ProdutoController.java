@@ -14,8 +14,8 @@ public class ProdutoController {
         produtoService.criarProdutoComCategoria(scanner);
     }
 
-    public List<ProdutosMODEL> listarProdutosComCategoria() {
-        return produtoService.listarProdutosComCategoria();
+    public void listarProdutosComCategoria(Scanner scanner) {
+        produtoService.listarProdutosComCategoria(scanner);
     }
 
     public void atualizarEstoque(Scanner scanner, boolean adicionar) {
