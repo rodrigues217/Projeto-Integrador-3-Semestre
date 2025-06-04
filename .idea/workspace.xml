@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="784ed243-8e58-4169-a446-caf68b5164ca" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/BancoConsultorio.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Model/Repository/AuditoriaVendaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Model/Repository/AuditoriaVendaRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Model/Service/AuditoriaVendaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Model/Service/AuditoriaVendaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Model/Service/VendaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Model/Service/VendaService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/AuthService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/CurvaABC.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/LucroService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/ProdutosService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/SistemaService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Service/VendasService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/TesteHibernate.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/Util/Factory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/entities/AuditoriaVenda.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/entities/CategoriaProduto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/entities/Funcionario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/entities/Produtos.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/entities/Setor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/entities/Usuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/repository/CategoriaProdutoRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/repository/FuncionarioRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/repository/ProdutosRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/repository/SetorRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/repository/UsuarioRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2y3UJ14P0xE324XfB0zsMjHQ5Vx" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "develop",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="784ed243-8e58-4169-a446-caf68b5164ca" name="Changes" comment="" />
+      <created>1749062675932</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1749062675932</updated>
+    </task>
+    <servers />
+  </component>
+</project>

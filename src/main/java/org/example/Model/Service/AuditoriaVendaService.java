@@ -50,7 +50,7 @@ public class AuditoriaVendaService {
             return;
         }
 
-        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorFuncionarioCPF(CPF);
+        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorCompradorCPF(CPF);
 
         if (auditorias.isEmpty()) {
             System.out.println("Nenhuma auditoria encontrada para esse comprador.");
