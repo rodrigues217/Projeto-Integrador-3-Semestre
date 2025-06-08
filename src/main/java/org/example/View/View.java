@@ -2,6 +2,7 @@ package org.example.View;
 
 import org.example.Controller.*;
 import org.example.Model.Entity.ProdutosMODEL;
+import org.example.Model.Entity.UsuarioMODEL; // Importar para listar
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,6 +10,17 @@ public class View {
 
     public void menuInicial() {
         Scanner scanner = new Scanner(System.in);
+        // --- Login inicial --- (Assumindo que o login é feito antes de chamar menuInicial)
+        // UsuarioController usuarioController = new UsuarioController();
+        // System.out.println("Bem-vindo ao Sistema de Estoque!");
+        // UsuarioMODEL usuarioLogado = usuarioController.fazerLogin(scanner);
+        // if (usuarioLogado == null) {
+        //     System.out.println("Falha no login. Encerrando.");
+        //     return;
+        // }
+        // System.out.println("Login como: " + usuarioLogado.getLogin() + " (" + usuarioLogado.getPerfil() + ")");
+        // --- Fim Login ---
+
         while (true) {
             System.out.println("\n=== Menu Principal ===");
             System.out.println("1. Venda");
@@ -30,10 +42,11 @@ public class View {
                 case "4" -> mostrarMenuSetores(scanner);
                 case "5" -> mostrarmenuComprador(scanner);
                 case "6" -> mostrarMenuAuditoria(scanner);
-                case "7" -> mostrarMenuUsuario(scanner);
-                case "8" -> mostrarMenuFuncionario(scanner);// <- Novo menu
+                case "7" -> mostrarMenuUsuario(scanner); // Chamada corrigida
+                case "8" -> mostrarMenuFuncionario(scanner);
                 case "0" -> {
                     System.out.println("Saindo...");
+                    scanner.close(); // Fechar o scanner ao sair
                     return;
                 }
                 default -> System.out.println("Opção inválida.");
@@ -74,22 +87,20 @@ public class View {
                 case "2" -> produtoController.listarProdutosComCategoria(scanner);
                 case "3" -> produtoController.atualizarEstoque(scanner, true);
                 case "4" -> produtoController.atualizarEstoque(scanner, false);
-                case "0" -> {
-                    return;
-                }
+                case "0" -> { return; }
                 default -> System.out.println("Opção inválida.");
             }
         }
     }
     public void mostrarMenuCategorias(Scanner scanner) {
-       CategoriaProdutoController categoriaController = new CategoriaProdutoController();
+        CategoriaProdutoController categoriaController = new CategoriaProdutoController();
         while (true) {
             System.out.println("\n=== Gerenciar Categorias ===");
             System.out.println("1. Criar nova categoria");
             System.out.println("2. Trocar categoria de um produto");
             System.out.println("3. Atualizar nome de uma categoria");
             System.out.println("4. Remover categoria");
-            System.out.println("5. Ver categorias existentes"); // <- NOVA OPÇÃO
+            System.out.println("5. Ver categorias existentes");
             System.out.println("0. Voltar");
             System.out.print("Escolha: ");
             String escolha = scanner.nextLine();
@@ -99,7 +110,7 @@ public class View {
                 case "2" -> categoriaController.trocarCategoriaDeProduto(scanner);
                 case "3" -> categoriaController.atualizarNomeCategoria(scanner);
                 case "4" -> categoriaController.removerCategoria(scanner);
-                case "5" -> categoriaController.listarCategorias(); // <- NOVA CHAMADA
+                case "5" -> categoriaController.listarCategorias();
                 case "0" -> { return; }
                 default -> System.out.println("Opção inválida.");
             }
@@ -130,7 +141,7 @@ public class View {
 
     public void mostrarmenuComprador(Scanner scanner) {
         CompradorController compradorController = new CompradorController();
-      while (true) {
+        while (true) {
             System.out.println("\n--- Menu Comprador ---");
             System.out.println("1. Cadastrar comprador");
             System.out.println("2. Listar compradores");
@@ -177,6 +188,7 @@ public class View {
         }
     }
 
+    // --- Método Corrigido ---
     public void mostrarMenuUsuario(Scanner scanner) {
         UsuarioController usuarioController = new UsuarioController();
 
@@ -191,12 +203,70 @@ public class View {
             String opcao = scanner.nextLine();
 
             switch (opcao) {
-                case "1" -> usuarioController.criarUsuario();
-                case "2" -> usuarioController.listarUsuarios();
-                case "3" -> usuarioController.atualizarUsuario();
-                case "4" -> usuarioController.deletarUsuario();
-                case "0" -> { return; }
-                default  -> System.out.println("Opção inválida.");
+                case "1":
+                    System.out.print("Digite o login do novo usuário: ");
+                    String login = scanner.nextLine();
+                    System.out.print("Digite a senha: ");
+                    String senha = scanner.nextLine();
+                    System.out.print("Digite o perfil (ADM, GERENTE, OPERADOR): ");
+                    String perfil = scanner.nextLine().toUpperCase();
+                    usuarioController.criarUsuario(login, senha, perfil);
+                    break;
+                case "2":
+                    List<UsuarioMODEL> usuarios = usuarioController.listarUsuarios();
+                    if (usuarios.isEmpty()) {
+                        System.out.println("Não há usuários cadastrados.");
+                    } else {
+                        System.out.println("\n--- Lista de Usuários ---");
+                        for (UsuarioMODEL u : usuarios) {
+                            System.out.println("ID: " + u.getId() + ", Login: " + u.getLogin() + ", Perfil: " + u.getPerfil());
+                        }
+                        System.out.println("------------------------");
+                    }
+                    break;
+                case "3":
+                    System.out.print("Digite o ID do usuário a ser atualizado: ");
+                    Long idAtualizar;
+                    try {
+                        idAtualizar = Long.parseLong(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("ID inválido.");
+                        break;
+                    }
+                    System.out.print("Digite o novo login: ");
+                    String novoLogin = scanner.nextLine();
+                    System.out.print("Digite a nova senha: ");
+                    String novaSenha = scanner.nextLine();
+                    System.out.print("Digite o novo perfil (ADM, GERENTE, OPERADOR): ");
+                    String novoPerfil = scanner.nextLine().toUpperCase();
+                    usuarioController.atualizarUsuario(idAtualizar, novoLogin, novaSenha, novoPerfil);
+                    break;
+                case "4":
+                    System.out.print("Digite o ID do usuário a ser deletado: ");
+                    Long idDeletar;
+                    try {
+                        idDeletar = Long.parseLong(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("ID inválido.");
+                        break;
+                    }
+                    // Adiciona confirmação antes de deletar
+                    System.out.print("Tem certeza que deseja deletar o usuário com ID " + idDeletar + "? (s/n): ");
+                    String confirmacao = scanner.nextLine();
+                    if (confirmacao.equalsIgnoreCase("s")) {
+                        boolean deletado = usuarioController.deletarUsuario(idDeletar);
+                        if (!deletado) {
+                            // Mensagem de erro já é exibida pelo service/controller
+                            System.out.println("Falha ao deletar usuário (verifique se está vinculado a um funcionário).");
+                        }
+                    } else {
+                        System.out.println("Operação cancelada.");
+                    }
+                    break;
+                case "0":
+                    return; // Volta ao menu anterior
+                default:
+                    System.out.println("Opção inválida.");
             }
         }
     }
@@ -230,8 +300,5 @@ public class View {
             }
         }
     }
-
-
-
-
 }
+

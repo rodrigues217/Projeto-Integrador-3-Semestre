@@ -51,5 +51,13 @@ public class CategoriaProdutoMODEL {
         this.produtos = produtos;
     }
 
-
+    /**
+     * Sobrescreve o método toString para exibir apenas o nome da categoria.
+     * Isso garante que em componentes como JComboBox, apenas o nome será exibido.
+     * @return O nome da categoria
+     */
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

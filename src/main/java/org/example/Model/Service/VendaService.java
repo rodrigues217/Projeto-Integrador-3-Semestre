@@ -13,57 +13,76 @@ import java.util.Scanner;
 
 public class VendaService {
 
-    public String realizarVenda(Long produtoId, Long funcionarioId, int quantidade, Long compradorId) {
-        EntityManager em = HibernateUtil.getEntityManager();
+    public String realizarVenda(String codProd, String cpfFuncionario, int quantidade, String cpfComprador) {
+            EntityManager em = HibernateUtil.getEntityManager();
 
-        try {
-            em.getTransaction().begin();
+            try {
+                em.getTransaction().begin();
 
-            ProdutosMODEL produto = em.find(ProdutosMODEL.class, produtoId);
-            if (produto == null) {
-                em.getTransaction().rollback();
-                return "Produto não encontrado.";
+                // Buscar o produto pelo código
+                ProdutosMODEL produto = em.createQuery("FROM Produtos p WHERE p.codProd = :codProd", ProdutosMODEL.class)
+                        .setParameter("codProd", codProd)
+                        .getResultStream().findFirst().orElse(null);
+
+                if (produto == null) {
+                    em.getTransaction().rollback();
+                    return "Produto não encontrado.";
+                }
+
+                // Buscar o funcionário pelo CPF
+                FuncionarioMODEL funcionario = em.createQuery("FROM Funcionario f WHERE f.CPF = :CPF", FuncionarioMODEL.class)
+                        .setParameter("CPF", cpfFuncionario)
+                        .getResultStream().findFirst().orElse(null);
+
+                if (funcionario == null) {
+                    em.getTransaction().rollback();
+                    return "Funcionário não encontrado.";
+                }
+
+                if (produto.getEstoque() < quantidade) {
+                    em.getTransaction().rollback();
+                    return "Estoque insuficiente.";
+                }
+
+                // Buscar o comprador pelo CPF (se informado)
+                CompradorMODEL comprador = null;
+                if (cpfComprador != null && !cpfComprador.isBlank()) {
+                    comprador = em.createQuery("FROM Comprador c WHERE c.CPF = :CPF", CompradorMODEL.class)
+                            .setParameter("CPF", cpfComprador)
+                            .getResultStream().findFirst().orElse(null);
+                }
+
+                // Atualizar estoque
+                produto.setEstoque(produto.getEstoque() - quantidade);
+                em.merge(produto);
+
+                // Atualizar total de vendas do funcionário
+                double totalVenda = quantidade * produto.getValor();
+                funcionario.setTotalVendas(funcionario.getTotalVendas() + totalVenda);
+                em.merge(funcionario);
+
+                // Criar auditoria da venda
+                AuditoriaVendaMODEL auditoria = new AuditoriaVendaMODEL();
+                auditoria.setProduto(produto);
+                auditoria.setFuncionario(funcionario);
+                auditoria.setQuantidade(quantidade);
+                auditoria.setComprador(comprador);
+                auditoria.setDataVenda(java.time.LocalDateTime.now());
+
+                em.persist(auditoria);
+
+                em.getTransaction().commit();
+                return "SUCESSO";
+
+            } catch (Exception e) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                return "Erro inesperado: " + e.getMessage();
+            } finally {
+                em.close();
             }
-
-            FuncionarioMODEL funcionario = em.find(FuncionarioMODEL.class, funcionarioId);
-            if (funcionario == null) {
-                em.getTransaction().rollback();
-                return "Funcionário não encontrado.";
-            }
-
-            if (produto.getEstoque() < quantidade) {
-                em.getTransaction().rollback();
-                return "Estoque insuficiente.";
-            }
-
-            CompradorMODEL comprador = compradorId != null ? em.find(CompradorMODEL.class, compradorId) : null;
-
-            produto.setEstoque(produto.getEstoque() - quantidade);
-            em.merge(produto);
-
-            double totalVenda = quantidade * produto.getValor();
-            funcionario.setTotalVendas(funcionario.getTotalVendas() + totalVenda);
-            em.merge(funcionario);
-
-            AuditoriaVendaMODEL auditoria = new AuditoriaVendaMODEL();
-            auditoria.setProduto(produto);
-            auditoria.setFuncionario(funcionario);
-            auditoria.setQuantidade(quantidade);
-            auditoria.setComprador(comprador);
-            auditoria.setDataVenda(java.time.LocalDateTime.now());
-
-            em.persist(auditoria);
-
-            em.getTransaction().commit();
-            return "SUCESSO";
-
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) em.getTransaction().rollback();
-            return "Erro inesperado: " + e.getMessage();
-        } finally {
-            em.close();
         }
-    }
+
+
     public void executarVendaViaMenu(Scanner scanner) {
         EntityManager em = HibernateUtil.getEntityManager();
 
@@ -71,7 +90,7 @@ public class VendaService {
             ProdutosMODEL produto = null;
             FuncionarioMODEL funcionario = null;
             Integer quantidade = null;
-            Long compradorId = null;
+            CompradorMODEL comprador = null;
 
             etapa:
             while (true) {
@@ -79,22 +98,26 @@ public class VendaService {
 
                 // Produto
                 while (produto == null) {
-                    System.out.print("ID do Produto (ou 'cancelar'): ");
+                    System.out.print("Código do Produto (codProd) (ou 'cancelar'): ");
                     String input = scanner.nextLine().trim();
                     if (input.equalsIgnoreCase("cancelar")) return;
 
                     try {
-                        Long id = Long.parseLong(input);
-                        produto = em.find(ProdutosMODEL.class, id);
+                        produto = em.createQuery("SELECT p FROM Produtos p WHERE p.codProd = :cod", ProdutosMODEL.class)
+                                .setParameter("cod", input)
+                                .getResultStream()
+                                .findFirst()
+                                .orElse(null);
+
                         if (produto == null) System.out.println("Produto não encontrado.");
-                    } catch (NumberFormatException e) {
-                        System.out.println("ID inválido.");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao buscar produto: " + e.getMessage());
                     }
                 }
 
                 // Funcionário
                 while (funcionario == null) {
-                    System.out.print("ID do Funcionário ('voltar' / 'cancelar'): ");
+                    System.out.print("CPF do Funcionário ('voltar' / 'cancelar'): ");
                     String input = scanner.nextLine().trim();
 
                     if (input.equalsIgnoreCase("voltar")) {
@@ -104,11 +127,15 @@ public class VendaService {
                     if (input.equalsIgnoreCase("cancelar")) return;
 
                     try {
-                        Long id = Long.parseLong(input);
-                        funcionario = em.find(FuncionarioMODEL.class, id);
+                        funcionario = em.createQuery("SELECT f FROM Funcionario f WHERE f.CPF = :CPF", FuncionarioMODEL.class)
+                                .setParameter("CPF", input)
+                                .getResultStream()
+                                .findFirst()
+                                .orElse(null);
+
                         if (funcionario == null) System.out.println("Funcionário não encontrado.");
-                    } catch (NumberFormatException e) {
-                        System.out.println("ID inválido.");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao buscar funcionário: " + e.getMessage());
                     }
                 }
 
@@ -133,18 +160,13 @@ public class VendaService {
                             quantidade = qtd;
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println("Quantidade inválida.");
+                        System.out.println("Número inválido.");
                     }
                 }
 
-                // Comprador
-                while (true) {
-                    System.out.println("ID do Comprador:");
-                    System.out.println(" - Deixe em branco para venda sem comprador");
-                    System.out.println(" - Digite 'novo' para cadastrar um novo");
-                    System.out.println(" - Digite 'voltar' para voltar");
-                    System.out.println(" - Digite 'cancelar' para cancelar");
-                    System.out.print("Entrada: ");
+                // Comprador (opcional)
+                while (comprador == null) {
+                    System.out.print("CPF do Comprador (vazio para venda sem comprador / 'voltar' / 'cancelar'): ");
                     String input = scanner.nextLine().trim();
 
                     if (input.equalsIgnoreCase("voltar")) {
@@ -153,64 +175,52 @@ public class VendaService {
                     }
                     if (input.equalsIgnoreCase("cancelar")) return;
 
-                    if (input.isBlank()) break;
-
-                    if (input.equalsIgnoreCase("novo")) {
-                        System.out.print("Nome do comprador: ");
-                        String nome = scanner.nextLine().trim();
-                        System.out.print("Telefone do comprador: ");
-                        String telefone = scanner.nextLine().trim();
-                        System.out.print("CPF do comprador: ");
-                        String CPF = scanner.nextLine().trim();
-
-
-                        List<CompradorMODEL> compradores = new CompradorRepository().listarTodos();
-                        for (CompradorMODEL c : compradores) {
-                            if (c.getNome().equalsIgnoreCase(nome) && c.getTelefone().equals(telefone)) {
-                                System.out.println("Já existe um comprador com esse nome e telefone.");
-                                compradorId = c.getId();
-                                System.out.println("Usando comprador já existente. ID: " + compradorId);
-                                break;
-                            }
-                        }
-
-                        if (compradorId == null) {
-                            CompradorMODEL novoComprador = new CompradorMODEL(nome, telefone, CPF);
-                            new CompradorRepository().salvar(novoComprador);
-                            compradorId = novoComprador.getId();
-                            System.out.println("Comprador cadastrado com ID: " + compradorId);
-                        }
-
-                        break;
-                    }
+                    if (input.isEmpty()) break;
 
                     try {
-                        Long id = Long.parseLong(input);
-                        CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
+                        comprador = em.createQuery("SELECT c FROM Comprador c WHERE c.CPF = :CPF", CompradorMODEL.class)
+                                .setParameter("CPF", input)
+                                .getResultStream()
+                                .findFirst()
+                                .orElse(null);
+
                         if (comprador == null) {
-                            System.out.println("Comprador não encontrado.");
-                        } else {
-                            compradorId = comprador.getId();
-                            break;
+                            System.out.print("Comprador não encontrado. Deseja cadastrar? (s/n): ");
+                            String resp = scanner.nextLine().trim();
+                            if (resp.equalsIgnoreCase("s")) {
+                                System.out.print("Nome do Comprador: ");
+                                String nome = scanner.nextLine().trim();
+
+                                em.getTransaction().begin();
+                                comprador = new CompradorMODEL();
+                                comprador.setNome(nome);
+                                comprador.setCPF(input);
+                                em.persist(comprador);
+                                em.getTransaction().commit();
+
+                                System.out.println("Comprador cadastrado.");
+                            } else {
+                                comprador = null; // continua no loop
+                            }
                         }
-                    } catch (NumberFormatException e) {
-                        System.out.println("ID inválido.");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao buscar comprador: " + e.getMessage());
                     }
                 }
 
                 // Realizar venda
-                String resultado = realizarVenda(produto.getId(), funcionario.getId(), quantidade, compradorId);
-                if (resultado.equals("SUCESSO")) {
-                    System.out.println("Venda realizada com sucesso!");
-                } else {
-                    System.out.println("Erro: " + resultado);
-                }
-                break;
+                VendaService service = new VendaService();
+                String resultado = service.realizarVenda(produto.getCodProd(), funcionario.getCPF(), quantidade,
+                        comprador != null ? comprador.getCPF() : null);
+                System.out.println("Resultado da venda: " + resultado);
+                return;
             }
+
         } finally {
             em.close();
-            System.out.println("Operação finalizada.");
         }
     }
+
+
 
 }

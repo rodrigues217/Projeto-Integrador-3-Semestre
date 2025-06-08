@@ -87,6 +87,24 @@ public class AuditoriaVendaRepository {
         return auditorias;
     }
 
+    public List<AuditoriaVendaMODEL> buscarPorCompradorCPF(String CPF) {
+        EntityManager em = getEntityManager();
+        List<AuditoriaVendaMODEL> auditorias = em.createQuery("""
+        SELECT a FROM AuditoriaVenda a
+        JOIN FETCH a.produto
+        JOIN FETCH a.funcionario
+        LEFT JOIN FETCH a.comprador c
+        WHERE c.CPF = :CPF
+    """, AuditoriaVendaMODEL.class)
+                .setParameter("CPF", CPF)
+                .getResultList();
+        em.close();
+        return auditorias;
+    }
+
+
+
+
     public List<AuditoriaVendaMODEL> buscarPorProdutoId(Long produtoId) {
         EntityManager em = getEntityManager();
         List<AuditoriaVendaMODEL> auditorias = em.createQuery("""

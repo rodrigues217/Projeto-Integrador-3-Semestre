@@ -1,5 +1,7 @@
 package org.example.Model.Service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.example.Model.Entity.AuditoriaVendaMODEL;
 import org.example.Model.Entity.FuncionarioMODEL;
 import org.example.Model.Entity.SetorMODEL;
@@ -8,8 +10,11 @@ import org.example.Model.Repository.AuditoriaVendaRepository;
 import org.example.Model.Repository.FuncionarioRepository;
 import org.example.Model.Repository.SetorRepository;
 import org.example.Model.Repository.UsuarioRepository;
+import org.example.Model.Util.HibernateUtil; // Import HibernateUtil
 
+import java.util.Collections; // Import Collections for emptyList
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class FuncionarioService {
@@ -18,7 +23,59 @@ public class FuncionarioService {
     private final UsuarioRepository usuarioRepository = new UsuarioRepository();
     private final SetorRepository setorRepository = new SetorRepository();
     private final AuditoriaVendaRepository auditoriaVendaRepository = new AuditoriaVendaRepository();
+    // Scanner é mantido para os métodos antigos, mas não usado nos novos métodos Swing
     private final Scanner scanner = new Scanner(System.in);
+
+    // --- Métodos para Swing ---
+
+    /**
+     * Busca um funcionário associado a um determinado usuário.
+     * Útil para obter o funcionário logado a partir do usuário autenticado.
+     * @param usuario O UsuarioMODEL autenticado.
+     * @return Optional contendo o FuncionarioMODEL se encontrado, Optional.empty() caso contrário.
+     */
+    public Optional<FuncionarioMODEL> buscarFuncionarioPorUsuario(UsuarioMODEL usuario) {
+        if (usuario == null || usuario.getId() == null) {
+            return Optional.empty();
+        }
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            FuncionarioMODEL funcionario = em.createQuery(
+                            "SELECT f FROM Funcionario f WHERE f.usuario.id = :usuarioId", FuncionarioMODEL.class)
+                    .setParameter("usuarioId", usuario.getId())
+                    .setMaxResults(1) // Garante que apenas um resultado seja retornado
+                    .getSingleResult();
+            return Optional.of(funcionario);
+        } catch (NoResultException e) {
+            // É normal não encontrar um funcionário para um usuário (ex: usuário ADM sem vínculo direto)
+            return Optional.empty();
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar funcionário por usuário: " + e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+    /**
+     * Lista todos os funcionários cadastrados.
+     * @return Uma lista de FuncionarioMODEL, ou lista vazia se ocorrer erro.
+     */
+    public List<FuncionarioMODEL> listarFuncionarios() {
+        try {
+            return funcionarioRepository.listarTodos();
+        } catch (Exception e) {
+            System.err.println("Erro ao listar todos os funcionários: " + e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyList(); // Retorna lista vazia em caso de erro
+        }
+    }
+
+    // --- Métodos existentes (baseados em Scanner) ---
+    // Manter por compatibilidade ou refatorar se a interface de console for removida
 
     public void criarFuncionario() {
         List<UsuarioMODEL> usuarios = usuarioRepository.listarTodos();
@@ -55,7 +112,13 @@ public class FuncionarioService {
                 System.out.println("ID: " + u.getId() + " | Login: " + u.getLogin());
             }
             System.out.print("Digite o ID do usuário a ser associado (ou 0 para cancelar): ");
-            Long usuarioId = Long.parseLong(scanner.nextLine());
+            Long usuarioId;
+            try {
+                usuarioId = Long.parseLong(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("ID inválido.");
+                continue;
+            }
             if (usuarioId == 0L) {
                 System.out.print("Tem certeza que deseja cancelar a criação? (s/n): ");
                 if (scanner.nextLine().equalsIgnoreCase("s")) return;
@@ -75,7 +138,13 @@ public class FuncionarioService {
                 System.out.println("ID: " + s.getId() + " | Nome: " + s.getNome());
             }
             System.out.print("Digite o ID do setor a ser associado (ou 0 para cancelar): ");
-            Long setorId = Long.parseLong(scanner.nextLine());
+            Long setorId;
+            try {
+                setorId = Long.parseLong(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("ID inválido.");
+                continue;
+            }
             if (setorId == 0L) {
                 System.out.print("Tem certeza que deseja cancelar a criação? (s/n): ");
                 if (scanner.nextLine().equalsIgnoreCase("s")) return;
@@ -263,7 +332,13 @@ public class FuncionarioService {
         }
 
         System.out.print("Digite o ID do funcionário que deseja atualizar: ");
-        Long id = Long.parseLong(scanner.nextLine());
+        Long id;
+        try {
+            id = Long.parseLong(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("ID inválido.");
+            return;
+        }
         FuncionarioMODEL funcionario = funcionarioRepository.buscarPorId(id);
 
         if (funcionario == null) {
@@ -271,30 +346,43 @@ public class FuncionarioService {
             return;
         }
 
-        System.out.print("Novo nome: ");
-        funcionario.setNome(scanner.nextLine());
+        System.out.print("Novo nome (atual: " + funcionario.getNome() + "): ");
+        String novoNome = scanner.nextLine();
+        if (!novoNome.isBlank()) {
+            funcionario.setNome(novoNome);
+        }
 
-        System.out.print("Novo CPF: ");
-        funcionario.setCPF(scanner.nextLine());
+        System.out.print("Novo CPF (atual: " + funcionario.getCPF() + "): ");
+        String novoCPF = scanner.nextLine();
+        if (!novoCPF.isBlank()) {
+            funcionario.setCPF(novoCPF);
+        }
 
-        System.out.print("Novo endereço: ");
-        funcionario.setEndereco(scanner.nextLine());
+        System.out.print("Novo endereço (atual: " + funcionario.getEndereco() + "): ");
+        String novoEndereco = scanner.nextLine();
+        if (!novoEndereco.isBlank()) {
+            funcionario.setEndereco(novoEndereco);
+        }
 
-        System.out.print("Novo telefone: ");
-        funcionario.setTelefone(scanner.nextLine());
+        System.out.print("Novo telefone (atual: " + funcionario.getTelefone() + "): ");
+        String novoTelefone = scanner.nextLine();
+        if (!novoTelefone.isBlank()) {
+            funcionario.setTelefone(novoTelefone);
+        }
 
         funcionarioRepository.atualizar(funcionario);
         System.out.println("Funcionário atualizado com sucesso!");
     }
 
-    public void listarFuncionarios() {
+    // Renomeado para evitar conflito com o novo método Swing
+    public void listarFuncionariosConsole() {
         List<FuncionarioMODEL> funcionarios = funcionarioRepository.listarTodos();
         if (funcionarios.isEmpty()) {
             System.out.println("Não há funcionários cadastrados.");
             return;
         }
 
-        System.out.println("Lista de funcionários:");
+        System.out.println("\n--- Lista de funcionários ---");
         for (FuncionarioMODEL f : funcionarios) {
             String setor = (f.getSetor() != null) ? f.getSetor().getNome() : "Nenhum";
             String usuario = (f.getUsuario() != null) ? f.getUsuario().getLogin() : "Nenhum";
@@ -336,13 +424,12 @@ public class FuncionarioService {
                 System.out.println("CPF: " + funcionario.getCPF());
                 System.out.println("Endereço: " + funcionario.getEndereco());
                 System.out.println("Telefone: " + funcionario.getTelefone());
-                System.out.println("Setor: " +  funcionario.getSetor());
-                System.out.println("Usuário: " + funcionario.getUsuario());
+                // Corrigido para mostrar nome do setor e login do usuário
+                System.out.println("Setor: " + (funcionario.getSetor() != null ? funcionario.getSetor().getNome() : "Nenhum"));
+                System.out.println("Usuário: " + (funcionario.getUsuario() != null ? funcionario.getUsuario().getLogin() : "Nenhum"));
                 System.out.println("------------------------");
 
                 return funcionario;
-
-
             }
         }
     }
@@ -374,11 +461,14 @@ public class FuncionarioService {
             return;
         }
 
-        funcionarioRepository.deletar(funcionario.getId());
-        System.out.println("Funcionário deletado com sucesso.");
+        System.out.print("Tem certeza que deseja deletar o funcionário " + funcionario.getNome() + "? (s/n): ");
+        String confirmacao = scanner.nextLine();
+        if (confirmacao.equalsIgnoreCase("s")) {
+            funcionarioRepository.deletar(funcionario.getId());
+            System.out.println("Funcionário deletado com sucesso.");
+        } else {
+            System.out.println("Operação cancelada.");
+        }
     }
-
-
-
-
 }
+

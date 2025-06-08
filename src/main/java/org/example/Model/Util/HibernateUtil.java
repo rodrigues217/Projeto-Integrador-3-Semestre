@@ -28,4 +28,7 @@ public class HibernateUtil {
     public static void shutdown() {
         sessionFactory.close();
     }
+
+    public static void closeEntityManagerFactory() {
+    }
 }

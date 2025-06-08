@@ -1,17 +1,71 @@
 package org.example.Model.Service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import org.example.Model.Entity.CategoriaProdutoMODEL;
 import org.example.Model.Entity.ProdutosMODEL;
 import org.example.Model.Repository.CategoriaProdutoRepository;
 import org.example.Model.Repository.ProdutosRepository;
+import org.example.Model.Util.HibernateUtil; // Import HibernateUtil
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ProdutoService {
 
     private final ProdutosRepository produtosRepository = new ProdutosRepository();
     private final CategoriaProdutoRepository categoriaRepository = new CategoriaProdutoRepository();
+
+    // --- Métodos para Swing ---
+
+    /**
+     * Busca um produto pelo seu código.
+     * @param codProd O código do produto.
+     * @return Optional contendo o produto se encontrado, Optional.empty() caso contrário.
+     */
+    public Optional<ProdutosMODEL> buscarPorCodProd(String codProd) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            // Usando Optional para um retorno mais claro
+            return Optional.ofNullable(
+                    em.createQuery("SELECT p FROM Produtos p WHERE p.codProd = :cod", ProdutosMODEL.class)
+                            .setParameter("cod", codProd)
+                            .getResultStream()
+                            .findFirst()
+                            .orElse(null)
+            );
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar produto por código: " + e.getMessage());
+            e.printStackTrace();
+            return Optional.empty(); // Retorna vazio em caso de erro
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+    /**
+     * Busca um produto pelo seu ID.
+     * @param id O ID do produto.
+     * @return Optional contendo o produto se encontrado, Optional.empty() caso contrário.
+     */
+    public Optional<ProdutosMODEL> buscarPorId(Long id) {
+        // Delega para o repositório, mas envolve em Optional para consistência
+        return Optional.ofNullable(produtosRepository.buscarPorId(id));
+    }
+
+    /**
+     * Lista todos os produtos.
+     * @return Lista de produtos.
+     */
+    public List<ProdutosMODEL> listarTodos() {
+        return produtosRepository.listarTodos();
+    }
+
+    // --- Métodos existentes (baseados em Scanner) ---
+    // Manter por compatibilidade ou refatorar se a interface de console for removida
 
     public void criarProdutoComCategoria(Scanner scanner) {
         List<CategoriaProdutoMODEL> categorias = categoriaRepository.listarTodos();
@@ -89,7 +143,7 @@ public class ProdutoService {
 
         System.out.println("\n=== Produtos Disponíveis ===");
         for (ProdutosMODEL p : produtos) {
-            System.out.printf("ID: %d | Nome: %s | Estoque: %d%n | codProd: %s ", p.getId(), p.getNome(), p.getEstoque(), p.getCodProd());
+            System.out.printf("ID: %d | Nome: %s | Estoque: %d%n | codProd: %s \n", p.getId(), p.getNome(), p.getEstoque(), p.getCodProd()); // Adicionado \n
         }
 
         System.out.print("Informe o ID do produto: ");
@@ -115,3 +169,4 @@ public class ProdutoService {
         System.out.println("Estoque atualizado com sucesso.");
     }
 }
+
