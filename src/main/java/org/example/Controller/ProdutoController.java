@@ -21,4 +21,8 @@ public class ProdutoController {
     public void atualizarEstoque(Scanner scanner, boolean adicionar) {
         produtoService.atualizarEstoque(scanner, adicionar);
     }
+
+    public void listarPorCurvaABC() {
+        produtoService.listarProdutosPorCurvaABC();
+    }
 }

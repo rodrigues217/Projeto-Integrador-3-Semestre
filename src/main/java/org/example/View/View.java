@@ -63,8 +63,9 @@ public class View {
             System.out.println("\n=== Gerenciar Estoque ===");
             System.out.println("1. Cadastrar Produto");
             System.out.println("2. Ver Produtos em Estoque");
-            System.out.println("3. Adicionar Estoque");
-            System.out.println("4. Remover Estoque");
+            System.out.println("3. Listar Produtos curva ABC");
+            System.out.println("4. Adicionar Estoque");
+            System.out.println("5. Remover Estoque");
             System.out.println("0. Voltar");
             System.out.print("Escolha: ");
             String opcao = scanner.nextLine();
@@ -72,8 +73,9 @@ public class View {
             switch (opcao) {
                 case "1" -> produtoController.criarProdutoComCategoria(scanner);
                 case "2" -> produtoController.listarProdutosComCategoria(scanner);
-                case "3" -> produtoController.atualizarEstoque(scanner, true);
-                case "4" -> produtoController.atualizarEstoque(scanner, false);
+                case "3" -> produtoController.listarPorCurvaABC();
+                case "4" -> produtoController.atualizarEstoque(scanner, true);
+                case "5" -> produtoController.atualizarEstoque(scanner, false);
                 case "0" -> {
                     return;
                 }
