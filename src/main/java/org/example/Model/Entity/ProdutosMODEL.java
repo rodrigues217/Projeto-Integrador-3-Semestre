@@ -29,6 +29,13 @@ public class ProdutosMODEL {
     @JoinColumn(name = "categoria_id", nullable = false)
     private CategoriaProdutoMODEL categoria;
 
+    @Override
+    public String toString() {
+        return nome; // ou qualquer campo que represente o nome do produto
+    }
+
+
+
     public ProdutosMODEL() {
     }
 

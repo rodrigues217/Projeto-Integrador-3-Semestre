@@ -56,6 +56,13 @@ public class ProdutoService {
         produtosRepository.atualizar(produto);
     }
 
+    public List<ProdutosMODEL> listarProdutosPorCategoria(Long idCategoria) {
+        return produtosRepository.listarTodos().stream()
+                .filter(p -> p.getCategoria() != null && p.getCategoria().getId().equals(idCategoria))
+                .toList();
+    }
+
+
     public List<ProdutoComValorTotal> listarProdutosPorCurvaABC() {
         List<ProdutosMODEL> produtos = produtosRepository.listarTodos();
 

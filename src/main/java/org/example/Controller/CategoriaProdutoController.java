@@ -5,39 +5,31 @@ import org.example.Model.Service.CategoriaProdutoService;
 
 import java.util.List;
 
-
 public class CategoriaProdutoController {
 
-    private final CategoriaProdutoService categoriaService;
-
-    public CategoriaProdutoController() {
-        this.categoriaService = new CategoriaProdutoService();
-    }
+    private final CategoriaProdutoService categoriaService = new CategoriaProdutoService();
 
     public void criarCategoria(String nome) throws Exception {
         categoriaService.criarCategoria(nome);
     }
 
-
-
-    public void trocarCategoriaDeProduto(Long idProduto, Long idNovaCategoria) throws Exception {
-        categoriaService.trocarCategoriaDeProduto(idProduto, idNovaCategoria);
-    }
-
-    public void atualizarNomeCategoria(Long idCategoria, String novoNome) throws Exception {
-        categoriaService.atualizarNomeCategoria(idCategoria, novoNome);
-    }
-
-    public void removerCategoria(Long idCategoria) throws Exception {
-        categoriaService.removerCategoria(idCategoria);
-    }
-
-    public static List<CategoriaProdutoMODEL> listarCategorias() {
-        return CategoriaProdutoService.listarCategorias();
+    public List<CategoriaProdutoMODEL> listarCategorias() {
+        return categoriaService.listarCategorias();
     }
 
     public List<CategoriaProdutoMODEL> listarCategoriasComProdutos() {
         return categoriaService.listarCategoriasComProdutos();
     }
 
+    public void trocarCategoriaDeProduto(Long idProduto, Long idNovaCategoria) throws Exception {
+        categoriaService.trocarCategoriaDeProduto(idProduto, idNovaCategoria);
+    }
+
+    public void atualizarNomeCategoria(Long id, String novoNome) throws Exception {
+        categoriaService.atualizarNomeCategoria(id, novoNome);
+    }
+
+    public void removerCategoria(Long id) throws Exception {
+        categoriaService.removerCategoria(id);
+    }
 }

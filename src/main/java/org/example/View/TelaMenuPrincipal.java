@@ -14,16 +14,18 @@ public class TelaMenuPrincipal extends JFrame {
         setSize(600, 600);
         setLocationRelativeTo(null); // Centraliza a janela
 
-        // Inicializa o CardLayout e o painel principal
+        // === Inicializa o CardLayout e o painel principal ===
         cardLayout = new CardLayout();
         painelPrincipal = new JPanel(cardLayout);
 
-        // === Adiciona telas ===
+        // === Criação das telas ===
         TelaVenda telaVenda = new TelaVenda();
         TelaGerenciamentoEstoque telaEstoque = new TelaGerenciamentoEstoque();
+        TelaGerenciamentoCategoria telaCategoria = new TelaGerenciamentoCategoria();
 
         painelPrincipal.add(telaVenda, "telaVenda");
         painelPrincipal.add(telaEstoque, "telaEstoque");
+        painelPrincipal.add(telaCategoria, "telaCategoria");
 
         // === Barra de menus ===
         JMenuBar menuBar = new JMenuBar();
@@ -41,7 +43,10 @@ public class TelaMenuPrincipal extends JFrame {
         itemEstoque.addActionListener(e -> cardLayout.show(painelPrincipal, "telaEstoque"));
         menuGerenciamento.add(itemEstoque);
 
-        menuGerenciamento.add(new JMenuItem("Categorias"));
+        JMenuItem itemCategorias = new JMenuItem("Categorias");
+        itemCategorias.addActionListener(e -> cardLayout.show(painelPrincipal, "telaCategoria"));
+        menuGerenciamento.add(itemCategorias);
+
         menuGerenciamento.add(new JMenuItem("Setores"));
         menuGerenciamento.add(new JMenuItem("Compradores"));
         menuGerenciamento.add(new JMenuItem("Funcionários"));
@@ -51,16 +56,16 @@ public class TelaMenuPrincipal extends JFrame {
         JMenu menuRelatorio = new JMenu("Relatórios");
         menuRelatorio.add(new JMenuItem("Auditoria de Vendas"));
 
-        // Adiciona os menus à barra
+        // === Adiciona os menus à barra ===
         menuBar.add(menuVenda);
         menuBar.add(menuGerenciamento);
         menuBar.add(menuRelatorio);
         setJMenuBar(menuBar);
 
-        // Adiciona o painel principal ao frame
+        // === Adiciona o painel principal ao frame ===
         add(painelPrincipal);
 
-        // Exibe a primeira tela
+        // === Exibe a primeira tela ===
         cardLayout.show(painelPrincipal, "telaVenda");
 
         setVisible(true);

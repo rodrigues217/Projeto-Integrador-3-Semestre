@@ -25,4 +25,10 @@ public class ProdutoController {
     public void atualizarEstoque(Long idProduto, int quantidade, boolean adicionar) throws Exception {
         produtoService.atualizarEstoque(idProduto, quantidade, adicionar);
     }
+
+    public List<ProdutosMODEL> listarProdutosPorCategoria(Long idCategoria) {
+        return produtoService.listarProdutosPorCategoria(idCategoria);
+    }
+
+
 }
