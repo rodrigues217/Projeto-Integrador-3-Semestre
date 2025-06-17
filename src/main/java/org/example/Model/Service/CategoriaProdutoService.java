@@ -1,9 +1,12 @@
 package org.example.Model.Service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.example.Model.Entity.CategoriaProdutoMODEL;
 import org.example.Model.Entity.ProdutosMODEL;
 import org.example.Model.Repository.CategoriaProdutoRepository;
 import org.example.Model.Repository.ProdutosRepository;
+import org.example.Util.JPAUtil; // <- Certifique-se que existe essa classe
 
 import java.util.List;
 
@@ -11,12 +14,13 @@ public class CategoriaProdutoService {
 
     private final CategoriaProdutoRepository categoriaRepository = new CategoriaProdutoRepository();
     private final ProdutosRepository produtosRepository = new ProdutosRepository();
+    private final EntityManagerFactory emf = JPAUtil.getEntityManagerFactory(); // <- Adiciona isso
 
     public void criarCategoria(String nome) throws Exception {
         if (nome == null || nome.trim().isEmpty()) {
             throw new Exception("O nome da categoria não pode ser vazio.");
         }
-        List<CategoriaProdutoMODEL> categorias = categoriaRepository.listarTodos();
+        List<CategoriaProdutoMODEL> categorias = CategoriaProdutoRepository.listarTodos();
         boolean nomeExistente = categorias.stream()
                 .anyMatch(cat -> cat.getNome().equalsIgnoreCase(nome));
 
@@ -25,6 +29,19 @@ public class CategoriaProdutoService {
         }
         CategoriaProdutoMODEL categoria = new CategoriaProdutoMODEL(nome);
         categoriaRepository.salvar(categoria);
+    }
+
+    public List<CategoriaProdutoMODEL> listarCategoriasComProdutos() {
+        EntityManager em = emf.createEntityManager(); // <- Corrigido
+
+        try {
+            return em.createQuery(
+                    "SELECT DISTINCT c FROM CategoriaProdutoMODEL c LEFT JOIN FETCH c.produtos",
+                    CategoriaProdutoMODEL.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     public void trocarCategoriaDeProduto(Long idProduto, Long idNovaCategoria) throws Exception {
@@ -80,9 +97,7 @@ public class CategoriaProdutoService {
         categoriaRepository.deletar(id);
     }
 
-    public List<CategoriaProdutoMODEL> listarCategorias() {
-        return categoriaRepository.listarTodos();
+    public static List<CategoriaProdutoMODEL> listarCategorias() {
+        return CategoriaProdutoRepository.listarTodos();
     }
 }
-
-

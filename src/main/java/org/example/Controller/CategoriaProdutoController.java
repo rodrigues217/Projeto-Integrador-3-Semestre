@@ -19,6 +19,7 @@ public class CategoriaProdutoController {
     }
 
 
+
     public void trocarCategoriaDeProduto(Long idProduto, Long idNovaCategoria) throws Exception {
         categoriaService.trocarCategoriaDeProduto(idProduto, idNovaCategoria);
     }
@@ -31,7 +32,12 @@ public class CategoriaProdutoController {
         categoriaService.removerCategoria(idCategoria);
     }
 
-    public List<CategoriaProdutoMODEL> listarCategorias() {
-        return categoriaService.listarCategorias();
+    public static List<CategoriaProdutoMODEL> listarCategorias() {
+        return CategoriaProdutoService.listarCategorias();
     }
+
+    public List<CategoriaProdutoMODEL> listarCategoriasComProdutos() {
+        return categoriaService.listarCategoriasComProdutos();
+    }
+
 }

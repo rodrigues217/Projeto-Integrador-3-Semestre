@@ -57,4 +57,9 @@ public class FuncionarioController {
     public void trocarSetorDeFuncionario(Long funcId, Long setorId) throws Exception {
         funcionarioService.trocarSetorDeFuncionario(funcId, setorId);
     }
+
+    public List<FuncionarioMODEL> listarFuncionariosDisponiveis() {
+        return new FuncionarioService().listarFuncionarios(); // Assumindo que seu service já possui esse método
+    }
+
 }

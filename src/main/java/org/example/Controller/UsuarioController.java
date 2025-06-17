@@ -5,36 +5,47 @@ import org.example.Model.Service.UsuarioService;
 
 import java.util.List;
 
-
 public class UsuarioController {
 
-    private final UsuarioService usuarioService;
+    private final UsuarioService usuarioService = new UsuarioService();
 
-    public UsuarioController() {
-        this.usuarioService = new UsuarioService();
+    public UsuarioMODEL login(String login, String senha) {
+        try {
+            return usuarioService.fazerLogin(login, senha);
+        } catch (Exception e) {
+            System.err.println("Erro ao fazer login: " + e.getMessage());
+            return null;
+        }
     }
 
-
-    public UsuarioMODEL fazerLogin(String login, String senha) throws Exception {
-        return usuarioService.fazerLogin(login, senha);
+    public void criarUsuario(String login, String senha, String perfil) {
+        try {
+            usuarioService.criarUsuario(login, senha, perfil);
+            System.out.println("Usuário criado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro ao criar usuário: " + e.getMessage());
+        }
     }
-
-
-    public void criarUsuario(String login, String senha, String perfil) throws Exception {
-        usuarioService.criarUsuario(login, senha, perfil);
-    }
-
 
     public List<UsuarioMODEL> listarUsuarios() {
         return usuarioService.listarUsuarios();
     }
 
-
-    public void atualizarUsuario(Long id, String novoLogin, String novaSenha, String perfil) throws Exception {
-        usuarioService.atualizarUsuario(id, novoLogin, novaSenha, perfil);
+    public void atualizarUsuario(Long id, String novoLogin, String novaSenha, String perfil) {
+        try {
+            usuarioService.atualizarUsuario(id, novoLogin, novaSenha, perfil);
+            System.out.println("Usuário atualizado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro ao atualizar usuário: " + e.getMessage());
+        }
     }
 
-    public void deletarUsuario(Long id) throws Exception {
-        usuarioService.deletarUsuario(id);
+    public void deletarUsuario(Long id) {
+        try {
+            usuarioService.deletarUsuario(id);
+            System.out.println("Usuário deletado com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro ao deletar usuário: " + e.getMessage());
+        }
     }
 }

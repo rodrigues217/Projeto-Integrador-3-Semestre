@@ -23,7 +23,7 @@ public class CategoriaProdutoRepository {
         return categoria;
     }
 
-    public List<CategoriaProdutoMODEL> listarTodos() {
+    public static List<CategoriaProdutoMODEL> listarTodos() {
         EntityManager em = HibernateUtil.getEntityManager();
         List<CategoriaProdutoMODEL> categorias = em.createQuery("FROM CategoriaProduto", CategoriaProdutoMODEL.class).getResultList();
         em.close();

@@ -1,0 +1,72 @@
+package org.example.View;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class TelaMenuPrincipal extends JFrame {
+
+    private final JPanel painelPrincipal;
+    private final CardLayout cardLayout;
+
+    public TelaMenuPrincipal() {
+        setTitle("Sistema de Vendas");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 600);
+        setLocationRelativeTo(null); // Centraliza a janela
+
+        // Inicializa o CardLayout e o painel principal
+        cardLayout = new CardLayout();
+        painelPrincipal = new JPanel(cardLayout);
+
+        // === Adiciona telas ===
+        TelaVenda telaVenda = new TelaVenda();
+        TelaGerenciamentoEstoque telaEstoque = new TelaGerenciamentoEstoque();
+
+        painelPrincipal.add(telaVenda, "telaVenda");
+        painelPrincipal.add(telaEstoque, "telaEstoque");
+
+        // === Barra de menus ===
+        JMenuBar menuBar = new JMenuBar();
+
+        // === Menu Venda ===
+        JMenu menuVenda = new JMenu("Venda");
+        JMenuItem itemNovaVenda = new JMenuItem("Realizar Nova Venda");
+        itemNovaVenda.addActionListener(e -> cardLayout.show(painelPrincipal, "telaVenda"));
+        menuVenda.add(itemNovaVenda);
+
+        // === Menu Gerenciamento ===
+        JMenu menuGerenciamento = new JMenu("Gerenciamento");
+
+        JMenuItem itemEstoque = new JMenuItem("Estoque");
+        itemEstoque.addActionListener(e -> cardLayout.show(painelPrincipal, "telaEstoque"));
+        menuGerenciamento.add(itemEstoque);
+
+        menuGerenciamento.add(new JMenuItem("Categorias"));
+        menuGerenciamento.add(new JMenuItem("Setores"));
+        menuGerenciamento.add(new JMenuItem("Compradores"));
+        menuGerenciamento.add(new JMenuItem("Funcionários"));
+        menuGerenciamento.add(new JMenuItem("Usuários"));
+
+        // === Menu Relatórios ===
+        JMenu menuRelatorio = new JMenu("Relatórios");
+        menuRelatorio.add(new JMenuItem("Auditoria de Vendas"));
+
+        // Adiciona os menus à barra
+        menuBar.add(menuVenda);
+        menuBar.add(menuGerenciamento);
+        menuBar.add(menuRelatorio);
+        setJMenuBar(menuBar);
+
+        // Adiciona o painel principal ao frame
+        add(painelPrincipal);
+
+        // Exibe a primeira tela
+        cardLayout.show(painelPrincipal, "telaVenda");
+
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(TelaMenuPrincipal::new);
+    }
+}

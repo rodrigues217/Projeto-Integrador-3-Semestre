@@ -33,6 +33,11 @@ public class FuncionarioMODEL {
     @JoinColumn(name = "usuario_id", nullable = false)
     private UsuarioMODEL usuario;
 
+    @Override
+    public String toString() {
+        return this.getNome(); // ou o campo correto do nome
+    }
+
     public FuncionarioMODEL() {
     }
 
