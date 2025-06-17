@@ -1,38 +1,60 @@
 package org.example.Controller;
 
+import org.example.Model.Entity.FuncionarioMODEL;
 import org.example.Model.Service.FuncionarioService;
 
-import java.util.Scanner;
+import java.util.List;
+
 
 public class FuncionarioController {
 
-    private final FuncionarioService funcionarioService = new FuncionarioService();
+    private final FuncionarioService funcionarioService;
 
-    public void criarFuncionario() {
-        funcionarioService.criarFuncionario();
+    public FuncionarioController() {
+        this.funcionarioService = new FuncionarioService();
     }
 
-    public void listarFuncionarios() {
-        funcionarioService.listarFuncionarios();
+    public void criarFuncionario(String nome,
+                                 String cpf,
+                                 String endereco,
+                                 String telefone,
+                                 Long usuarioId,
+                                 Long setorId) throws Exception {
+        funcionarioService.criarFuncionario(nome, cpf, endereco, telefone, usuarioId, setorId);
     }
 
-    public void buscarFuncionarioPorCPF(){
-        funcionarioService.buscarFuncionarioPorCPF();
+    /**
+     * Lista todos os funcionários cadastrados.
+     */
+    public List<FuncionarioMODEL> listarFuncionarios() {
+        return funcionarioService.listarFuncionarios();
     }
 
-    public void deletarFuncionario(Scanner scanner){
-        funcionarioService.deletarFuncionario(scanner);
+    public FuncionarioMODEL buscarFuncionarioPorCPF(String cpf) throws Exception {
+        return funcionarioService.buscarFuncionarioPorCPF(cpf);
     }
 
-    public void atualizarFuncionario() {
-        funcionarioService.atualizarFuncionario();
+
+    public void deletarFuncionario(String cpf) throws Exception {
+        funcionarioService.deletarFuncionario(cpf);
     }
 
-    public void trocarUsuarioDeFuncionario() {
-        funcionarioService.trocarUsuarioDeFuncionario();
+
+    public void atualizarFuncionario(Long id,
+                                     String novoNome,
+                                     String novoCpf,
+                                     String novoEndereco,
+                                     String novoTelefone) throws Exception {
+        funcionarioService.atualizarFuncionario(id, novoNome, novoCpf, novoEndereco, novoTelefone);
     }
 
-    public void trocarSetorDeFuncionario() {
-        funcionarioService.trocarSetorDeFuncionario();
+
+    public void trocarUsuarioDeFuncionario(Long funcId, Long usuarioId) throws Exception {
+        funcionarioService.trocarUsuarioDeFuncionario(funcId, usuarioId);
+    }
+
+
+    public void trocarSetorDeFuncionario(Long funcId, Long setorId) throws Exception {
+        funcionarioService.trocarSetorDeFuncionario(funcId, setorId);
     }
 }
