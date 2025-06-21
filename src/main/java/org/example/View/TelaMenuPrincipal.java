@@ -11,7 +11,7 @@ public class TelaMenuPrincipal extends JFrame {
     public TelaMenuPrincipal() {
         setTitle("Sistema de Vendas");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 600);
+        setSize(800, 600);
         setLocationRelativeTo(null); // Centraliza a janela
 
         // === Inicializa o CardLayout e o painel principal ===
@@ -22,10 +22,12 @@ public class TelaMenuPrincipal extends JFrame {
         TelaVenda telaVenda = new TelaVenda();
         TelaGerenciamentoEstoque telaEstoque = new TelaGerenciamentoEstoque();
         TelaGerenciamentoCategoria telaCategoria = new TelaGerenciamentoCategoria();
+        TelaGerenciamentoSetor telaSetor = new TelaGerenciamentoSetor(); // nova tela
 
         painelPrincipal.add(telaVenda, "telaVenda");
         painelPrincipal.add(telaEstoque, "telaEstoque");
         painelPrincipal.add(telaCategoria, "telaCategoria");
+        painelPrincipal.add(telaSetor, "telaSetores"); // adiciona ao CardLayout
 
         // === Barra de menus ===
         JMenuBar menuBar = new JMenuBar();
@@ -47,7 +49,11 @@ public class TelaMenuPrincipal extends JFrame {
         itemCategorias.addActionListener(e -> cardLayout.show(painelPrincipal, "telaCategoria"));
         menuGerenciamento.add(itemCategorias);
 
-        menuGerenciamento.add(new JMenuItem("Setores"));
+        JMenuItem itemSetores = new JMenuItem("Setores");
+        itemSetores.addActionListener(e -> cardLayout.show(painelPrincipal, "telaSetores"));
+        menuGerenciamento.add(itemSetores);
+
+        // Menu placeholders (você pode implementar depois)
         menuGerenciamento.add(new JMenuItem("Compradores"));
         menuGerenciamento.add(new JMenuItem("Funcionários"));
         menuGerenciamento.add(new JMenuItem("Usuários"));

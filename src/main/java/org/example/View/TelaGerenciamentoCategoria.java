@@ -16,9 +16,11 @@ public class TelaGerenciamentoCategoria extends JPanel {
 
     private final DefaultListModel<CategoriaProdutoMODEL> categoriaListModel = new DefaultListModel<>();
     private final DefaultListModel<ProdutosMODEL> produtoListModel = new DefaultListModel<>();
+    private final DefaultComboBoxModel<CategoriaProdutoMODEL> categoriaComboBoxModel = new DefaultComboBoxModel<>();
 
     private final JList<CategoriaProdutoMODEL> listaCategorias = new JList<>(categoriaListModel);
     private final JList<ProdutosMODEL> listaProdutos = new JList<>(produtoListModel);
+    private final JComboBox<CategoriaProdutoMODEL> comboCategorias = new JComboBox<>(categoriaComboBoxModel);
 
     private final JTextField campoNomeCategoria = new JTextField(20);
 
@@ -48,14 +50,28 @@ public class TelaGerenciamentoCategoria extends JPanel {
 
         painelEsquerdo.add(painelFormulario, BorderLayout.SOUTH);
 
-        // Painel da direita (produtos)
-        JPanel painelDireito = new JPanel(new BorderLayout());
+        // Painel da direita (produtos + troca de categoria)
+        JPanel painelDireito = new JPanel();
+        painelDireito.setLayout(new BoxLayout(painelDireito, BoxLayout.Y_AXIS));
         painelDireito.setBorder(BorderFactory.createTitledBorder("Produtos da Categoria Selecionada"));
 
+        // Lista de produtos com altura reduzida
         JScrollPane scrollProdutos = new JScrollPane(listaProdutos);
-        painelDireito.add(scrollProdutos, BorderLayout.CENTER);
+        scrollProdutos.setPreferredSize(new Dimension(400, 200));
+        painelDireito.add(scrollProdutos);
 
-        // Dividir a tela entre esquerda e direita
+        // Painel da troca de categoria
+        JPanel painelTroca = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelTroca.add(new JLabel("Nova Categoria:"));
+        painelTroca.add(comboCategorias);
+
+        JButton botaoTrocarCategoria = new JButton("Trocar Categoria do Produto");
+        painelTroca.add(botaoTrocarCategoria);
+
+        painelDireito.add(Box.createRigidArea(new Dimension(0, 10)));
+        painelDireito.add(painelTroca);
+
+        // Split entre esquerda e direita
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, painelEsquerdo, painelDireito);
         splitPane.setDividerLocation(350);
         add(splitPane, BorderLayout.CENTER);
@@ -64,8 +80,9 @@ public class TelaGerenciamentoCategoria extends JPanel {
         botaoAdicionar.addActionListener(e -> adicionarCategoria());
         botaoEditar.addActionListener(e -> editarCategoria());
         botaoExcluir.addActionListener(e -> excluirCategoria());
+        botaoTrocarCategoria.addActionListener(e -> trocarCategoriaProduto());
 
-        // Seleção de categoria
+        // Atualiza os produtos quando uma categoria for selecionada
         listaCategorias.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 carregarProdutosDaCategoriaSelecionada();
@@ -74,12 +91,19 @@ public class TelaGerenciamentoCategoria extends JPanel {
         });
 
         carregarCategorias();
+        carregarCategoriasComboBox();
     }
 
     private void carregarCategorias() {
         categoriaListModel.clear();
         List<CategoriaProdutoMODEL> categorias = categoriaController.listarCategorias();
         categorias.forEach(categoriaListModel::addElement);
+    }
+
+    private void carregarCategoriasComboBox() {
+        categoriaComboBoxModel.removeAllElements();
+        List<CategoriaProdutoMODEL> categorias = categoriaController.listarCategorias();
+        categorias.forEach(categoriaComboBoxModel::addElement);
     }
 
     private void carregarProdutosDaCategoriaSelecionada() {
@@ -101,6 +125,7 @@ public class TelaGerenciamentoCategoria extends JPanel {
             String nome = campoNomeCategoria.getText();
             categoriaController.criarCategoria(nome);
             carregarCategorias();
+            carregarCategoriasComboBox();
             campoNomeCategoria.setText("");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -114,6 +139,7 @@ public class TelaGerenciamentoCategoria extends JPanel {
             String novoNome = campoNomeCategoria.getText();
             categoriaController.atualizarNomeCategoria(categoria.getId(), novoNome);
             carregarCategorias();
+            carregarCategoriasComboBox();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -125,9 +151,36 @@ public class TelaGerenciamentoCategoria extends JPanel {
             if (categoria == null) throw new Exception("Selecione uma categoria.");
             categoriaController.removerCategoria(categoria.getId());
             carregarCategorias();
+            carregarCategoriasComboBox();
             produtoListModel.clear();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void trocarCategoriaProduto() {
+        try {
+            ProdutosMODEL produtoSelecionado = listaProdutos.getSelectedValue();
+            CategoriaProdutoMODEL novaCategoria = (CategoriaProdutoMODEL) comboCategorias.getSelectedItem();
+
+            if (produtoSelecionado == null) {
+                throw new Exception("Selecione um produto para trocar a categoria.");
+            }
+
+            if (novaCategoria == null) {
+                throw new Exception("Selecione a nova categoria.");
+            }
+
+            if (produtoSelecionado.getCategoria().getId().equals(novaCategoria.getId())) {
+                throw new Exception("O produto já pertence a essa categoria.");
+            }
+
+            categoriaController.trocarCategoriaDeProduto(produtoSelecionado.getId(), novaCategoria.getId());
+            carregarProdutosDaCategoriaSelecionada();
+
+            JOptionPane.showMessageDialog(this, "Categoria do produto atualizada com sucesso!");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro ao trocar categoria", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
