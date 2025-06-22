@@ -22,12 +22,20 @@ public class TelaMenuPrincipal extends JFrame {
         TelaVenda telaVenda = new TelaVenda();
         TelaGerenciamentoEstoque telaEstoque = new TelaGerenciamentoEstoque();
         TelaGerenciamentoCategoria telaCategoria = new TelaGerenciamentoCategoria();
-        TelaGerenciamentoSetor telaSetor = new TelaGerenciamentoSetor(); // nova tela
+        TelaGerenciamentoSetor telaSetor = new TelaGerenciamentoSetor();
+        CompradorPanel compradorPanel = new CompradorPanel(e -> cardLayout.show(painelPrincipal, "telaVenda"));
+        TelaGerenciamentoUsuario telaUsuario = new TelaGerenciamentoUsuario();
+        TelaGerenciarFuncionario telaFuncionario = new TelaGerenciarFuncionario();
+        TelaGerenciarAuditoria telaAuditoria = new TelaGerenciarAuditoria(); // Nova tela de auditorias
 
         painelPrincipal.add(telaVenda, "telaVenda");
         painelPrincipal.add(telaEstoque, "telaEstoque");
         painelPrincipal.add(telaCategoria, "telaCategoria");
-        painelPrincipal.add(telaSetor, "telaSetores"); // adiciona ao CardLayout
+        painelPrincipal.add(telaSetor, "telaSetores");
+        painelPrincipal.add(compradorPanel, "compradorPanel");
+        painelPrincipal.add(telaUsuario, "telaUsuario");
+        painelPrincipal.add(telaFuncionario, "telaFuncionario");
+        painelPrincipal.add(telaAuditoria, "telaAuditoria"); // Adiciona a tela de auditorias ao CardLayout
 
         // === Barra de menus ===
         JMenuBar menuBar = new JMenuBar();
@@ -53,14 +61,24 @@ public class TelaMenuPrincipal extends JFrame {
         itemSetores.addActionListener(e -> cardLayout.show(painelPrincipal, "telaSetores"));
         menuGerenciamento.add(itemSetores);
 
-        // Menu placeholders (você pode implementar depois)
-        menuGerenciamento.add(new JMenuItem("Compradores"));
-        menuGerenciamento.add(new JMenuItem("Funcionários"));
-        menuGerenciamento.add(new JMenuItem("Usuários"));
+        JMenuItem itemCompradores = new JMenuItem("Compradores");
+        itemCompradores.addActionListener(e -> cardLayout.show(painelPrincipal, "compradorPanel"));
+        menuGerenciamento.add(itemCompradores);
+
+        JMenuItem itemUsuarios = new JMenuItem("Usuários");
+        itemUsuarios.addActionListener(e -> cardLayout.show(painelPrincipal, "telaUsuario"));
+        menuGerenciamento.add(itemUsuarios);
+
+        JMenuItem itemFuncionarios = new JMenuItem("Funcionários");
+        itemFuncionarios.addActionListener(e -> cardLayout.show(painelPrincipal, "telaFuncionario"));
+        menuGerenciamento.add(itemFuncionarios);
 
         // === Menu Relatórios ===
         JMenu menuRelatorio = new JMenu("Relatórios");
-        menuRelatorio.add(new JMenuItem("Auditoria de Vendas"));
+
+        JMenuItem itemAuditoria = new JMenuItem("Auditoria de Vendas"); // Item de menu funcional para Auditorias
+        itemAuditoria.addActionListener(e -> cardLayout.show(painelPrincipal, "telaAuditoria")); // Ação para exibir TelaGerenciarAuditoria
+        menuRelatorio.add(itemAuditoria);
 
         // === Adiciona os menus à barra ===
         menuBar.add(menuVenda);
@@ -81,3 +99,4 @@ public class TelaMenuPrincipal extends JFrame {
         SwingUtilities.invokeLater(TelaMenuPrincipal::new);
     }
 }
+
