@@ -1,65 +1,71 @@
-package org.example.Model.Repository;
+package org.example.Model.Service;
 
-import jakarta.persistence.EntityManager;
 import org.example.Model.Entity.CompradorMODEL;
-import org.example.Model.Util.HibernateUtil;
+import org.example.Model.Repository.CompradorRepository;
 
 import java.util.List;
 
-public class CompradorRepository {
+public class CompradorService {
+    private CompradorRepository compradorRepository = new CompradorRepository();
 
-    public void salvar(CompradorMODEL comprador) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        em.getTransaction().begin();
-        em.persist(comprador);
-        em.getTransaction().commit();
-        em.close();
-    }
-
-    public CompradorMODEL buscarPorId(Long id) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
-        em.close();
+    public CompradorMODEL criarComprador(String nome, String telefone, String cpf, String email, String endereco) throws Exception {
+        if (compradorRepository.buscarPorCPF(cpf) != null) {
+            throw new Exception("Já existe um comprador com esse CPF.");
+        }
+        CompradorMODEL comprador = new CompradorMODEL(nome, telefone, cpf, email, endereco);
+        compradorRepository.salvar(comprador);
         return comprador;
     }
 
-    public List<CompradorMODEL> listarTodos() {
-        EntityManager em = HibernateUtil.getEntityManager();
-        List<CompradorMODEL> compradores = em.createQuery("FROM CompradorMODEL", CompradorMODEL.class).getResultList();
-        em.close();
-        return compradores;
+    public List<CompradorMODEL> listarTodosCompradores() {
+        return compradorRepository.listarTodos();
     }
 
-    public void atualizar(CompradorMODEL comprador) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        em.getTransaction().begin();
-        em.merge(comprador);
-        em.getTransaction().commit();
-        em.close();
-    }
-
-    public void deletar(Long id) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        em.getTransaction().begin();
-        CompradorMODEL comprador = em.find(CompradorMODEL.class, id);
-        if (comprador != null) {
-            em.remove(comprador);
+    public CompradorMODEL atualizarComprador(Long id, String novoNome, String novoTelefone, String novoCpf, String novoEmail, String novoEndereco) throws Exception {
+        CompradorMODEL comprador = compradorRepository.buscarPorId(id);
+        if (comprador == null) {
+            throw new Exception("Comprador não encontrado.");
         }
-        em.getTransaction().commit();
-        em.close();
+
+        // Verifica se o novo CPF já existe para outro comprador
+        CompradorMODEL compradorComNovoCpf = compradorRepository.buscarPorCPF(novoCpf);
+        if (compradorComNovoCpf != null && !compradorComNovoCpf.getId().equals(id)) {
+            throw new Exception("Já existe outro comprador com este CPF.");
+        }
+
+        comprador.setNome(novoNome);
+        comprador.setTelefone(novoTelefone);
+        comprador.setCPF(novoCpf);
+        comprador.setEmail(novoEmail);
+        comprador.setEndereco(novoEndereco);
+
+        compradorRepository.atualizar(comprador);
+        return comprador;
     }
 
-    public CompradorMODEL buscarPorCPF(String cpf) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        try {
-            return em.createQuery(
-                            "SELECT c FROM Comprador c WHERE c.CPF = :cpf", CompradorMODEL.class)
-                    .setParameter("cpf", cpf)
-                    .getSingleResult();
-        } catch (Exception e) {
-            return null; // Pode ser ajustado para lançar exceção ou tratar de outra forma
-        } finally {
-            em.close();
+    public void removerComprador(Long id) throws Exception {
+        CompradorMODEL comprador = compradorRepository.buscarPorId(id);
+        if (comprador == null) {
+            throw new Exception("Comprador não encontrado.");
         }
+        compradorRepository.deletar(id);
+    }
+
+    public CompradorMODEL buscarCompradorPorId(Long id) {
+        return compradorRepository.buscarPorId(id);
+    }
+
+    public CompradorMODEL buscarCompradorPorCPF(String cpf) {
+        return compradorRepository.buscarPorCPF(cpf);
+    }
+
+    public boolean verificarCpfExistente(String cpf, Long idAtual) {
+        CompradorMODEL compradorExistente = compradorRepository.buscarPorCPF(cpf);
+        if (compradorExistente != null) {
+            return idAtual == null || !compradorExistente.getId().equals(idAtual);
+        }
+        return false;
     }
 }
+
+
