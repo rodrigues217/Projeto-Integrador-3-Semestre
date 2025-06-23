@@ -18,7 +18,10 @@ public class AuditoriaVendaService {
             throw new Exception("CPF do comprador não pode ser vazio.");
         }
 
+
         List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorCompradorCPF(cpf);
+
+
         if (auditorias.isEmpty()) {
             throw new Exception("Nenhuma auditoria encontrada para o comprador com CPF: " + cpf);
         }

@@ -11,11 +11,14 @@ import java.time.LocalDateTime;
 
 public class VendaService {
 
+
     public String realizarVenda(String codProd, String cpfFuncionario, int quantidade, String cpfComprador) throws Exception {
         EntityManager em = HibernateUtil.getEntityManager();
 
-        try {
-            em.getTransaction().begin();
+
+            try {
+                em.getTransaction().begin();
+
 
             // Buscar o produto pelo código
             ProdutosMODEL produto = em.createQuery("FROM Produtos p WHERE p.codProd = :codProd", ProdutosMODEL.class)
@@ -67,10 +70,38 @@ public class VendaService {
             auditoria.setComprador(comprador);
             auditoria.setDataVenda(LocalDateTime.now());
 
-            em.persist(auditoria);
 
-            em.getTransaction().commit();
-            return "SUCESSO";
+                // Atualizar estoque
+                produto.setEstoque(produto.getEstoque() - quantidade);
+                em.merge(produto);
+
+                // Atualizar total de vendas do funcionário
+                double totalVenda = quantidade * produto.getValor();
+                funcionario.setTotalVendas(funcionario.getTotalVendas() + totalVenda);
+                em.merge(funcionario);
+
+                // Criar auditoria da venda
+                AuditoriaVendaMODEL auditoria = new AuditoriaVendaMODEL();
+                auditoria.setProduto(produto);
+                auditoria.setFuncionario(funcionario);
+                auditoria.setQuantidade(quantidade);
+                auditoria.setComprador(comprador);
+                auditoria.setDataVenda(java.time.LocalDateTime.now());
+
+                em.persist(auditoria);
+
+                em.getTransaction().commit();
+                return "SUCESSO";
+
+            } catch (Exception e) {
+                if (em.getTransaction().isActive()) em.getTransaction().rollback();
+                return "Erro inesperado: " + e.getMessage();
+            } finally {
+                em.close();
+            }
+        }
+
+
 
         } catch (Exception e) {
             if (em.getTransaction().isActive()) em.getTransaction().rollback();
@@ -80,5 +111,4 @@ public class VendaService {
         }
     }
 }
-
 

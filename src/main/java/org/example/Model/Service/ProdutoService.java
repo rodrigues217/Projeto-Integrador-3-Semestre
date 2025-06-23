@@ -62,12 +62,11 @@ public class ProdutoService {
                 .toList();
     }
 
-
     public List<ProdutoComValorTotal> listarProdutosPorCurvaABC() {
         List<ProdutosMODEL> produtos = produtosRepository.listarTodos();
 
         if (produtos.isEmpty()) {
-            return List.of(); // Retorna lista vazia se não houver produtos
+            return List.of();
         }
 
         List<ProdutoComValorTotal> produtosComValor = produtos.stream()
@@ -95,6 +94,7 @@ public class ProdutoService {
             }
             pw.setClasseABC(classe);
         }
+
         return produtosComValor;
     }
 
@@ -125,5 +125,3 @@ public class ProdutoService {
         }
     }
 }
-
-
