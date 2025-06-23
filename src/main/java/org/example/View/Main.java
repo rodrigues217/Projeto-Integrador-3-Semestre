@@ -1,4 +1,4 @@
-package org.example.View;
+/**package org.example.View;
 
 import org.example.Model.Service.UsuarioService;
 import org.example.Model.Entity.UsuarioMODEL;
@@ -19,3 +19,4 @@ public class Main {
         view.menuInicial();
     }
 }
+**/

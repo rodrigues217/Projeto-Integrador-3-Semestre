@@ -4,148 +4,68 @@ import org.example.Model.Entity.CompradorMODEL;
 import org.example.Model.Repository.CompradorRepository;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class CompradorService {
     private CompradorRepository compradorRepository = new CompradorRepository();
-    private Scanner scanner = new Scanner(System.in);
 
-    public void criarComprador() {
-        System.out.print("Nome do comprador: ");
-        String nome = scanner.nextLine();
-
-        System.out.print("Telefone do comprador: ");
-        String telefone = scanner.nextLine();
-
-        System.out.print("CPF do comprador: ");
-        String CPF = scanner.nextLine();
-
-        List<CompradorMODEL> compradores = compradorRepository.listarTodos();
-
-        boolean nomeDuplicado = false;
-        boolean telefoneDuplicado = false;
-        boolean cpfDuplicado = false;
-
-        for (CompradorMODEL c : compradores) {
-            if (c.getNome().equalsIgnoreCase(nome)) {
-                nomeDuplicado = true;
-            }
-            if (c.getTelefone().equals(telefone)) {
-                telefoneDuplicado = true;
-            }
-            if (c.getCPF().equals(CPF)) {
-                cpfDuplicado = true;
-            }
+    public CompradorMODEL criarComprador(String nome, String telefone, String cpf, String email, String endereco) throws Exception {
+        if (compradorRepository.buscarPorCPF(cpf) != null) {
+            throw new Exception("Já existe um comprador com esse CPF.");
         }
-
-        if (nomeDuplicado) {
-            System.out.println("Já existe um comprador com esse nome.");
-        }
-        if (telefoneDuplicado) {
-            System.out.println("Já existe um comprador com esse telefone.");
-        }
-        if (cpfDuplicado) {
-            System.out.println("Já existe um comprador com esse CPF.");
-        }
-
-        // Se houver qualquer duplicidade, aborta o cadastro
-        if (nomeDuplicado || telefoneDuplicado || cpfDuplicado) {
-            System.out.println("Cadastro cancelado devido a dados duplicados.");
-            return;
-        }
-
-        CompradorMODEL comprador = new CompradorMODEL(nome, telefone, CPF);
+        CompradorMODEL comprador = new CompradorMODEL(nome, telefone, cpf, email, endereco);
         compradorRepository.salvar(comprador);
-        System.out.println("Comprador cadastrado com sucesso!");
+        return comprador;
     }
 
-    public void listarCompradores() {
-        List<CompradorMODEL> compradores = compradorRepository.listarTodos();
-        if (compradores.isEmpty()) {
-            System.out.println("Nenhum comprador cadastrado.");
-            return;
-        }
-
-        for (CompradorMODEL c : compradores) {
-            System.out.println("ID: " + c.getId() + " | Nome: " + c.getNome() + " | Telefone: " + c.getTelefone() +" | CPF: " + c.getCPF() );
-        }
+    public List<CompradorMODEL> listarTodosCompradores() {
+        return compradorRepository.listarTodos();
     }
 
-    public void atualizarComprador() {
-        List<CompradorMODEL> compradores = compradorRepository.listarTodos();
-        if (compradores.isEmpty()) {
-            System.out.println("Não há compradores cadastrados.");
-            System.out.print("Deseja cadastrar um novo comprador? (s/n): ");
-            String opcao = scanner.nextLine();
-            if (opcao.equalsIgnoreCase("s")) {
-                criarComprador();
-            }
-            return;
-        }
-
-        listarCompradores();
-        System.out.print("Digite o ID do comprador a ser atualizado: ");
-        Long id = Long.parseLong(scanner.nextLine());
-
+    public CompradorMODEL atualizarComprador(Long id, String novoNome, String novoTelefone, String novoCpf, String novoEmail, String novoEndereco) throws Exception {
         CompradorMODEL comprador = compradorRepository.buscarPorId(id);
         if (comprador == null) {
-            System.out.println("Comprador não encontrado.");
-            return;
+            throw new Exception("Comprador não encontrado.");
         }
 
-        System.out.print("Novo nome: ");
-        comprador.setNome(scanner.nextLine());
-        System.out.print("Novo telefone: ");
-        comprador.setTelefone(scanner.nextLine());
+        // Verifica se o novo CPF já existe para outro comprador
+        CompradorMODEL compradorComNovoCpf = compradorRepository.buscarPorCPF(novoCpf);
+        if (compradorComNovoCpf != null && !compradorComNovoCpf.getId().equals(id)) {
+            throw new Exception("Já existe outro comprador com este CPF.");
+        }
+
+        comprador.setNome(novoNome);
+        comprador.setTelefone(novoTelefone);
+        comprador.setCPF(novoCpf);
+        comprador.setEmail(novoEmail);
+        comprador.setEndereco(novoEndereco);
 
         compradorRepository.atualizar(comprador);
-        System.out.println("Comprador atualizado com sucesso!");
+        return comprador;
     }
 
-    public void deletarComprador() {
-        List<CompradorMODEL> compradores = compradorRepository.listarTodos();
-        if (compradores.isEmpty()) {
-            System.out.println("Não há compradores cadastrados.");
-            return;
-        }
-
-        listarCompradores();
-        System.out.print("Digite o ID do comprador a ser removido: ");
-        Long id = Long.parseLong(scanner.nextLine());
-
+    public void removerComprador(Long id) throws Exception {
         CompradorMODEL comprador = compradorRepository.buscarPorId(id);
         if (comprador == null) {
-            System.out.println("Comprador não encontrado.");
-            return;
+            throw new Exception("Comprador não encontrado.");
         }
-
         compradorRepository.deletar(id);
-        System.out.println("Comprador removido com sucesso!");
     }
 
-    public CompradorMODEL buscarCompradorPorCPF() {
-        while (true) {
-            System.out.print("Digite o CPF do comprador (ou digite 'cancelar' para sair): ");
-            String entrada = scanner.nextLine().trim();
+    public CompradorMODEL buscarCompradorPorId(Long id) {
+        return compradorRepository.buscarPorId(id);
+    }
 
-            if (entrada.equalsIgnoreCase("cancelar")) {
-                System.out.print("Tem certeza que quer cancelar a operação? (s/n): ");
-                String confirmacao = scanner.nextLine().trim();
-                if (confirmacao.equalsIgnoreCase("s")) {
-                    System.out.println("Operação cancelada.");
-                    return null;
-                } else {
-                    continue;
-                }
-            }
+    public CompradorMODEL buscarCompradorPorCPF(String cpf) {
+        return compradorRepository.buscarPorCPF(cpf);
+    }
 
-            CompradorMODEL comprador = compradorRepository.buscarPorCPF(entrada);
-            if (comprador == null) {
-                System.out.println("CPF não encontrado. Tente novamente.");
-            } else {
-                System.out.println("Comprador encontrado: " + comprador.getNome() + " | Telefone: " + comprador.getTelefone());
-                return comprador;
-            }
+    public boolean verificarCpfExistente(String cpf, Long idAtual) {
+        CompradorMODEL compradorExistente = compradorRepository.buscarPorCPF(cpf);
+        if (compradorExistente != null) {
+            return idAtual == null || !compradorExistente.getId().equals(idAtual);
         }
+        return false;
     }
 }
+
+

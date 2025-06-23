@@ -6,10 +6,12 @@ import org.example.Model.Util.HibernateUtil;
 
 import java.util.List;
 
+import static org.example.Model.Util.HibernateUtil.getEntityManager;
+
 public class CategoriaProdutoRepository {
 
     public void salvar(CategoriaProdutoMODEL categoria) {
-        EntityManager em = HibernateUtil.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
         em.persist(categoria);
         em.getTransaction().commit();
@@ -17,21 +19,21 @@ public class CategoriaProdutoRepository {
     }
 
     public CategoriaProdutoMODEL buscarPorId(Long id) {
-        EntityManager em = HibernateUtil.getEntityManager();
+        EntityManager em = getEntityManager();
         CategoriaProdutoMODEL categoria = em.find(CategoriaProdutoMODEL.class, id);
         em.close();
         return categoria;
     }
 
-    public List<CategoriaProdutoMODEL> listarTodos() {
-        EntityManager em = HibernateUtil.getEntityManager();
+    public static List<CategoriaProdutoMODEL> listarTodos() {
+        EntityManager em = getEntityManager();
         List<CategoriaProdutoMODEL> categorias = em.createQuery("FROM CategoriaProduto", CategoriaProdutoMODEL.class).getResultList();
         em.close();
         return categorias;
     }
 
     public void atualizar(CategoriaProdutoMODEL categoria) {
-        EntityManager em = HibernateUtil.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
         em.merge(categoria);
         em.getTransaction().commit();
@@ -39,7 +41,7 @@ public class CategoriaProdutoRepository {
     }
 
     public void deletar(Long id) {
-        EntityManager em = HibernateUtil.getEntityManager();
+        EntityManager em = getEntityManager();
         em.getTransaction().begin();
         CategoriaProdutoMODEL categoria = em.find(CategoriaProdutoMODEL.class, id);
         if (categoria != null) {
@@ -48,4 +50,17 @@ public class CategoriaProdutoRepository {
         em.getTransaction().commit();
         em.close();
     }
+
+    public List<CategoriaProdutoMODEL> buscarCategoriasComProdutos() {
+        EntityManager em = getEntityManager();
+        try {
+            return em.createQuery(
+                    "SELECT DISTINCT c FROM CategoriaProdutoMODEL c LEFT JOIN FETCH c.produtos",
+                    CategoriaProdutoMODEL.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }

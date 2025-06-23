@@ -2,27 +2,33 @@ package org.example.Controller;
 
 import org.example.Model.Entity.ProdutosMODEL;
 import org.example.Model.Service.ProdutoService;
+import org.example.Model.Service.ProdutoService.ProdutoComValorTotal;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class ProdutoController {
 
-    private final ProdutoService produtoService = new ProdutoService();
+    private final ProdutoService produtoService;
 
-    public void criarProdutoComCategoria(Scanner scanner) {
-        produtoService.criarProdutoComCategoria(scanner);
+    public ProdutoController() {
+        this.produtoService = new ProdutoService();
     }
 
-    public void listarProdutosComCategoria(Scanner scanner) {
-        produtoService.listarProdutosComCategoria(scanner);
+    public List<ProdutosMODEL> listarProdutos() {
+        return produtoService.listarProdutosComCategoria();
     }
 
-    public void atualizarEstoque(Scanner scanner, boolean adicionar) {
-        produtoService.atualizarEstoque(scanner, adicionar);
+    public List<ProdutoComValorTotal> listarProdutosPorCurvaABC() {
+        return produtoService.listarProdutosPorCurvaABC();
     }
 
-    public void listarPorCurvaABC() {
-        produtoService.listarProdutosPorCurvaABC();
+    public void atualizarEstoque(Long idProduto, int quantidade, boolean adicionar) throws Exception {
+        produtoService.atualizarEstoque(idProduto, quantidade, adicionar);
     }
+
+    public List<ProdutosMODEL> listarProdutosPorCategoria(Long idCategoria) {
+        return produtoService.listarProdutosPorCategoria(idCategoria);
+    }
+
+
 }

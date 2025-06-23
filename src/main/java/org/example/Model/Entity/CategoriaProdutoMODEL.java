@@ -18,6 +18,11 @@ public class CategoriaProdutoMODEL {
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<ProdutosMODEL> produtos = new HashSet<>();
 
+    @Override
+    public String toString() {
+        return nome; // ou getNome()
+    }
+
     public CategoriaProdutoMODEL() {
     }
 

@@ -25,7 +25,7 @@ public class CompradorRepository {
 
     public List<CompradorMODEL> listarTodos() {
         EntityManager em = HibernateUtil.getEntityManager();
-        List<CompradorMODEL> compradores = em.createQuery("FROM Comprador", CompradorMODEL.class).getResultList();
+        List<CompradorMODEL> compradores = em.createQuery("FROM CompradorMODEL", CompradorMODEL.class).getResultList();
         em.close();
         return compradores;
     }

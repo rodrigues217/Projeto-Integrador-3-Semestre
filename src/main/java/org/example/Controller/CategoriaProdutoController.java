@@ -1,32 +1,35 @@
 package org.example.Controller;
 
+import org.example.Model.Entity.CategoriaProdutoMODEL;
 import org.example.Model.Service.CategoriaProdutoService;
 
-import java.util.Scanner;
+import java.util.List;
 
 public class CategoriaProdutoController {
 
     private final CategoriaProdutoService categoriaService = new CategoriaProdutoService();
 
-    public void criarCategoria(Scanner scanner) {
-        categoriaService.criarCategoria(scanner);
+    public void criarCategoria(String nome) throws Exception {
+        categoriaService.criarCategoria(nome);
     }
 
-    public void trocarCategoriaDeProduto(Scanner scanner) {
-        categoriaService.trocarCategoriaDeProduto(scanner);
+    public List<CategoriaProdutoMODEL> listarCategorias() {
+        return categoriaService.listarCategorias();
     }
 
-    public void atualizarNomeCategoria(Scanner scanner) {
-        categoriaService.atualizarNomeCategoria(scanner);
+    public List<CategoriaProdutoMODEL> listarCategoriasComProdutos() {
+        return categoriaService.listarCategoriasComProdutos();
     }
 
-    public void removerCategoria(Scanner scanner) {
-        categoriaService.removerCategoria(scanner);
+    public void trocarCategoriaDeProduto(Long idProduto, Long idNovaCategoria) throws Exception {
+        categoriaService.trocarCategoriaDeProduto(idProduto, idNovaCategoria);
     }
 
-    public void listarCategorias() {
-        categoriaService.listarCategorias();
+    public void atualizarNomeCategoria(Long id, String novoNome) throws Exception {
+        categoriaService.atualizarNomeCategoria(id, novoNome);
     }
 
-
+    public void removerCategoria(Long id) throws Exception {
+        categoriaService.removerCategoria(id);
+    }
 }
