@@ -27,14 +27,13 @@ public class TelaGerenciamentoCategoria extends JPanel {
     public TelaGerenciamentoCategoria() {
         setLayout(new BorderLayout());
 
-        // Painel da esquerda (categorias)
+
         JPanel painelEsquerdo = new JPanel(new BorderLayout());
         painelEsquerdo.setBorder(BorderFactory.createTitledBorder("Categorias"));
 
         JScrollPane scrollCategorias = new JScrollPane(listaCategorias);
         painelEsquerdo.add(scrollCategorias, BorderLayout.CENTER);
 
-        // Painel de botões e campo nome
         JPanel painelFormulario = new JPanel();
         painelFormulario.setLayout(new GridLayout(0, 1, 5, 5));
         painelFormulario.add(new JLabel("Nome da Categoria:"));
@@ -50,17 +49,14 @@ public class TelaGerenciamentoCategoria extends JPanel {
 
         painelEsquerdo.add(painelFormulario, BorderLayout.SOUTH);
 
-        // Painel da direita (produtos + troca de categoria)
         JPanel painelDireito = new JPanel();
         painelDireito.setLayout(new BoxLayout(painelDireito, BoxLayout.Y_AXIS));
         painelDireito.setBorder(BorderFactory.createTitledBorder("Produtos da Categoria Selecionada"));
 
-        // Lista de produtos com altura reduzida
         JScrollPane scrollProdutos = new JScrollPane(listaProdutos);
         scrollProdutos.setPreferredSize(new Dimension(400, 200));
         painelDireito.add(scrollProdutos);
 
-        // Painel da troca de categoria
         JPanel painelTroca = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelTroca.add(new JLabel("Nova Categoria:"));
         painelTroca.add(comboCategorias);
@@ -71,18 +67,15 @@ public class TelaGerenciamentoCategoria extends JPanel {
         painelDireito.add(Box.createRigidArea(new Dimension(0, 10)));
         painelDireito.add(painelTroca);
 
-        // Split entre esquerda e direita
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, painelEsquerdo, painelDireito);
         splitPane.setDividerLocation(350);
         add(splitPane, BorderLayout.CENTER);
 
-        // Ações dos botões
         botaoAdicionar.addActionListener(e -> adicionarCategoria());
         botaoEditar.addActionListener(e -> editarCategoria());
         botaoExcluir.addActionListener(e -> excluirCategoria());
         botaoTrocarCategoria.addActionListener(e -> trocarCategoriaProduto());
 
-        // Atualiza os produtos quando uma categoria for selecionada
         listaCategorias.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 carregarProdutosDaCategoriaSelecionada();
