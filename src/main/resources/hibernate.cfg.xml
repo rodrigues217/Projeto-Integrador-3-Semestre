@@ -1,0 +1,35 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Conexão com o banco -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/estoquedados</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">130803</property>
+
+        <!-- Dialeto do banco -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Mostrar SQL no console -->
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- Atualiza as tabelas conforme entidades -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Suas classes anotadas -->
+        <mapping class="org.example.Model.Entity.ProdutosMODEL"/>
+        <mapping class="org.example.Model.Entity.UsuarioMODEL"/>
+        <mapping class="org.example.Model.Entity.AuditoriaVendaMODEL"/>
+        <mapping class="org.example.Model.Entity.SetorMODEL"/>
+        <mapping class="org.example.Model.Entity.FuncionarioMODEL"/>
+        <mapping class="org.example.Model.Entity.CategoriaProdutoMODEL"/>
+        <mapping class="org.example.Model.Entity.CompradorMODEL"/>
+
+
+    </session-factory>
+</hibernate-configuration>
