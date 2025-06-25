@@ -19,17 +19,14 @@ public class TelaLogin extends JFrame {
 
         usuarioController = new UsuarioController();
 
-        // Configurações da janela
         setSize(350, 200);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centraliza a janela
 
-        // Painel principal
         JPanel painel = new JPanel();
         painel.setLayout(new GridLayout(4, 2, 10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Componentes
         JLabel labelLogin = new JLabel("Login:");
         campoLogin = new JTextField();
 
@@ -42,7 +39,6 @@ public class TelaLogin extends JFrame {
         JButton botaoSair = new JButton("Sair");
         botaoSair.addActionListener(e -> System.exit(0));
 
-        // Adiciona componentes ao painel
         painel.add(labelLogin);
         painel.add(campoLogin);
         painel.add(labelSenha);
@@ -50,7 +46,6 @@ public class TelaLogin extends JFrame {
         painel.add(botaoEntrar);
         painel.add(botaoSair);
 
-        // Adiciona o painel à janela
         add(painel);
 
         setVisible(true);
@@ -80,8 +75,4 @@ public class TelaLogin extends JFrame {
         }
     }
 
-    // Método principal para executar a tela
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(TelaLogin::new);
-    }
 }
