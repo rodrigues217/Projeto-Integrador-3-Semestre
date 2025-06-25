@@ -11,52 +11,40 @@ import org.example.Model.Util.HibernateUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Scanner;
+
 
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository = new UsuarioRepository();
     private final FuncionarioRepository funcionarioRepository = new FuncionarioRepository();
-    private final Scanner scanner = new Scanner(System.in);
 
-    public UsuarioMODEL fazerLogin(Scanner scanner) {
+
+    public UsuarioMODEL fazerLogin(String login, String senha) throws Exception {
         EntityManager em = HibernateUtil.getEntityManager();
         UsuarioMODEL usuarioLogado = null;
 
         try {
-            while (usuarioLogado == null) {
-                System.out.println("*** LOGIN ***");
-                System.out.print("Login: ");
-                String login = scanner.next();
-                System.out.print("Senha: ");
-                String senha = scanner.next();
 
-                usuarioLogado = autenticarUsuario(em, login, senha);
+            usuarioLogado = autenticarUsuario(em, login, senha);
 
-                if (usuarioLogado == null) {
-                    System.out.println("Credenciais inválidas. Tente novamente.");
-                } else {
-                    System.out.println("Último login: " +
-                            (usuarioLogado.getUltimoLogin() != null ? usuarioLogado.getUltimoLogin() : "Nunca"));
-
-                    em.getTransaction().begin();
-                    usuarioLogado.setUltimoLogin(LocalDateTime.now());
-                    em.merge(usuarioLogado);
-                    em.getTransaction().commit();
-
-                    System.out.println("Login bem-sucedido!\n");
-                }
+            if (usuarioLogado == null) {
+                throw new Exception("Credenciais inválidas.");
+            } else {
+                // Atualiza o último login
+                em.getTransaction().begin();
+                usuarioLogado.setUltimoLogin(LocalDateTime.now());
+                em.merge(usuarioLogado);
+                em.getTransaction().commit();
+                return usuarioLogado;
             }
         } catch (Exception e) {
-            e.printStackTrace();
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
+            throw e;
         } finally {
             em.close();
         }
-
-        return usuarioLogado;
     }
 
     private UsuarioMODEL autenticarUsuario(EntityManager em, String login, String senha) {
@@ -69,140 +57,69 @@ public class UsuarioService {
             return null;
         }
     }
-    public void criarUsuario() {
-        System.out.print("Login do usuário: ");
-        String login = scanner.nextLine();
 
+    public void criarUsuario(String login, String senha, String perfilStr) throws Exception {
         List<UsuarioMODEL> usuarios = usuarioRepository.listarTodos();
         for (UsuarioMODEL u : usuarios) {
             if (u.getLogin().equalsIgnoreCase(login)) {
-                System.out.println("Já existe um usuário com esse login.");
-                return;
+                throw new Exception("Já existe um usuário com esse login.");
             }
         }
-
-        System.out.print("Senha: ");
-        String senha = scanner.nextLine();
-
-        System.out.print("Perfil (ADM, GERENTE ou OPERADOR ): ");
-
-        String perfilStr = scanner.nextLine().toUpperCase();
 
         try {
             UsuarioMODEL usuario = new UsuarioMODEL(login, senha, Enum.valueOf(PerfilUsuario.class, perfilStr));
             usuarioRepository.salvar(usuario);
-            System.out.println("Usuário cadastrado com sucesso!");
         } catch (IllegalArgumentException e) {
-            System.out.println("Perfil inválido. Use 'ADM' , 'FUNCIONARIO' ou 'GERENTE' ");
+            throw new Exception("Perfil inválido. Use 'ADM', 'GERENTE' ou 'OPERADOR'.");
         }
     }
 
-    public void listarUsuarios() {
-        List<UsuarioMODEL> usuarios = usuarioRepository.listarTodos();
-        if (usuarios.isEmpty()) {
-            System.out.println("Não há usuários cadastrados.");
-            return;
-        }
-
-        for (UsuarioMODEL usuario : usuarios) {
-            System.out.println(usuario);
-
-            List<FuncionarioMODEL> funcionarios = funcionarioRepository.buscarPorUsuario(usuario);
-            if (!funcionarios.isEmpty()) {
-                System.out.println("Funcionários vinculados:");
-                for (FuncionarioMODEL funcionario : funcionarios) {
-                    System.out.println("- " + funcionario.getNome());
-                }
-            } else {
-                System.out.println("Nenhum funcionário vinculado.");
-            }
-
-            System.out.println("-----------------------");
-        }
+    public List<UsuarioMODEL> listarUsuarios() {
+        return usuarioRepository.listarTodos();
     }
 
-
-    public void atualizarUsuario() {
-        List<UsuarioMODEL> usuarios = usuarioRepository.listarTodos();
-        if (usuarios.isEmpty()) {
-            System.out.println("Não há usuários cadastrados.");
-            return;
-        }
-
-        listarUsuarios();
-        System.out.print("Digite o ID do usuário que deseja atualizar: ");
-        Long id = Long.parseLong(scanner.nextLine());
-
+    public void atualizarUsuario(Long id, String novoLogin, String novaSenha, String perfilStr) throws Exception {
         UsuarioMODEL usuario = usuarioRepository.buscarPorId(id);
         if (usuario == null) {
-            System.out.println("Usuário não encontrado.");
-            return;
+            throw new Exception("Usuário não encontrado.");
         }
 
-        System.out.print("Novo login: ");
-        String novoLogin = scanner.nextLine();
-
+        List<UsuarioMODEL> usuarios = usuarioRepository.listarTodos();
         boolean loginDuplicado = usuarios.stream()
                 .anyMatch(u -> !u.getId().equals(id) && u.getLogin().equalsIgnoreCase(novoLogin));
 
         if (loginDuplicado) {
-            System.out.println("Já existe outro usuário com esse login.");
-            return;
+
+            throw new Exception("Já existe outro usuário com esse login.");
         }
 
         usuario.setLogin(novoLogin);
-
-        System.out.print("Nova senha: ");
-        usuario.setSenha(scanner.nextLine());
-
-        System.out.print("Novo perfil (ADM, GERENTE ou OPERADOR): ");
-        String perfilStr = scanner.nextLine().toUpperCase();
+        usuario.setSenha(novaSenha);
 
         try {
             usuario.setPerfil(Enum.valueOf(PerfilUsuario.class, perfilStr));
         } catch (IllegalArgumentException e) {
-            System.out.println("Perfil inválido. Atualização cancelada.");
-            return;
+
+            throw new Exception("Perfil inválido. Atualização cancelada.");
         }
 
         usuarioRepository.atualizar(usuario);
-        System.out.println("Usuário atualizado com sucesso!");
     }
 
-    public void deletarUsuario() {
-        List<UsuarioMODEL> usuarios = usuarioRepository.listarTodos();
-        if (usuarios.isEmpty()) {
-            System.out.println("Não há usuários cadastrados.");
-            return;
-        }
-
-        listarUsuarios();
-        System.out.print("Digite o ID do usuário que deseja deletar: ");
-        Long id = Long.parseLong(scanner.nextLine());
-
+    public void deletarUsuario(Long id) throws Exception {
         UsuarioMODEL usuario = usuarioRepository.buscarPorId(id);
         if (usuario == null) {
-            System.out.println("Usuário não encontrado.");
-            return;
+            throw new Exception("Usuário não encontrado.");
         }
 
         FuncionarioMODEL funcionario = funcionarioRepository.buscarPorId(id);
         if (funcionario != null) {
-            System.out.println("Este usuário está vinculado ao funcionário: " + funcionario.getNome());
-            System.out.println("Não é possível deletar um usuário vinculado a um funcionário.");
-            return;
-        }
 
-        System.out.print("Tem certeza que deseja deletar este usuário? (s/n): ");
-        String confirmacao = scanner.nextLine();
-        if (!confirmacao.equalsIgnoreCase("s")) {
-            System.out.println("Operação cancelada.");
-            return;
+            throw new Exception("Este usuário está vinculado ao funcionário: " + funcionario.getNome() + ". Não é possível deletar um usuário vinculado a um funcionário.");
         }
 
         usuarioRepository.deletar(id);
-        System.out.println("Usuário deletado com sucesso!");
     }
-
-
 }
+
+

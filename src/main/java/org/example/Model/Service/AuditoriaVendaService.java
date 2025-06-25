@@ -1,137 +1,55 @@
 package org.example.Model.Service;
 
 import org.example.Model.Entity.AuditoriaVendaMODEL;
-import org.example.Model.Entity.CompradorMODEL;
-import org.example.Model.Entity.FuncionarioMODEL;
-import org.example.Model.Entity.ProdutosMODEL;
 import org.example.Model.Repository.AuditoriaVendaRepository;
-import org.example.Model.Repository.CompradorRepository;
-import org.example.Model.Repository.FuncionarioRepository;
-import org.example.Model.Repository.ProdutosRepository;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class AuditoriaVendaService {
 
     private final AuditoriaVendaRepository auditoriaRepository = new AuditoriaVendaRepository();
-    private final CompradorRepository compradorRepository = new CompradorRepository();
-    private final FuncionarioRepository funcionarioRepository = new FuncionarioRepository();
-    private final ProdutosRepository produtosRepository = new ProdutosRepository();
 
-    public void listarAuditorias() {
-        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.listarTodos();
-
-        if (auditorias.isEmpty()) {
-            System.out.println("Nenhuma auditoria encontrada.");
-            return;
-        }
-
-        System.out.println("--- Auditorias de Vendas ---");
-        for (AuditoriaVendaMODEL a : auditorias) {
-            imprimirAuditoria(a);
-        }
+    public List<AuditoriaVendaMODEL> listarAuditorias() {
+        return auditoriaRepository.listarTodos();
     }
 
-    public void buscarAuditoriasPorComprador(Scanner scanner) {
-        List<CompradorMODEL> compradores = compradorRepository.listarTodos();
-
-        if (compradores.isEmpty()) {
-            System.out.println("Nenhum comprador cadastrado.");
-            return;
+    public List<AuditoriaVendaMODEL> buscarAuditoriasPorComprador(String cpf) throws Exception {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            throw new Exception("CPF do comprador não pode ser vazio.");
         }
 
-        System.out.print("Digite o CPF do comprador: ");
-        String CPF = (scanner.nextLine());
-        CompradorMODEL comprador = compradorRepository.buscarPorCPF(CPF);
-
-        if (comprador == null) {
-            System.out.println("Comprador não encontrado.");
-            return;
-        }
-
-        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorCompradorCPF(CPF);
+        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorCompradorCPF(cpf);
 
         if (auditorias.isEmpty()) {
-            System.out.println("Nenhuma auditoria encontrada para esse comprador.");
-            return;
+            throw new Exception("Nenhuma auditoria encontrada para o comprador com CPF: " + cpf);
         }
 
-        System.out.println("--- Auditorias de Vendas para o comprador \"" + comprador.getNome() + "\" ---");
-        for (AuditoriaVendaMODEL a : auditorias) {
-            imprimirAuditoria(a);
-        }
+        return auditorias;
     }
 
-    public void buscarAuditoriasPorFuncionario(Scanner scanner) {
-        List<FuncionarioMODEL> funcionarios = funcionarioRepository.listarTodos();
-
-        if (funcionarios.isEmpty()) {
-            System.out.println("Nenhum funcionário cadastrado.");
-            return;
+    public List<AuditoriaVendaMODEL> buscarAuditoriasPorFuncionario(String cpf) throws Exception {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            throw new Exception("CPF do funcionário não pode ser vazio.");
         }
 
-        System.out.print("Digite o CPF do funcionário: ");
-        String CPF = scanner.nextLine();
-
-        FuncionarioMODEL funcionario = funcionarioRepository.buscarFuncionarioPorCPF(CPF); // você precisa ter esse método
-
-        if (funcionario == null) {
-            System.out.println("Funcionário não encontrado com o CPF informado.");
-            return;
-        }
-
-        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorFuncionarioCPF(CPF);
-
+        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorFuncionarioCPF(cpf);
         if (auditorias.isEmpty()) {
-            System.out.println("Nenhuma auditoria encontrada para esse funcionário.");
-            return;
+            throw new Exception("Nenhuma auditoria encontrada para o funcionário com CPF: " + cpf);
         }
 
-        System.out.println("--- Auditorias de Vendas realizadas pelo funcionário \"" + funcionario.getNome() + "\" ---");
-        for (AuditoriaVendaMODEL a : auditorias) {
-            imprimirAuditoria(a);
-        }
+        return auditorias;
     }
 
-    public void buscarAuditoriasPorProduto(Scanner scanner) {
-        List<ProdutosMODEL> produtos = produtosRepository.listarTodos();
-
-        if (produtos.isEmpty()) {
-            System.out.println("Nenhum produto cadastrado.");
-            return;
+    public List<AuditoriaVendaMODEL> buscarAuditoriasPorProduto(Long idProduto) throws Exception {
+        if (idProduto == null) {
+            throw new Exception("ID do produto não pode ser nulo.");
         }
 
-        System.out.print("Digite o ID do produto: ");
-        Long id = Long.parseLong(scanner.nextLine());
-        ProdutosMODEL produto = produtosRepository.buscarPorId(id);
-
-        if (produto == null) {
-            System.out.println("Produto não encontrado.");
-            return;
-        }
-
-        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorProdutoId(id);
-
+        List<AuditoriaVendaMODEL> auditorias = auditoriaRepository.buscarPorProdutoId(idProduto);
         if (auditorias.isEmpty()) {
-            System.out.println("Nenhuma auditoria encontrada para esse produto.");
-            return;
+            throw new Exception("Nenhuma auditoria encontrada para o produto com ID: " + idProduto);
         }
 
-        System.out.println("--- Auditorias de Vendas do produto \"" + produto.getNome() + "\" ---");
-        for (AuditoriaVendaMODEL a : auditorias) {
-            imprimirAuditoria(a);
-        }
-    }
-
-    private void imprimirAuditoria(AuditoriaVendaMODEL a) {
-        System.out.println(
-                "ID: " + a.getId() +
-                        " | Produto: " + (a.getProduto() != null ? a.getProduto().getNome() : "N/A") +
-                        " | Quantidade: " + a.getQuantidade() +
-                        " | Funcionário: " + (a.getFuncionario() != null ? a.getFuncionario().getNome() : "N/A") +
-                        " | Comprador: " + (a.getComprador() != null ? a.getComprador().getNome() : "N/A") +
-                        " | Data: " + (a.getDataVenda() != null ? a.getDataVenda().toString() : "N/A")
-        );
+        return auditorias;
     }
 }
