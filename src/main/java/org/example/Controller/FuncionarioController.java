@@ -23,9 +23,7 @@ public class FuncionarioController {
         funcionarioService.criarFuncionario(nome, cpf, endereco, telefone, usuarioId, setorId);
     }
 
-    /**
-     * Lista todos os funcionários cadastrados.
-     */
+   
     public List<FuncionarioMODEL> listarFuncionarios() {
         return funcionarioService.listarFuncionarios();
     }
@@ -59,7 +57,7 @@ public class FuncionarioController {
     }
 
     public List<FuncionarioMODEL> listarFuncionariosDisponiveis() {
-        return new FuncionarioService().listarFuncionarios(); // Assumindo que seu service já possui esse método
+        return new FuncionarioService().listarFuncionarios(); 
     }
 
 }
