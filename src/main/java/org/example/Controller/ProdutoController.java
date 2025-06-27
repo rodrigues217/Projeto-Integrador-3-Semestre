@@ -31,5 +31,13 @@ public class ProdutoController {
         return produtoService.listarProdutosPorCategoria(idCategoria);
     }
 
+    public void criarProduto(String nomeProduto, Double valor, Integer estoque, String codProd, Long categoriaId) throws Exception {
+        produtoService.criarProdutoComCategoria(nomeProduto, valor, estoque, codProd, categoriaId);
+    }
+
+    public void excluirProduto(Long idProduto) throws Exception {
+        produtoService.excluirProduto(idProduto);
+    }
+
 
 }

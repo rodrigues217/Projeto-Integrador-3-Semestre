@@ -127,5 +127,15 @@ public class ProdutoService {
         public void setClasseABC(String classeABC) {
             this.classeABC = classeABC;
         }
+
+
+
+    }
+    public void excluirProduto(Long idProduto) throws Exception {
+        ProdutosMODEL produto = produtosRepository.buscarPorId(idProduto);
+        if (produto == null) {
+            throw new Exception("Produto não encontrado.");
+        }
+        produtosRepository.deletar(idProduto);
     }
 }
